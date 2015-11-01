@@ -14,7 +14,7 @@ endif
 
 if HAVE_WINDRES
 include $(top_srcdir)/build/windows/gimprc-plug-ins.rule
-file_bmp_RC = file-bmp.rc.o
+file_gra_RC = file-gra.rc.o
 endif
 
 AM_LDFLAGS = $(mwindows)
@@ -23,11 +23,11 @@ libexecdir = $(gimpplugindir)/plug-ins
 
 libexec_PROGRAMS = file-bmp
 
-file_bmp_SOURCES = \
-	bmp.c		\
-	bmp.h		\
-	bmp-read.c	\
-	bmp-write.c
+file_gra_SOURCES = \
+	gra.c		\
+	gra.h		\
+	gra-read.c	\
+	gra-write.c
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)	\
@@ -47,4 +47,4 @@ LDADD = \
 	$(GEGL_LIBS)		\
 	$(RT_LIBS)		\
 	$(INTLLIBS)		\
-	$(file_bmp_RC)
+	$(file_gra_RC)

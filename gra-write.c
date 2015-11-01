@@ -1,4 +1,4 @@
-/* bmpwrite.c   Writes Bitmap files. Even RLE encoded ones.      */
+/* grawrite.c   Writes Bitmap files. Even RLE encoded ones.      */
 /*              (Windows (TM) doesn't read all of those, but who */
 /*              cares? ;-)                                       */
 /*              I changed a few things over the time, so perhaps */
@@ -36,7 +36,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-#include "bmp.h"
+#include "gra.h"
 
 #include "libgimp/stdplugins-intl.h"
 
@@ -57,7 +57,7 @@ static struct
 
   /* Whether or not to write BITMAPV5HEADER color space data */
   gint    dont_write_color_space_data;
-} BMPSaveData;
+} GRASaveData;
 
 static gint    cur_progress = 0;
 static gint    max_progress = 0;
@@ -142,7 +142,7 @@ warning_dialog (const gchar *primary,
 }
 
 GimpPDBStatusType
-WriteBMP (const gchar  *filename,
+WriteGRA (const gchar  *filename,
           gint32        image,
           gint32        drawable_ID,
           GError      **error)
@@ -181,7 +181,7 @@ WriteBMP (const gchar  *filename,
       BitsPerPixel = 32;
       MapSize      = 0;
       channels     = 4;
-      BMPSaveData.rgb_format = RGBA_8888;
+      GRASaveData.rgb_format = RGBA_8888;
       break;
 
     case GIMP_RGB_IMAGE:
@@ -190,12 +190,12 @@ WriteBMP (const gchar  *filename,
       BitsPerPixel = 24;
       MapSize      = 0;
       channels     = 3;
-      BMPSaveData.rgb_format = RGB_888;
+      GRASaveData.rgb_format = RGB_888;
       break;
 
     case GIMP_GRAYA_IMAGE:
       if (interactive && !warning_dialog (_("Cannot save indexed image with "
-                                            "transparency in BMP file format."),
+                                            "transparency in GRA file format."),
                                           _("Alpha channel will be ignored.")))
         return GIMP_PDB_CANCEL;
 
@@ -227,7 +227,7 @@ WriteBMP (const gchar  *filename,
 
     case GIMP_INDEXEDA_IMAGE:
       if (interactive && !warning_dialog (_("Cannot save indexed image with "
-                                            "transparency in BMP file format."),
+                                            "transparency in GRA file format."),
                                           _("Alpha channel will be ignored.")))
         return GIMP_PDB_CANCEL;
 
@@ -262,13 +262,13 @@ WriteBMP (const gchar  *filename,
       g_assert_not_reached ();
     }
 
-  BMPSaveData.use_run_length_encoding = 0;
-  BMPSaveData.dont_write_color_space_data = 0;
+  GRASaveData.use_run_length_encoding = 0;
+  GRASaveData.dont_write_color_space_data = 0;
   mask_info_size = 0;
 
   if (interactive || lastvals)
     {
-      gimp_get_data (SAVE_PROC, &BMPSaveData);
+      gimp_get_data (SAVE_PROC, &GRASaveData);
     }
 
   if ((BitsPerPixel == 8 || BitsPerPixel == 4) && interactive)
@@ -282,7 +282,7 @@ WriteBMP (const gchar  *filename,
         return GIMP_PDB_CANCEL;
 
       /* mask_info_size is only set to non-zero for 16- and 32-bpp */
-      switch (BMPSaveData.rgb_format)
+      switch (GRASaveData.rgb_format)
         {
         case RGB_888:
           BitsPerPixel = 24;
@@ -312,7 +312,7 @@ WriteBMP (const gchar  *filename,
         }
     }
 
-  gimp_set_data (SAVE_PROC, &BMPSaveData, sizeof (BMPSaveData));
+  gimp_set_data (SAVE_PROC, &GRASaveData, sizeof (GRASaveData));
 
   /* Let's begin the progress */
   gimp_progress_init_printf (_("Saving '%s'"),
@@ -356,7 +356,7 @@ WriteBMP (const gchar  *filename,
   else
     SpZeile = ((gint) (((Spcols * BitsPerPixel) / 8) / 4) + 1) * 4;
 
-  if (! BMPSaveData.dont_write_color_space_data)
+  if (! GRASaveData.dont_write_color_space_data)
     color_space_size = 68;
   else
     color_space_size = 0;
@@ -374,7 +374,7 @@ WriteBMP (const gchar  *filename,
   Bitmap_Head.biPlanes = 1;
   Bitmap_Head.biBitCnt = BitsPerPixel;
 
-  if (BMPSaveData.use_run_length_encoding == 0)
+  if (GRASaveData.use_run_length_encoding == 0)
   {
     if (mask_info_size > 0)
       Bitmap_Head.biCompr = 3; /* BI_BITFIELDS */
@@ -454,7 +454,7 @@ WriteBMP (const gchar  *filename,
 
   if (mask_info_size > 0)
     {
-      switch (BMPSaveData.rgb_format)
+      switch (GRASaveData.rgb_format)
         {
         default:
         case RGB_888:
@@ -501,7 +501,7 @@ WriteBMP (const gchar  *filename,
       Write (outfile, puffer, mask_info_size);
     }
 
-  if (! BMPSaveData.dont_write_color_space_data)
+  if (! GRASaveData.dont_write_color_space_data)
     {
       /* Write V5 color space fields */
 
@@ -542,9 +542,9 @@ WriteBMP (const gchar  *filename,
 
   write_image (outfile,
                pixels, cols, rows,
-               BMPSaveData.use_run_length_encoding,
+               GRASaveData.use_run_length_encoding,
                channels, BitsPerPixel, SpZeile,
-               MapSize, BMPSaveData.rgb_format,
+               MapSize, GRASaveData.rgb_format,
                mask_info_size, color_space_size);
 
   /* ... and exit normally */
@@ -854,7 +854,7 @@ format_callback (GtkToggleButton *toggle,
                  gpointer         data)
 {
   if (gtk_toggle_button_get_active (toggle))
-    BMPSaveData.rgb_format = GPOINTER_TO_INT (data);
+    GRASaveData.rgb_format = GPOINTER_TO_INT (data);
 }
 
 static gboolean
@@ -871,7 +871,7 @@ save_dialog (gint channels)
   gboolean   run;
 
   /* Dialog init */
-  dialog = gimp_export_dialog_new ("BMP", PLUG_IN_BINARY, SAVE_PROC);
+  dialog = gimp_export_dialog_new ("GRA", PLUG_IN_BINARY, SAVE_PROC);
 
   gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
@@ -885,14 +885,14 @@ save_dialog (gint channels)
   toggle = gtk_check_button_new_with_mnemonic (_("_Run-Length Encoded"));
   gtk_box_pack_start (GTK_BOX (vbox_main), toggle, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle),
-                                BMPSaveData.use_run_length_encoding);
+                                GRASaveData.use_run_length_encoding);
   gtk_widget_show (toggle);
   if (channels > 1)
     gtk_widget_set_sensitive (toggle, FALSE);
 
   g_signal_connect (toggle, "toggled",
                     G_CALLBACK (gimp_toggle_button_update),
-                    &BMPSaveData.use_run_length_encoding);
+                    &GRASaveData.use_run_length_encoding);
 
   /* Compatibility Options */
   expander = gtk_expander_new_with_mnemonic (_("Co_mpatibility Options"));
@@ -907,7 +907,7 @@ save_dialog (gint channels)
 
   toggle = gtk_check_button_new_with_mnemonic (_("_Do not write color space information"));
   gimp_help_set_help_data (toggle,
-                           _("Some applications can not read BMP images that "
+                           _("Some applications can not read GRA images that "
                              "include color space information. GIMP writes "
                              "color space information by default. Enabling "
                              "this option will cause GIMP to not write color "
@@ -915,12 +915,12 @@ save_dialog (gint channels)
                            NULL);
   gtk_box_pack_start (GTK_BOX (vbox2), toggle, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle),
-                                BMPSaveData.dont_write_color_space_data);
+                                GRASaveData.dont_write_color_space_data);
   gtk_widget_show (toggle);
 
   g_signal_connect (toggle, "toggled",
                     G_CALLBACK (gimp_toggle_button_update),
-                    &BMPSaveData.dont_write_color_space_data);
+                    &GRASaveData.dont_write_color_space_data);
 
   /* Advanced Options */
   expander = gtk_expander_new_with_mnemonic (_("_Advanced Options"));
@@ -987,7 +987,7 @@ save_dialog (gint channels)
                     GINT_TO_POINTER (RGB_888));
   if (channels < 4)
     {
-      BMPSaveData.rgb_format = RGB_888;
+      GRASaveData.rgb_format = RGB_888;
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), TRUE);
     }
 
@@ -1014,7 +1014,7 @@ save_dialog (gint channels)
     }
   else
     {
-      BMPSaveData.rgb_format = RGBA_8888;
+      GRASaveData.rgb_format = RGBA_8888;
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), TRUE);
     }
 

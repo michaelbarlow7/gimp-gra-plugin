@@ -1,4 +1,4 @@
-/* bmpread.c    reads any bitmap I could get for testing */
+/* graread.c    reads any bitmap I could get for testing */
 /* Alexander.Schulz@stud.uni-karlsruhe.de                */
 
 /*
@@ -29,7 +29,7 @@
 
 #include <libgimp/gimp.h>
 
-#include "bmp.h"
+#include "gra.h"
 
 #include "libgimp/stdplugins-intl.h"
 
@@ -185,7 +185,7 @@ ReadChannelMasks (guint32 *tmp, Bitmap_Channel *masks, guint channels)
 }
 
 gint32
-ReadBMP (const gchar  *name,
+ReadGRA (const gchar  *name,
          GError      **error)
 {
   FILE     *fd;
@@ -219,7 +219,7 @@ ReadBMP (const gchar  *name,
      !strncmp (magick, "CP", 2)))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -229,14 +229,14 @@ ReadBMP (const gchar  *name,
       if (!ReadOK (fd, buffer, 12))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("'%s' is not a valid BMP file"),
+                       _("'%s' is not a valid GRA file"),
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
       if (!ReadOK (fd, magick, 2))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("'%s' is not a valid BMP file"),
+                       _("'%s' is not a valid GRA file"),
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -245,7 +245,7 @@ ReadBMP (const gchar  *name,
   if (!ReadOK (fd, buffer, 12))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -260,7 +260,7 @@ ReadBMP (const gchar  *name,
   if (!ReadOK (fd, buffer, 4))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -274,7 +274,7 @@ ReadBMP (const gchar  *name,
       if (!ReadOK (fd, buffer, 8))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading BMP file header from '%s'"),
+                       _("Error reading GRA file header from '%s'"),
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -301,7 +301,7 @@ ReadBMP (const gchar  *name,
       if (!ReadOK (fd, buffer, 36))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading BMP file header from '%s'"),
+                       _("Error reading GRA file header from '%s'"),
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -333,7 +333,7 @@ ReadBMP (const gchar  *name,
           if (!ReadOK (fd, buffer, 3 * sizeof (guint32)))
             {
               g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                           _("Error reading BMP file header from '%s'"),
+                           _("Error reading GRA file header from '%s'"),
                            gimp_filename_to_utf8 (filename));
               goto out;
             }
@@ -355,7 +355,7 @@ ReadBMP (const gchar  *name,
         {
           /* BI_ALPHABITFIELDS, etc. */
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Unsupported compression (%lu) in BMP file from '%s'"),
+                       _("Unsupported compression (%lu) in GRA file from '%s'"),
                        Bitmap_Head.biCompr,
                        gimp_filename_to_utf8 (filename));
         }
@@ -370,7 +370,7 @@ ReadBMP (const gchar  *name,
       if (!ReadOK (fd, buffer, Bitmap_File_Head.biSize - 4))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading BMP file header from '%s'"),
+                       _("Error reading GRA file header from '%s'"),
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -394,13 +394,13 @@ ReadBMP (const gchar  *name,
       ReadChannelMasks (&Bitmap_Head.masks[0], masks, 4);
     }
   else if (Bitmap_File_Head.biSize == 108 || Bitmap_File_Head.biSize == 124)
-    /* BMP Version 4 or 5 */
+    /* GRA Version 4 or 5 */
     {
       if (!ReadOK (fd, buffer, Bitmap_File_Head.biSize - 4))
         {
 
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading BMP file header from '%s'"),
+                       _("Error reading GRA file header from '%s'"),
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -442,7 +442,7 @@ ReadBMP (const gchar  *name,
   else
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("Error reading BMP file header from '%s'"),
+                   _("Error reading GRA file header from '%s'"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -462,7 +462,7 @@ ReadBMP (const gchar  *name,
       break;
     default:
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -483,7 +483,7 @@ ReadBMP (const gchar  *name,
   if (Bitmap_Head.biHeight == 0 || Bitmap_Head.biWidth == 0)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -494,7 +494,7 @@ ReadBMP (const gchar  *name,
       Bitmap_Head.biHeight == G_MININT32)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -502,7 +502,7 @@ ReadBMP (const gchar  *name,
   if (Bitmap_Head.biPlanes != 1)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -510,19 +510,19 @@ ReadBMP (const gchar  *name,
   if (Bitmap_Head.biClrUsed > 256 && Bitmap_Head.biBitCnt <= 8)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
 
-  /* protect against integer overflows caused by malicious BMPs */
+  /* protect against integer overflows caused by malicious GRAs */
   /* use divisions in comparisons to avoid type overflows */
 
   if (((guint64) Bitmap_Head.biWidth) > G_MAXINT32 / Bitmap_Head.biBitCnt ||
       ((guint64) Bitmap_Head.biWidth) > (G_MAXINT32 / ABS (Bitmap_Head.biHeight)) / 4)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid BMP file"),
+                   _("'%s' is not a valid GRA file"),
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -637,7 +637,7 @@ ReadImage (FILE                  *fd,
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
                    "%s",
-                   _("Unrecognized or invalid BMP compression format."));
+                   _("Unrecognized or invalid GRA compression format."));
       return -1;
     }
 

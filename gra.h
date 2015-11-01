@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __BMP_H__
-#define __BMP_H__
+#ifndef __GRA_H__
+#define __GRA_H__
 
-#define LOAD_PROC      "file-bmp-load"
-#define SAVE_PROC      "file-bmp-save"
-#define PLUG_IN_BINARY "file-bmp"
-#define PLUG_IN_ROLE   "gimp-file-bmp"
+#define LOAD_PROC      "file-gra-load"
+#define SAVE_PROC      "file-gra-save"
+#define PLUG_IN_BINARY "file-gra"
+#define PLUG_IN_ROLE   "gimp-file-gra"
 
 #define MAXCOLORS   256
 
@@ -33,9 +33,9 @@
 #define WriteOK(file,buffer,len) (Write(buffer, len, file) != 0)
 
 
-gint32             ReadBMP   (const gchar  *filename,
+gint32             ReadGRA   (const gchar  *filename,
                               GError      **error);
-GimpPDBStatusType  WriteBMP  (const gchar  *filename,
+GimpPDBStatusType  WriteGRA  (const gchar  *filename,
                               gint32        image,
                               gint32        drawable_ID,
                               GError      **error);
@@ -77,4 +77,4 @@ typedef struct _Bitmap_Channel
   gfloat  max_value;
 } Bitmap_Channel;
 
-#endif /* __BMP_H__ */
+#endif /* __GRA_H__ */

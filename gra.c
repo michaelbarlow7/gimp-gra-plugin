@@ -1,4 +1,4 @@
-/* bmp.c                                          */
+/* gra.c                                          */
 /* Version 0.52                                   */
 /* This is a File input and output filter for the */
 /* Gimp. It loads and saves images in windows(TM) */
@@ -59,7 +59,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-#include "bmp.h"
+#include "gra.h"
 
 #include "libgimp/stdplugins-intl.h"
 
@@ -115,12 +115,12 @@ query (void)
   };
 
   gimp_install_procedure (LOAD_PROC,
-                          "Loads files of Windows BMP file format",
-                          "Loads files of Windows BMP file format",
+                          "Loads files of GRA file format",
+                          "Loads files of GRA file format",
                           "Alexander Schulz",
                           "Alexander Schulz",
                           "1997",
-                          N_("Windows BMP image"),
+                          N_("GRA image"),
                           NULL,
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (load_args),
@@ -129,24 +129,24 @@ query (void)
 
   gimp_register_file_handler_mime (LOAD_PROC, "image/bmp");
   gimp_register_magic_load_handler (LOAD_PROC,
-                                    "bmp",
+                                    "gra",
                                     "",
                                     "0,string,BM");
 
   gimp_install_procedure (SAVE_PROC,
-                          "Saves files in Windows BMP file format",
-                          "Saves files in Windows BMP file format",
-                          "Alexander Schulz",
-                          "Alexander Schulz",
-                          "1997",
-                          N_("Windows BMP image"),
+                          "Saves files in GRA file format",
+                          "Saves files in GRA file format",
+                          "Michael Barlow",
+                          "Michael Barlow",
+                          "2015",
+                          N_("GRA image"),
                           "INDEXED, GRAY, RGB*",
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (save_args), 0,
                           save_args, NULL);
 
   gimp_register_file_handler_mime (SAVE_PROC, "image/bmp");
-  gimp_register_save_handler (SAVE_PROC, "bmp", "");
+  gimp_register_save_handler (SAVE_PROC, "gra", "");
 }
 
 static void
@@ -195,7 +195,7 @@ run (const gchar      *name,
 
        if (status == GIMP_PDB_SUCCESS)
          {
-           image_ID = ReadBMP (param[1].data.d_string, &error);
+           image_ID = ReadGRA (param[1].data.d_string, &error);
 
            if (image_ID != -1)
              {
@@ -227,7 +227,7 @@ run (const gchar      *name,
 
           gimp_ui_init (PLUG_IN_BINARY, FALSE);
 
-          export = gimp_export_image (&image_ID, &drawable_ID, "BMP",
+          export = gimp_export_image (&image_ID, &drawable_ID, "GRA",
                                       GIMP_EXPORT_CAN_HANDLE_RGB   |
                                       GIMP_EXPORT_CAN_HANDLE_GRAY  |
                                       GIMP_EXPORT_CAN_HANDLE_ALPHA |
@@ -251,7 +251,7 @@ run (const gchar      *name,
         }
 
       if (status == GIMP_PDB_SUCCESS)
-        status = WriteBMP (param[3].data.d_string, image_ID, drawable_ID,
+        status = WriteGRA (param[3].data.d_string, image_ID, drawable_ID,
                            &error);
 
       if (export == GIMP_EXPORT_EXPORT)
