@@ -83,8 +83,8 @@ host_triplet = x86_64-unknown-linux-gnu
 DIST_COMMON = $(top_srcdir)/build/windows/gimprc-plug-ins.rule \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
-libexec_PROGRAMS = file-bmp$(EXEEXT)
-subdir = plug-ins/file-bmp
+libexec_PROGRAMS = file-gra$(EXEEXT)
+subdir = plug-ins/file-gra
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4macros/intltool.m4 \
 	$(top_srcdir)/m4macros/libtool.m4 \
@@ -104,15 +104,15 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(libexecdir)"
 PROGRAMS = $(libexec_PROGRAMS)
-am_file_bmp_OBJECTS = bmp.$(OBJEXT) bmp-read.$(OBJEXT) \
-	bmp-write.$(OBJEXT)
-file_bmp_OBJECTS = $(am_file_bmp_OBJECTS)
-file_bmp_LDADD = $(LDADD)
+am_file_gra_OBJECTS = gra.$(OBJEXT) gra-read.$(OBJEXT) \
+	gra-write.$(OBJEXT)
+file_gra_OBJECTS = $(am_file_gra_OBJECTS)
+file_gra_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
-file_bmp_DEPENDENCIES = $(libgimpui) $(libgimpwidgets) \
+file_gra_DEPENDENCIES = $(libgimpui) $(libgimpwidgets) \
 	$(libgimpconfig) $(libgimp) $(libgimpcolor) $(libgimpmath) \
 	$(libgimpbase) $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(file_bmp_RC)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) $(file_gra_RC)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -151,8 +151,8 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(file_bmp_SOURCES)
-DIST_SOURCES = $(file_bmp_SOURCES)
+SOURCES = $(file_gra_SOURCES)
+DIST_SOURCES = $(file_gra_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -475,8 +475,8 @@ X_EXTRA_LIBS =
 X_LIBS = 
 X_PRE_LIBS =  -lSM -lICE
 Z_LIBS = -lz
-abs_builddir = /home/michael/Documents/development/gimp/plug-ins/file-bmp
-abs_srcdir = /home/michael/Documents/development/gimp/plug-ins/file-bmp
+abs_builddir = /home/michael/Documents/development/gimp-gra-plugin
+abs_srcdir = /home/michael/Documents/development/gimp-gra-plugin
 abs_top_builddir = /home/michael/Documents/development/gimp
 abs_top_srcdir = /home/michael/Documents/development/gimp
 ac_ct_AR = ar
@@ -550,13 +550,13 @@ libgimpbase = $(top_builddir)/libgimpbase/libgimpbase-$(GIMP_API_VERSION).la
 libgimpmath = $(top_builddir)/libgimpmath/libgimpmath-$(GIMP_API_VERSION).la
 #mwindows = -mwindows
 #GIMPPLUGINRC = $(top_builddir)/build/windows/gimp-plug-ins.rc
-#file_bmp_RC = file-bmp.rc.o
+#file_gra_RC = file-gra.rc.o
 AM_LDFLAGS = $(mwindows)
-file_bmp_SOURCES = \
-	bmp.c		\
-	bmp.h		\
-	bmp-read.c	\
-	bmp-write.c
+file_gra_SOURCES = \
+	gra.c		\
+	gra.h		\
+	gra-read.c	\
+	gra-write.c
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)	\
@@ -576,7 +576,7 @@ LDADD = \
 	$(GEGL_LIBS)		\
 	$(RT_LIBS)		\
 	$(INTLLIBS)		\
-	$(file_bmp_RC)
+	$(file_gra_RC)
 
 all: all-am
 
@@ -663,9 +663,9 @@ clean-libexecPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-file-bmp$(EXEEXT): $(file_bmp_OBJECTS) $(file_bmp_DEPENDENCIES) $(EXTRA_file_bmp_DEPENDENCIES) 
-	@rm -f file-bmp$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(file_bmp_OBJECTS) $(file_bmp_LDADD) $(LIBS)
+file-gra$(EXEEXT): $(file_gra_OBJECTS) $(file_gra_DEPENDENCIES) $(EXTRA_file_gra_DEPENDENCIES) 
+	@rm -f file-gra$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(file_gra_OBJECTS) $(file_gra_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -673,9 +673,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/bmp-read.Po
-include ./$(DEPDIR)/bmp-write.Po
-include ./$(DEPDIR)/bmp.Po
+include ./$(DEPDIR)/gra-read.Po
+include ./$(DEPDIR)/gra-write.Po
+include ./$(DEPDIR)/gra.Po
 
 .c.o:
 	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
