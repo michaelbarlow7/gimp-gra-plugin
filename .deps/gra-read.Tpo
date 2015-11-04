@@ -100,9 +100,9 @@ gra-read.o: gra-read.c /usr/include/stdc-predef.h config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
  /usr/include/x86_64-linux-gnu/sys/stat.h \
- /usr/include/x86_64-linux-gnu/bits/stat.h libgimp/gimp.h \
- /usr/include/cairo/cairo.h /usr/include/cairo/cairo-version.h \
- /usr/include/cairo/cairo-features.h \
+ /usr/include/x86_64-linux-gnu/bits/stat.h \
+ /usr/include/gimp-2.0/libgimp/gimp.h /usr/include/cairo/cairo.h \
+ /usr/include/cairo/cairo-version.h /usr/include/cairo/cairo-features.h \
  /usr/include/cairo/cairo-deprecated.h \
  /usr/local/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf.h \
  /usr/local/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-features.h \
@@ -275,27 +275,48 @@ gra-read.o: gra-read.c /usr/include/stdc-predef.h config.h \
  /usr/local/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-io.h \
  /usr/local/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-loader.h \
  /usr/local/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-enum-types.h \
- libgimpbase/gimpbase.h libgimpbase/gimpbasetypes.h \
- libgimpcolor/gimpcolortypes.h libgimpmath/gimpmathtypes.h \
- libgimpbase/gimpbaseenums.h libgimpbase/gimpparam.h \
- libgimpbase/gimpchecks.h libgimpbase/gimpcpuaccel.h \
- libgimpbase/gimpdatafiles.h libgimpbase/gimpenv.h \
- libgimpbase/gimplimits.h libgimpbase/gimpmemsize.h \
- libgimpbase/gimpparasite.h libgimpbase/gimprectangle.h \
- libgimpbase/gimpunit.h libgimpbase/gimputils.h libgimpbase/gimpversion.h \
- libgimpbase/gimpsignal.h libgimpcolor/gimpcolor.h \
- libgimpcolor/gimpadaptivesupersample.h libgimpcolor/gimpbilinear.h \
- libgimpcolor/gimpcairocolor.h libgimpcolor/gimpcolormanaged.h \
- libgimpcolor/gimpcolorspace.h libgimpcolor/gimpcmyk.h \
- libgimpcolor/gimphsl.h libgimpcolor/gimphsv.h libgimpcolor/gimprgb.h \
- libgimpconfig/gimpconfig.h libgimpconfig/gimpconfigtypes.h \
- libgimpconfig/gimpcolorconfig-enums.h libgimpconfig/gimpconfigwriter.h \
- libgimpconfig/gimpconfig-iface.h libgimpconfig/gimpconfig-error.h \
- libgimpconfig/gimpconfig-serialize.h \
- libgimpconfig/gimpconfig-deserialize.h libgimpconfig/gimpconfig-utils.h \
- libgimpconfig/gimpconfig-params.h libgimpconfig/gimpconfig-path.h \
- libgimpconfig/gimpscanner.h libgimpconfig/gimpcolorconfig.h \
- libgimpmath/gimpmath.h /usr/include/math.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpbase.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpbasetypes.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpcolortypes.h \
+ /usr/include/gimp-2.0/libgimpmath/gimpmathtypes.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpbaseenums.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpparam.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpchecks.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpcpuaccel.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpdatafiles.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpenv.h \
+ /usr/include/gimp-2.0/libgimpbase/gimplimits.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpmemsize.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpparasite.h \
+ /usr/include/gimp-2.0/libgimpbase/gimprectangle.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpunit.h \
+ /usr/include/gimp-2.0/libgimpbase/gimputils.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpversion.h \
+ /usr/include/gimp-2.0/libgimpbase/gimpsignal.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpcolor.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpadaptivesupersample.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpbilinear.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpcairocolor.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpcolormanaged.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpcolorspace.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimpcmyk.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimphsl.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimphsv.h \
+ /usr/include/gimp-2.0/libgimpcolor/gimprgb.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfigtypes.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpcolorconfig-enums.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfigwriter.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-iface.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-error.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-serialize.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-deserialize.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-utils.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-params.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpconfig-path.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpscanner.h \
+ /usr/include/gimp-2.0/libgimpconfig/gimpcolorconfig.h \
+ /usr/include/gimp-2.0/libgimpmath/gimpmath.h /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/huge_val.h \
  /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
  /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
@@ -303,42 +324,88 @@ gra-read.o: gra-read.c /usr/include/stdc-predef.h config.h \
  /usr/include/x86_64-linux-gnu/bits/nan.h \
  /usr/include/x86_64-linux-gnu/bits/mathdef.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /usr/include/x86_64-linux-gnu/bits/mathinline.h libgimpmath/gimpmatrix.h \
- libgimpmath/gimpmd5.h libgimpmath/gimpvector.h libgimp/gimpenums.h \
- libgimp/gimptypes.h libgimp/gimpbrushes.h libgimp/gimpbrushselect.h \
- libgimp/gimpchannel.h libgimp/gimpdrawable.h libgimp/gimpfontselect.h \
- libgimp/gimpgimprc.h libgimp/gimpgradients.h \
- libgimp/gimpgradientselect.h libgimp/gimpimage.h libgimp/gimplayer.h \
- libgimp/gimppalette.h libgimp/gimppalettes.h libgimp/gimppaletteselect.h \
- libgimp/gimppatterns.h libgimp/gimppatternselect.h libgimp/gimppixbuf.h \
- libgimp/gimppixelfetcher.h libgimp/gimppixelrgn.h libgimp/gimpplugin.h \
- libgimp/gimpproceduraldb.h libgimp/gimpprogress.h \
- libgimp/gimpregioniterator.h libgimp/gimpselection.h libgimp/gimptile.h \
- libgimp/gimpvectors.h libgimp/gimp_pdb_headers.h libgimp/gimp_pdb.h \
- libgimp/gimpbrush_pdb.h libgimp/gimpbrushes_pdb.h \
- libgimp/gimpbrushselect_pdb.h libgimp/gimpbuffer_pdb.h \
- libgimp/gimpchannel_pdb.h libgimp/gimpcolor_pdb.h \
- libgimp/gimpcontext_pdb.h libgimp/gimpconvert_pdb.h \
- libgimp/gimpdisplay_pdb.h libgimp/gimpdrawable_pdb.h \
- libgimp/gimpdrawabletransform_pdb.h libgimp/gimpdynamics_pdb.h \
- libgimp/gimpedit_pdb.h libgimp/gimpfileops_pdb.h \
- libgimp/gimpfloatingsel_pdb.h libgimp/gimpfonts_pdb.h \
- libgimp/gimpfontselect_pdb.h libgimp/gimpgimprc_pdb.h \
- libgimp/gimpgradient_pdb.h libgimp/gimpgradients_pdb.h \
- libgimp/gimpgradientselect_pdb.h libgimp/gimpgrid_pdb.h \
- libgimp/gimpguides_pdb.h libgimp/gimphelp_pdb.h libgimp/gimpimage_pdb.h \
- libgimp/gimpimageselect_pdb.h libgimp/gimpitem_pdb.h \
- libgimp/gimpitemtransform_pdb.h libgimp/gimplayer_pdb.h \
- libgimp/gimpmessage_pdb.h libgimp/gimppainttools_pdb.h \
- libgimp/gimppalette_pdb.h libgimp/gimppalettes_pdb.h \
- libgimp/gimppaletteselect_pdb.h libgimp/gimppaths_pdb.h \
- libgimp/gimppattern_pdb.h libgimp/gimppatterns_pdb.h \
- libgimp/gimppatternselect_pdb.h libgimp/gimpplugin_pdb.h \
- libgimp/gimpproceduraldb_pdb.h libgimp/gimpprogress_pdb.h \
- libgimp/gimpselection_pdb.h libgimp/gimpselectiontools_pdb.h \
- libgimp/gimptextlayer_pdb.h libgimp/gimptexttool_pdb.h \
- libgimp/gimptransformtools_pdb.h libgimp/gimpundo_pdb.h \
- libgimp/gimpunit_pdb.h libgimp/gimpvectors_pdb.h gra.h \
+ /usr/include/x86_64-linux-gnu/bits/mathinline.h \
+ /usr/include/gimp-2.0/libgimpmath/gimpmatrix.h \
+ /usr/include/gimp-2.0/libgimpmath/gimpmd5.h \
+ /usr/include/gimp-2.0/libgimpmath/gimpvector.h \
+ /usr/include/gimp-2.0/libgimp/gimpenums.h \
+ /usr/include/gimp-2.0/libgimp/gimptypes.h \
+ /usr/include/gimp-2.0/libgimp/gimpbrushes.h \
+ /usr/include/gimp-2.0/libgimp/gimpbrushselect.h \
+ /usr/include/gimp-2.0/libgimp/gimpchannel.h \
+ /usr/include/gimp-2.0/libgimp/gimpdrawable.h \
+ /usr/include/gimp-2.0/libgimp/gimpfontselect.h \
+ /usr/include/gimp-2.0/libgimp/gimpgimprc.h \
+ /usr/include/gimp-2.0/libgimp/gimpgradients.h \
+ /usr/include/gimp-2.0/libgimp/gimpgradientselect.h \
+ /usr/include/gimp-2.0/libgimp/gimpimage.h \
+ /usr/include/gimp-2.0/libgimp/gimplayer.h \
+ /usr/include/gimp-2.0/libgimp/gimppalette.h \
+ /usr/include/gimp-2.0/libgimp/gimppalettes.h \
+ /usr/include/gimp-2.0/libgimp/gimppaletteselect.h \
+ /usr/include/gimp-2.0/libgimp/gimppatterns.h \
+ /usr/include/gimp-2.0/libgimp/gimppatternselect.h \
+ /usr/include/gimp-2.0/libgimp/gimppixbuf.h \
+ /usr/include/gimp-2.0/libgimp/gimppixelfetcher.h \
+ /usr/include/gimp-2.0/libgimp/gimppixelrgn.h \
+ /usr/include/gimp-2.0/libgimp/gimpplugin.h \
+ /usr/include/gimp-2.0/libgimp/gimpproceduraldb.h \
+ /usr/include/gimp-2.0/libgimp/gimpprogress.h \
+ /usr/include/gimp-2.0/libgimp/gimpregioniterator.h \
+ /usr/include/gimp-2.0/libgimp/gimpselection.h \
+ /usr/include/gimp-2.0/libgimp/gimptile.h \
+ /usr/include/gimp-2.0/libgimp/gimpvectors.h \
+ /usr/include/gimp-2.0/libgimp/gimp_pdb_headers.h \
+ /usr/include/gimp-2.0/libgimp/gimp_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpbrush_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpbrushes_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpbrushselect_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpbuffer_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpchannel_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpcolor_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpcontext_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpconvert_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpdisplay_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpdrawable_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpdrawabletransform_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpdynamics_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpedit_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpfileops_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpfloatingsel_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpfonts_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpfontselect_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpgimprc_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpgradient_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpgradients_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpgradientselect_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpgrid_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpguides_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimphelp_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpimage_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpimageselect_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpitem_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpitemtransform_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimplayer_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpmessage_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppainttools_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppalette_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppalettes_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppaletteselect_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppaths_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppattern_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppatterns_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimppatternselect_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpplugin_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpproceduraldb_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpprogress_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpselection_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpselectiontools_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimptextlayer_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimptexttool_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimptransformtools_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpundo_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpunit_pdb.h \
+ /usr/include/gimp-2.0/libgimp/gimpvectors_pdb.h gra.h \
  libgimp/stdplugins-intl.h /usr/include/glib-2.0/glib/gi18n.h \
  /usr/include/libintl.h /usr/include/locale.h \
  /usr/include/x86_64-linux-gnu/bits/locale.h
@@ -605,7 +672,7 @@ config.h:
 
 /usr/include/x86_64-linux-gnu/bits/stat.h:
 
-libgimp/gimp.h:
+/usr/include/gimp-2.0/libgimp/gimp.h:
 
 /usr/include/cairo/cairo.h:
 
@@ -975,89 +1042,89 @@ libgimp/gimp.h:
 
 /usr/local/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-enum-types.h:
 
-libgimpbase/gimpbase.h:
+/usr/include/gimp-2.0/libgimpbase/gimpbase.h:
 
-libgimpbase/gimpbasetypes.h:
+/usr/include/gimp-2.0/libgimpbase/gimpbasetypes.h:
 
-libgimpcolor/gimpcolortypes.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpcolortypes.h:
 
-libgimpmath/gimpmathtypes.h:
+/usr/include/gimp-2.0/libgimpmath/gimpmathtypes.h:
 
-libgimpbase/gimpbaseenums.h:
+/usr/include/gimp-2.0/libgimpbase/gimpbaseenums.h:
 
-libgimpbase/gimpparam.h:
+/usr/include/gimp-2.0/libgimpbase/gimpparam.h:
 
-libgimpbase/gimpchecks.h:
+/usr/include/gimp-2.0/libgimpbase/gimpchecks.h:
 
-libgimpbase/gimpcpuaccel.h:
+/usr/include/gimp-2.0/libgimpbase/gimpcpuaccel.h:
 
-libgimpbase/gimpdatafiles.h:
+/usr/include/gimp-2.0/libgimpbase/gimpdatafiles.h:
 
-libgimpbase/gimpenv.h:
+/usr/include/gimp-2.0/libgimpbase/gimpenv.h:
 
-libgimpbase/gimplimits.h:
+/usr/include/gimp-2.0/libgimpbase/gimplimits.h:
 
-libgimpbase/gimpmemsize.h:
+/usr/include/gimp-2.0/libgimpbase/gimpmemsize.h:
 
-libgimpbase/gimpparasite.h:
+/usr/include/gimp-2.0/libgimpbase/gimpparasite.h:
 
-libgimpbase/gimprectangle.h:
+/usr/include/gimp-2.0/libgimpbase/gimprectangle.h:
 
-libgimpbase/gimpunit.h:
+/usr/include/gimp-2.0/libgimpbase/gimpunit.h:
 
-libgimpbase/gimputils.h:
+/usr/include/gimp-2.0/libgimpbase/gimputils.h:
 
-libgimpbase/gimpversion.h:
+/usr/include/gimp-2.0/libgimpbase/gimpversion.h:
 
-libgimpbase/gimpsignal.h:
+/usr/include/gimp-2.0/libgimpbase/gimpsignal.h:
 
-libgimpcolor/gimpcolor.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpcolor.h:
 
-libgimpcolor/gimpadaptivesupersample.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpadaptivesupersample.h:
 
-libgimpcolor/gimpbilinear.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpbilinear.h:
 
-libgimpcolor/gimpcairocolor.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpcairocolor.h:
 
-libgimpcolor/gimpcolormanaged.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpcolormanaged.h:
 
-libgimpcolor/gimpcolorspace.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpcolorspace.h:
 
-libgimpcolor/gimpcmyk.h:
+/usr/include/gimp-2.0/libgimpcolor/gimpcmyk.h:
 
-libgimpcolor/gimphsl.h:
+/usr/include/gimp-2.0/libgimpcolor/gimphsl.h:
 
-libgimpcolor/gimphsv.h:
+/usr/include/gimp-2.0/libgimpcolor/gimphsv.h:
 
-libgimpcolor/gimprgb.h:
+/usr/include/gimp-2.0/libgimpcolor/gimprgb.h:
 
-libgimpconfig/gimpconfig.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig.h:
 
-libgimpconfig/gimpconfigtypes.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfigtypes.h:
 
-libgimpconfig/gimpcolorconfig-enums.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpcolorconfig-enums.h:
 
-libgimpconfig/gimpconfigwriter.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfigwriter.h:
 
-libgimpconfig/gimpconfig-iface.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-iface.h:
 
-libgimpconfig/gimpconfig-error.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-error.h:
 
-libgimpconfig/gimpconfig-serialize.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-serialize.h:
 
-libgimpconfig/gimpconfig-deserialize.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-deserialize.h:
 
-libgimpconfig/gimpconfig-utils.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-utils.h:
 
-libgimpconfig/gimpconfig-params.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-params.h:
 
-libgimpconfig/gimpconfig-path.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpconfig-path.h:
 
-libgimpconfig/gimpscanner.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpscanner.h:
 
-libgimpconfig/gimpcolorconfig.h:
+/usr/include/gimp-2.0/libgimpconfig/gimpcolorconfig.h:
 
-libgimpmath/gimpmath.h:
+/usr/include/gimp-2.0/libgimpmath/gimpmath.h:
 
 /usr/include/math.h:
 
@@ -1077,167 +1144,167 @@ libgimpmath/gimpmath.h:
 
 /usr/include/x86_64-linux-gnu/bits/mathinline.h:
 
-libgimpmath/gimpmatrix.h:
+/usr/include/gimp-2.0/libgimpmath/gimpmatrix.h:
 
-libgimpmath/gimpmd5.h:
+/usr/include/gimp-2.0/libgimpmath/gimpmd5.h:
 
-libgimpmath/gimpvector.h:
+/usr/include/gimp-2.0/libgimpmath/gimpvector.h:
 
-libgimp/gimpenums.h:
+/usr/include/gimp-2.0/libgimp/gimpenums.h:
 
-libgimp/gimptypes.h:
+/usr/include/gimp-2.0/libgimp/gimptypes.h:
 
-libgimp/gimpbrushes.h:
+/usr/include/gimp-2.0/libgimp/gimpbrushes.h:
 
-libgimp/gimpbrushselect.h:
+/usr/include/gimp-2.0/libgimp/gimpbrushselect.h:
 
-libgimp/gimpchannel.h:
+/usr/include/gimp-2.0/libgimp/gimpchannel.h:
 
-libgimp/gimpdrawable.h:
+/usr/include/gimp-2.0/libgimp/gimpdrawable.h:
 
-libgimp/gimpfontselect.h:
+/usr/include/gimp-2.0/libgimp/gimpfontselect.h:
 
-libgimp/gimpgimprc.h:
+/usr/include/gimp-2.0/libgimp/gimpgimprc.h:
 
-libgimp/gimpgradients.h:
+/usr/include/gimp-2.0/libgimp/gimpgradients.h:
 
-libgimp/gimpgradientselect.h:
+/usr/include/gimp-2.0/libgimp/gimpgradientselect.h:
 
-libgimp/gimpimage.h:
+/usr/include/gimp-2.0/libgimp/gimpimage.h:
 
-libgimp/gimplayer.h:
+/usr/include/gimp-2.0/libgimp/gimplayer.h:
 
-libgimp/gimppalette.h:
+/usr/include/gimp-2.0/libgimp/gimppalette.h:
 
-libgimp/gimppalettes.h:
+/usr/include/gimp-2.0/libgimp/gimppalettes.h:
 
-libgimp/gimppaletteselect.h:
+/usr/include/gimp-2.0/libgimp/gimppaletteselect.h:
 
-libgimp/gimppatterns.h:
+/usr/include/gimp-2.0/libgimp/gimppatterns.h:
 
-libgimp/gimppatternselect.h:
+/usr/include/gimp-2.0/libgimp/gimppatternselect.h:
 
-libgimp/gimppixbuf.h:
+/usr/include/gimp-2.0/libgimp/gimppixbuf.h:
 
-libgimp/gimppixelfetcher.h:
+/usr/include/gimp-2.0/libgimp/gimppixelfetcher.h:
 
-libgimp/gimppixelrgn.h:
+/usr/include/gimp-2.0/libgimp/gimppixelrgn.h:
 
-libgimp/gimpplugin.h:
+/usr/include/gimp-2.0/libgimp/gimpplugin.h:
 
-libgimp/gimpproceduraldb.h:
+/usr/include/gimp-2.0/libgimp/gimpproceduraldb.h:
 
-libgimp/gimpprogress.h:
+/usr/include/gimp-2.0/libgimp/gimpprogress.h:
 
-libgimp/gimpregioniterator.h:
+/usr/include/gimp-2.0/libgimp/gimpregioniterator.h:
 
-libgimp/gimpselection.h:
+/usr/include/gimp-2.0/libgimp/gimpselection.h:
 
-libgimp/gimptile.h:
+/usr/include/gimp-2.0/libgimp/gimptile.h:
 
-libgimp/gimpvectors.h:
+/usr/include/gimp-2.0/libgimp/gimpvectors.h:
 
-libgimp/gimp_pdb_headers.h:
+/usr/include/gimp-2.0/libgimp/gimp_pdb_headers.h:
 
-libgimp/gimp_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimp_pdb.h:
 
-libgimp/gimpbrush_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpbrush_pdb.h:
 
-libgimp/gimpbrushes_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpbrushes_pdb.h:
 
-libgimp/gimpbrushselect_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpbrushselect_pdb.h:
 
-libgimp/gimpbuffer_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpbuffer_pdb.h:
 
-libgimp/gimpchannel_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpchannel_pdb.h:
 
-libgimp/gimpcolor_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpcolor_pdb.h:
 
-libgimp/gimpcontext_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpcontext_pdb.h:
 
-libgimp/gimpconvert_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpconvert_pdb.h:
 
-libgimp/gimpdisplay_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpdisplay_pdb.h:
 
-libgimp/gimpdrawable_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpdrawable_pdb.h:
 
-libgimp/gimpdrawabletransform_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpdrawabletransform_pdb.h:
 
-libgimp/gimpdynamics_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpdynamics_pdb.h:
 
-libgimp/gimpedit_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpedit_pdb.h:
 
-libgimp/gimpfileops_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpfileops_pdb.h:
 
-libgimp/gimpfloatingsel_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpfloatingsel_pdb.h:
 
-libgimp/gimpfonts_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpfonts_pdb.h:
 
-libgimp/gimpfontselect_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpfontselect_pdb.h:
 
-libgimp/gimpgimprc_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpgimprc_pdb.h:
 
-libgimp/gimpgradient_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpgradient_pdb.h:
 
-libgimp/gimpgradients_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpgradients_pdb.h:
 
-libgimp/gimpgradientselect_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpgradientselect_pdb.h:
 
-libgimp/gimpgrid_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpgrid_pdb.h:
 
-libgimp/gimpguides_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpguides_pdb.h:
 
-libgimp/gimphelp_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimphelp_pdb.h:
 
-libgimp/gimpimage_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpimage_pdb.h:
 
-libgimp/gimpimageselect_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpimageselect_pdb.h:
 
-libgimp/gimpitem_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpitem_pdb.h:
 
-libgimp/gimpitemtransform_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpitemtransform_pdb.h:
 
-libgimp/gimplayer_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimplayer_pdb.h:
 
-libgimp/gimpmessage_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpmessage_pdb.h:
 
-libgimp/gimppainttools_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppainttools_pdb.h:
 
-libgimp/gimppalette_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppalette_pdb.h:
 
-libgimp/gimppalettes_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppalettes_pdb.h:
 
-libgimp/gimppaletteselect_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppaletteselect_pdb.h:
 
-libgimp/gimppaths_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppaths_pdb.h:
 
-libgimp/gimppattern_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppattern_pdb.h:
 
-libgimp/gimppatterns_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppatterns_pdb.h:
 
-libgimp/gimppatternselect_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimppatternselect_pdb.h:
 
-libgimp/gimpplugin_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpplugin_pdb.h:
 
-libgimp/gimpproceduraldb_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpproceduraldb_pdb.h:
 
-libgimp/gimpprogress_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpprogress_pdb.h:
 
-libgimp/gimpselection_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpselection_pdb.h:
 
-libgimp/gimpselectiontools_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpselectiontools_pdb.h:
 
-libgimp/gimptextlayer_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimptextlayer_pdb.h:
 
-libgimp/gimptexttool_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimptexttool_pdb.h:
 
-libgimp/gimptransformtools_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimptransformtools_pdb.h:
 
-libgimp/gimpundo_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpundo_pdb.h:
 
-libgimp/gimpunit_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpunit_pdb.h:
 
-libgimp/gimpvectors_pdb.h:
+/usr/include/gimp-2.0/libgimp/gimpvectors_pdb.h:
 
 gra.h:
 
