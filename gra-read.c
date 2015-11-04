@@ -20,8 +20,6 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "config.h"
-
 #include <errno.h>
 #include <string.h>
 
@@ -30,8 +28,6 @@
 #include <libgimp/gimp.h>
 
 #include "gra.h"
-
-#include "libgimp/stdplugins-intl.h"
 
 
 #if !defined(WIN32) || defined(__MINGW32__)
@@ -135,7 +131,7 @@ ReadColorMap (FILE     *fd,
     {
       if (!ReadOK (fd, rgb, size))
         {
-          g_message (_("Bad colormap"));
+          g_message ("Bad colormap");
           return FALSE;
         }
 
@@ -203,12 +199,12 @@ ReadGRA (const gchar  *name,
   if (!fd)
     {
       g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   _("Could not open '%s' for reading: %s"),
+                   "Could not open '%s' for reading: %s",
                    gimp_filename_to_utf8 (filename), g_strerror (errno));
       goto out;
     }
 
-  gimp_progress_init_printf (_("Opening '%s'"),
+  gimp_progress_init_printf ("Opening '%s'",
                              gimp_filename_to_utf8 (name));
 
   /* It is a File. Now is it a Bitmap? Read the shortest possible header */
@@ -219,7 +215,7 @@ ReadGRA (const gchar  *name,
      !strncmp (magick, "CP", 2)))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -229,14 +225,14 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, 12))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("'%s' is not a valid GRA file"),
+                       "'%s' is not a valid GRA file",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
       if (!ReadOK (fd, magick, 2))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("'%s' is not a valid GRA file"),
+                       "'%s' is not a valid GRA file",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -245,7 +241,7 @@ ReadGRA (const gchar  *name,
   if (!ReadOK (fd, buffer, 12))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -260,7 +256,7 @@ ReadGRA (const gchar  *name,
   if (!ReadOK (fd, buffer, 4))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -274,7 +270,7 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, 8))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
+                       "Error reading GRA file header from '%s'",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -301,7 +297,7 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, 36))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
+                       "Error reading GRA file header from '%s'",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -329,8 +325,8 @@ ReadGRA (const gchar  *name,
           if (!ReadOK (fd, buffer, 3 * sizeof (guint32)))
             {
               g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                           _("Error reading GRA file header from '%s'"),
-                           gimp_filename_to_utf8 (filename));
+                           "Error reading GRA file header from '%s'"),
+                           gimp_filename_to_utf8 (filename);
               goto out;
             }
 
@@ -347,7 +343,7 @@ ReadGRA (const gchar  *name,
         {
           /* BI_ALPHABITFIELDS, etc. */
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Unsupported compression (%lu) in GRA file from '%s'"),
+                       "Unsupported compression (%lu) in GRA file from '%s'",
                        Bitmap_Head.biCompr,
                        gimp_filename_to_utf8 (filename));
         }
@@ -358,8 +354,8 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, Bitmap_File_Head.biSize - 4))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
-                       gimp_filename_to_utf8 (filename));
+                       "Error reading GRA file header from '%s'"),
+                       gimp_filename_to_utf8 (filename);
           goto out;
         }
 
@@ -388,7 +384,7 @@ ReadGRA (const gchar  *name,
         {
 
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
+                       "Error reading GRA file header from '%s'",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -422,7 +418,7 @@ ReadGRA (const gchar  *name,
   else
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("Error reading GRA file header from '%s'"),
+                   "Error reading GRA file header from '%s'",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -442,8 +438,8 @@ ReadGRA (const gchar  *name,
       break;
     default:
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
-                   gimp_filename_to_utf8 (filename));
+                   ("'%s' is not a valid GRA file",
+                   gimp_filename_to_utf8 (filename)));
       goto out;
     }
 
@@ -463,7 +459,7 @@ ReadGRA (const gchar  *name,
   if (Bitmap_Head.biHeight == 0 || Bitmap_Head.biWidth == 0)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -474,7 +470,7 @@ ReadGRA (const gchar  *name,
       Bitmap_Head.biHeight == G_MININT32)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -482,7 +478,7 @@ ReadGRA (const gchar  *name,
   if (Bitmap_Head.biPlanes != 1)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -490,7 +486,7 @@ ReadGRA (const gchar  *name,
   if (Bitmap_Head.biClrUsed > 256)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -502,7 +498,7 @@ ReadGRA (const gchar  *name,
       ((guint64) Bitmap_Head.biWidth) > (G_MAXINT32 / ABS (Bitmap_Head.biHeight)) / 4)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -618,7 +614,7 @@ ReadImage (FILE                  *fd,
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
                    "%s",
-                   _("Unrecognized or invalid GRA compression format."));
+                   "Unrecognized or invalid GRA compression format.");
       return -1;
     }
 
@@ -660,24 +656,24 @@ ReadImage (FILE                  *fd,
       break;
 
     default:
-      g_message (_("Unsupported or invalid bitdepth."));
+      g_message ("Unsupported or invalid bitdepth.");
       return -1;
     }
 
   if ((width < 0) || (width > GIMP_MAX_IMAGE_SIZE))
     {
-      g_message (_("Unsupported or invalid image width: %d"), width);
+      g_message ("Unsupported or invalid image width: %d", width);
       return -1;
     }
 
   if ((height < 0) || (height > GIMP_MAX_IMAGE_SIZE))
     {
-      g_message (_("Unsupported or invalid image height: %d"), height);
+      g_message ("Unsupported or invalid image height: %d", height);
       return -1;
     }
 
   image = gimp_image_new (width, height, base_type);
-  layer = gimp_layer_new (image, _("Background"),
+  layer = gimp_layer_new (image, "Background",
                           width, height,
                           image_type, 100, GIMP_NORMAL_MODE);
 
@@ -812,7 +808,7 @@ ReadImage (FILE                  *fd,
               {
                 if (!ReadOK (fd, buffer, 2))
                   {
-                    g_message (_("The bitmap ends unexpectedly."));
+                    g_message ("The bitmap ends unexpectedly.");
                     break;
                   }
 
@@ -853,7 +849,7 @@ ReadImage (FILE                  *fd,
                         /* read the next byte in the record */
                         if (!ReadOK (fd, &v, 1))
                           {
-                            g_message (_("The bitmap ends unexpectedly."));
+                            g_message ("The bitmap ends unexpectedly.");
                             break;
                           }
                         total_bytes_read++;
@@ -903,7 +899,7 @@ ReadImage (FILE                  *fd,
                   {
                     if (!ReadOK (fd, buffer, 2))
                       {
-                        g_message (_("The bitmap ends unexpectedly."));
+                        g_message ("The bitmap ends unexpectedly.");
                         break;
                       }
                     xpos += (guchar) buffer[0];

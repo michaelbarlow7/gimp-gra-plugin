@@ -1,4 +1,4 @@
-gra.o: gra.c /usr/include/stdc-predef.h config.h /usr/include/stdlib.h \
+gra.o: gra.c /usr/include/stdc-predef.h /usr/include/stdlib.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
@@ -755,14 +755,9 @@ gra.o: gra.c /usr/include/stdc-predef.h config.h /usr/include/stdlib.h \
  /usr/include/gimp-2.0/libgimp/gimpgradientselectbutton.h \
  /usr/include/gimp-2.0/libgimp/gimppaletteselectbutton.h \
  /usr/include/gimp-2.0/libgimp/gimppatternselectbutton.h \
- /usr/include/gimp-2.0/libgimp/gimpzoompreview.h gra.h \
- libgimp/stdplugins-intl.h /usr/include/glib-2.0/glib/gi18n.h \
- /usr/include/libintl.h /usr/include/locale.h \
- /usr/include/x86_64-linux-gnu/bits/locale.h
+ /usr/include/gimp-2.0/libgimp/gimpzoompreview.h gra.h
 
 /usr/include/stdc-predef.h:
-
-config.h:
 
 /usr/include/stdlib.h:
 
@@ -2405,13 +2400,3 @@ config.h:
 /usr/include/gimp-2.0/libgimp/gimpzoompreview.h:
 
 gra.h:
-
-libgimp/stdplugins-intl.h:
-
-/usr/include/glib-2.0/glib/gi18n.h:
-
-/usr/include/libintl.h:
-
-/usr/include/locale.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:

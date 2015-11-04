@@ -26,8 +26,6 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "config.h"
-
 #include <errno.h>
 #include <string.h>
 
@@ -37,8 +35,6 @@
 #include <libgimp/gimpui.h>
 
 #include "gra.h"
-
-#include "libgimp/stdplugins-intl.h"
 
 typedef enum
 {
@@ -188,9 +184,9 @@ WriteGRA (const gchar  *filename,
       break;
 
     case GIMP_GRAYA_IMAGE:
-      if (interactive && !warning_dialog (_("Cannot save indexed image with "
-    					    "transparency in GRA file format."),
-                                          _("Alpha channel will be ignored.")))
+      if (interactive && !warning_dialog ("Cannot save indexed image with "
+    					    "transparency in GRA file format.",
+                                          "Alpha channel will be ignored."))
           return GIMP_PDB_CANCEL;
 
      /* fallthrough */
@@ -214,9 +210,9 @@ WriteGRA (const gchar  *filename,
       break;
 
     case GIMP_INDEXEDA_IMAGE:
-      if (interactive && !warning_dialog (_("Cannot save indexed image with "
-    			                    "transparency in GRA file format."),
-                                          _("Alpha channel will be ignored.")))
+      if (interactive && !warning_dialog ("Cannot save indexed image with "
+    			                    "transparency in GRA file format.",
+                                          "Alpha channel will be ignored."))
           return GIMP_PDB_CANCEL;
 
      /* fallthrough */
@@ -306,7 +302,7 @@ WriteGRA (const gchar  *filename,
   if (!outfile)
     {
       g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   _("Could not open '%s' for writing: %s"),
+                   "Could not open '%s' for writing: %s",
                    gimp_filename_to_utf8 (filename), g_strerror (errno));
       return GIMP_PDB_EXECUTION_ERROR;
     }
@@ -317,7 +313,7 @@ WriteGRA (const gchar  *filename,
                            0, 0, drawable->width, drawable->height);
 
   /* And let's begin the progress */
-  gimp_progress_init_printf (_("Saving '%s'"),
+  gimp_progress_init_printf ("Saving '%s'",
                              gimp_filename_to_utf8 (filename));
 
   cur_progress = 0;
@@ -861,7 +857,7 @@ save_dialog (gint channels)
   gtk_widget_show (vbox_main);
 
   /* Run-Length Encoded */
-  toggle = gtk_check_button_new_with_mnemonic (_("_Run-Length Encoded"));
+  toggle = gtk_check_button_new_with_mnemonic ("_Run-Length Encoded");
   gtk_box_pack_start (GTK_BOX (vbox_main), toggle, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle),
                                 GRASaveData.use_run_length_encoding);
@@ -874,7 +870,7 @@ save_dialog (gint channels)
                     &GRASaveData.use_run_length_encoding);
 
   /* Compatibility Options */
-  expander = gtk_expander_new_with_mnemonic (_("Co_mpatibility Options"));
+  expander = gtk_expander_new_with_mnemonic ("Co_mpatibility Options");
 
   gtk_box_pack_start (GTK_BOX (vbox_main), expander, TRUE, TRUE, 0);
   gtk_widget_show (expander);
@@ -884,13 +880,13 @@ save_dialog (gint channels)
   gtk_container_add (GTK_CONTAINER (expander), vbox2);
   gtk_widget_show (vbox2);
 
-  toggle = gtk_check_button_new_with_mnemonic (_("_Do not write color space information"));
+  toggle = gtk_check_button_new_with_mnemonic ("_Do not write color space information");
   gimp_help_set_help_data (toggle,
-                           _("Some applications can not read GRA images that "
+                           "Some applications can not read GRA images that "
                              "include color space information. GIMP writes "
                              "color space information by default. Enabling "
                              "this option will cause GIMP to not write color "
-                             "space information to the file."),
+                             "space information to the file.",
                            NULL);
   gtk_box_pack_start (GTK_BOX (vbox2), toggle, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle),
@@ -902,7 +898,7 @@ save_dialog (gint channels)
                     &GRASaveData.dont_write_color_space_data);
 
   /* Advanced Options */
-  expander = gtk_expander_new_with_mnemonic (_("_Advanced Options"));
+  expander = gtk_expander_new_with_mnemonic ("_Advanced Options");
 
   gtk_box_pack_start (GTK_BOX (vbox_main), expander, TRUE, TRUE, 0);
   gtk_widget_show (expander);
@@ -917,7 +913,7 @@ save_dialog (gint channels)
 
   group = NULL;
 
-  frame = gimp_frame_new (_("16 bits"));
+  frame = gimp_frame_new ("16 bits");
   gtk_box_pack_start (GTK_BOX (vbox2), frame, TRUE, TRUE, 0);
   gtk_widget_show (frame);
 
@@ -953,7 +949,7 @@ save_dialog (gint channels)
                     G_CALLBACK (format_callback),
                     GINT_TO_POINTER (RGB_555));
 
-  frame = gimp_frame_new (_("24 bits"));
+  frame = gimp_frame_new ("24 bits");
   gtk_box_pack_start (GTK_BOX (vbox2), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 
@@ -970,7 +966,7 @@ save_dialog (gint channels)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), TRUE);
     }
 
-  frame = gimp_frame_new (_("32 bits"));
+  frame = gimp_frame_new ("32 bits");
   gtk_box_pack_start (GTK_BOX (vbox2), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 

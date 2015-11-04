@@ -1,6 +1,5 @@
-gra-read.o: gra-read.c /usr/include/stdc-predef.h config.h \
- /usr/include/errno.h /usr/include/features.h \
- /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+gra-read.o: gra-read.c /usr/include/stdc-predef.h /usr/include/errno.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
@@ -405,14 +404,9 @@ gra-read.o: gra-read.c /usr/include/stdc-predef.h config.h \
  /usr/include/gimp-2.0/libgimp/gimptransformtools_pdb.h \
  /usr/include/gimp-2.0/libgimp/gimpundo_pdb.h \
  /usr/include/gimp-2.0/libgimp/gimpunit_pdb.h \
- /usr/include/gimp-2.0/libgimp/gimpvectors_pdb.h gra.h \
- libgimp/stdplugins-intl.h /usr/include/glib-2.0/glib/gi18n.h \
- /usr/include/libintl.h /usr/include/locale.h \
- /usr/include/x86_64-linux-gnu/bits/locale.h
+ /usr/include/gimp-2.0/libgimp/gimpvectors_pdb.h gra.h
 
 /usr/include/stdc-predef.h:
-
-config.h:
 
 /usr/include/errno.h:
 
@@ -1307,13 +1301,3 @@ config.h:
 /usr/include/gimp-2.0/libgimp/gimpvectors_pdb.h:
 
 gra.h:
-
-libgimp/stdplugins-intl.h:
-
-/usr/include/glib-2.0/glib/gi18n.h:
-
-/usr/include/libintl.h:
-
-/usr/include/locale.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:

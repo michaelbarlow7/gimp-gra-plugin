@@ -51,8 +51,6 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "config.h"
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -60,8 +58,6 @@
 #include <libgimp/gimpui.h>
 
 #include "gra.h"
-
-#include "libgimp/stdplugins-intl.h"
 
 
 const gchar *filename    = NULL;
@@ -120,7 +116,7 @@ query (void)
                           "Alexander Schulz",
                           "Alexander Schulz",
                           "1997",
-                          N_("Windows GRA image"),
+                          "Windows GRA image",
                           NULL,
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (load_args),
@@ -139,7 +135,7 @@ query (void)
                           "Alexander Schulz",
                           "Alexander Schulz",
                           "1997",
-                          N_("Windows GRA image"),
+                          "Windows GRA image",
                           "INDEXED, GRAY, RGB*",
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (save_args), 0,
@@ -165,8 +161,6 @@ run (const gchar      *name,
   GError            *error  = NULL;
 
   run_mode = param[0].data.d_int32;
-
-  INIT_I18N ();
 
   *nreturn_vals = 1;
   *return_vals  = values;
