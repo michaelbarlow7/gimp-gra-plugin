@@ -1,0 +1,14 @@
+/*.la
+/*.lo
+/.deps
+/.libs
+/Makefile
+/Makefile.in
+/_libs
+/gimpwidgetsmarshal.c
+/gimpwidgetsmarshal.h
+/makefile.mingw
+/test-eevl*
+/test-preview-area
+/*.trs
+/*.log

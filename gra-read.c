@@ -30,6 +30,7 @@
 #include <libgimp/gimp.h>
 
 #include "gra.h"
+#include <gegl.h>
 
 #include "libgimp/stdplugins-intl.h"
 

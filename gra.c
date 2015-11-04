@@ -127,7 +127,7 @@ query (void)
                           G_N_ELEMENTS (load_return_vals),
                           load_args, load_return_vals);
 
-  gimp_register_file_handler_mime (LOAD_PROC, "image/bmp");
+  gimp_register_file_handler_mime (LOAD_PROC, "image/gra");
   gimp_register_magic_load_handler (LOAD_PROC,
                                     "gra",
                                     "",
@@ -145,7 +145,7 @@ query (void)
                           G_N_ELEMENTS (save_args), 0,
                           save_args, NULL);
 
-  gimp_register_file_handler_mime (SAVE_PROC, "image/bmp");
+  gimp_register_file_handler_mime (SAVE_PROC, "image/gra");
   gimp_register_save_handler (SAVE_PROC, "gra", "");
 }
 

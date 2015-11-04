@@ -27,6 +27,7 @@
  */
 
 #include "config.h"
+#include <gegl.h>
 
 #include <errno.h>
 #include <string.h>
