@@ -20,8 +20,6 @@
  * ----------------------------------------------------------------------------
  */
 
-//#include "config.h"
-
 #include <errno.h>
 #include <string.h>
 
@@ -31,8 +29,6 @@
 
 #include "gra.h"
 #include <gegl.h>
-
-//#include "libgimp/stdplugins-intl.h"
 
 
 #if !defined(WIN32) || defined(__MINGW32__)
@@ -136,7 +132,7 @@ ReadColorMap (FILE     *fd,
     {
       if (!ReadOK (fd, rgb, size))
         {
-          g_message (_("Bad colormap"));
+          g_message ("Bad colormap");
           return FALSE;
         }
 
@@ -198,19 +194,19 @@ ReadGRA (const gchar  *name,
   gchar     magick[2];
   Bitmap_Channel masks[4];
 
-  gimp_progress_init_printf (_("Opening '%s'"),
-                             gimp_filename_to_utf8 (name));
-
   filename = name;
   fd = g_fopen (filename, "rb");
 
   if (!fd)
     {
       g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   _("Could not open '%s' for reading: %s"),
+                   "Could not open '%s' for reading: %s",
                    gimp_filename_to_utf8 (filename), g_strerror (errno));
       goto out;
     }
+
+  gimp_progress_init_printf ("Opening '%s'",
+                             gimp_filename_to_utf8 (name));
 
   /* It is a File. Now is it a Bitmap? Read the shortest possible header */
 
@@ -220,7 +216,7 @@ ReadGRA (const gchar  *name,
      !strncmp (magick, "CP", 2)))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -230,14 +226,14 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, 12))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("'%s' is not a valid GRA file"),
+                       "'%s' is not a valid GRA file",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
       if (!ReadOK (fd, magick, 2))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("'%s' is not a valid GRA file"),
+                       "'%s' is not a valid GRA file",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -246,7 +242,7 @@ ReadGRA (const gchar  *name,
   if (!ReadOK (fd, buffer, 12))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -261,7 +257,7 @@ ReadGRA (const gchar  *name,
   if (!ReadOK (fd, buffer, 4))
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -275,7 +271,7 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, 8))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
+                       "Error reading GRA file header from '%s'",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -302,7 +298,7 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, 36))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
+                       "Error reading GRA file header from '%s'",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -327,15 +323,11 @@ ReadGRA (const gchar  *name,
 
       if (Bitmap_Head.biCompr == BI_BITFIELDS)
         {
-#ifdef DEBUG
-          g_print ("Got BI_BITFIELDS compression\n");
-#endif
-
           if (!ReadOK (fd, buffer, 3 * sizeof (guint32)))
             {
               g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                           _("Error reading GRA file header from '%s'"),
-                           gimp_filename_to_utf8 (filename));
+                           "Error reading GRA file header from '%s'"),
+                           gimp_filename_to_utf8 (filename);
               goto out;
             }
 
@@ -346,24 +338,16 @@ ReadGRA (const gchar  *name,
         }
       else if (Bitmap_Head.biCompr == BI_RGB)
         {
-#ifdef DEBUG
-          g_print ("Got BI_RGB compression\n");
-#endif
-
           setMasksDefault (Bitmap_Head.biBitCnt, masks);
         }
       else if ((Bitmap_Head.biCompr != BI_RLE4) && (Bitmap_Head.biCompr != BI_RLE8))
         {
           /* BI_ALPHABITFIELDS, etc. */
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Unsupported compression (%lu) in GRA file from '%s'"),
+                       "Unsupported compression (%lu) in GRA file from '%s'",
                        Bitmap_Head.biCompr,
                        gimp_filename_to_utf8 (filename));
         }
-
-#ifdef DEBUG
-      g_print ("Got BI_RLE4 or BI_RLE8 compression\n");
-#endif
     }
   else if (Bitmap_File_Head.biSize >= 56 && Bitmap_File_Head.biSize <= 64)
     /* enhanced Windows format with bit masks */
@@ -371,8 +355,8 @@ ReadGRA (const gchar  *name,
       if (!ReadOK (fd, buffer, Bitmap_File_Head.biSize - 4))
         {
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
-                       gimp_filename_to_utf8 (filename));
+                       "Error reading GRA file header from '%s'"),
+                       gimp_filename_to_utf8 (filename);
           goto out;
         }
 
@@ -401,7 +385,7 @@ ReadGRA (const gchar  *name,
         {
 
           g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                       _("Error reading GRA file header from '%s'"),
+                       "Error reading GRA file header from '%s'",
                        gimp_filename_to_utf8 (filename));
           goto out;
         }
@@ -425,25 +409,17 @@ ReadGRA (const gchar  *name,
 
       if (Bitmap_Head.biCompr == BI_BITFIELDS)
         {
-#ifdef DEBUG
-          g_print ("Got BI_BITFIELDS compression\n");
-#endif
-
           ReadChannelMasks (&Bitmap_Head.masks[0], masks, 4);
         }
       else if (Bitmap_Head.biCompr == BI_RGB)
         {
-#ifdef DEBUG
-          g_print ("Got BI_RGB compression\n");
-#endif
-
           setMasksDefault (Bitmap_Head.biBitCnt, masks);
         }
     }
   else
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("Error reading GRA file header from '%s'"),
+                   "Error reading GRA file header from '%s'",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -463,8 +439,8 @@ ReadGRA (const gchar  *name,
       break;
     default:
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
-                   gimp_filename_to_utf8 (filename));
+                   ("'%s' is not a valid GRA file",
+                   gimp_filename_to_utf8 (filename)));
       goto out;
     }
 
@@ -484,7 +460,7 @@ ReadGRA (const gchar  *name,
   if (Bitmap_Head.biHeight == 0 || Bitmap_Head.biWidth == 0)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -495,7 +471,7 @@ ReadGRA (const gchar  *name,
       Bitmap_Head.biHeight == G_MININT32)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -503,15 +479,15 @@ ReadGRA (const gchar  *name,
   if (Bitmap_Head.biPlanes != 1)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
 
-  if (Bitmap_Head.biClrUsed > 256 && Bitmap_Head.biBitCnt <= 8)
+  if (Bitmap_Head.biClrUsed > 256)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -523,7 +499,7 @@ ReadGRA (const gchar  *name,
       ((guint64) Bitmap_Head.biWidth) > (G_MAXINT32 / ABS (Bitmap_Head.biHeight)) / 4)
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
-                   _("'%s' is not a valid GRA file"),
+                   "'%s' is not a valid GRA file",
                    gimp_filename_to_utf8 (filename));
       goto out;
     }
@@ -535,8 +511,8 @@ ReadGRA (const gchar  *name,
   rowbytes= ((Bitmap_Head.biWidth * Bitmap_Head.biBitCnt - 1) / 32) * 4 + 4;
 
 #ifdef DEBUG
-  printf ("\nSize: %lu, Colors: %lu, Bits: %hu, Width: %ld, Height: %ld, "
-          "Comp: %lu, Zeile: %d\n",
+  printf ("\nSize: %u, Colors: %u, Bits: %u, Width: %u, Height: %u, "
+          "Comp: %u, Zeile: %u\n",
           Bitmap_File_Head.bfSize,
           Bitmap_Head.biClrUsed,
           Bitmap_Head.biBitCnt,
@@ -615,12 +591,13 @@ ReadImage (FILE                  *fd,
            GError               **error)
 {
   guchar             v, n;
+  GimpPixelRgn       pixel_rgn;
   gint               xpos = 0;
   gint               ypos = 0;
   gint32             image;
   gint32             layer;
-  GeglBuffer        *buffer;
-  guchar            *dest, *temp, *row_buf;
+  GimpDrawable      *drawable;
+  guchar            *dest, *temp, *buffer;
   guchar             gimp_cmap[768];
   gushort            rgb;
   glong              rowstride, channels;
@@ -638,7 +615,7 @@ ReadImage (FILE                  *fd,
     {
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
                    "%s",
-                   _("Unrecognized or invalid GRA compression format."));
+                   "Unrecognized or invalid GRA compression format.");
       return -1;
     }
 
@@ -651,15 +628,15 @@ ReadImage (FILE                  *fd,
     case 16:
       base_type = GIMP_RGB;
       if (masks[3].mask != 0)
-        {
-          image_type = GIMP_RGBA_IMAGE;
-          channels = 4;
-        }
+      {
+         image_type = GIMP_RGBA_IMAGE;
+         channels = 4;
+      }
       else
-        {
-          image_type = GIMP_RGB_IMAGE;
-          channels = 3;
-        }
+      {
+         image_type = GIMP_RGB_IMAGE;
+         channels = 3;
+      }
       break;
 
     case 8:
@@ -680,37 +657,38 @@ ReadImage (FILE                  *fd,
       break;
 
     default:
-      g_message (_("Unsupported or invalid bitdepth."));
+      g_message ("Unsupported or invalid bitdepth.");
       return -1;
     }
 
   if ((width < 0) || (width > GIMP_MAX_IMAGE_SIZE))
     {
-      g_message (_("Unsupported or invalid image width: %d"), width);
+      g_message ("Unsupported or invalid image width: %d", width);
       return -1;
     }
 
   if ((height < 0) || (height > GIMP_MAX_IMAGE_SIZE))
     {
-      g_message (_("Unsupported or invalid image height: %d"), height);
+      g_message ("Unsupported or invalid image height: %d", height);
       return -1;
     }
 
   image = gimp_image_new (width, height, base_type);
-  layer = gimp_layer_new (image, _("Background"),
+  layer = gimp_layer_new (image, "Background",
                           width, height,
                           image_type, 100, GIMP_NORMAL_MODE);
 
   gimp_image_set_filename (image, filename);
 
   gimp_image_insert_layer (image, layer, -1, 0);
+  drawable = gimp_drawable_get (layer);
 
   /* use g_malloc0 to initialize the dest buffer so that unspecified
      pixels in RLE bitmaps show up as the zeroth element in the palette.
   */
-  dest      = g_malloc0 (width * height * channels);
-  row_buf   = g_malloc (rowbytes);
-  rowstride = width * channels;
+  dest      = g_malloc0 (drawable->width * drawable->height * channels);
+  buffer    = g_malloc (rowbytes);
+  rowstride = drawable->width * channels;
 
   ypos = height - 1;  /* Bitmaps begin in the lower left corner */
   cur_progress = 0;
@@ -720,17 +698,17 @@ ReadImage (FILE                  *fd,
     {
     case 32:
       {
-        while (ReadOK (fd, row_buf, rowbytes))
+        while (ReadOK (fd, buffer, rowbytes))
           {
             temp = dest + (ypos * rowstride);
             for (xpos= 0; xpos < width; ++xpos)
               {
-                px32 = ToL(&row_buf[xpos*4]);
-                *(temp++) = ((px32 & masks[0].mask) >> masks[0].shiftin) * 255.0 / masks[0].max_value + 0.5;
-                *(temp++) = ((px32 & masks[1].mask) >> masks[1].shiftin) * 255.0 / masks[1].max_value + 0.5;
-                *(temp++) = ((px32 & masks[2].mask) >> masks[2].shiftin) * 255.0 / masks[2].max_value + 0.5;
+                px32 = ToL(&buffer[xpos*4]);
+                *(temp++)= (guchar)((px32 & masks[0].mask) >> masks[0].shiftin);
+                *(temp++)= (guchar)((px32 & masks[1].mask) >> masks[1].shiftin);
+                *(temp++)= (guchar)((px32 & masks[2].mask) >> masks[2].shiftin);
                 if (channels > 3)
-                  *(temp++) = ((px32 & masks[3].mask) >> masks[3].shiftin) * 255.0 / masks[3].max_value + 0.5;
+                  *(temp++)= (guchar)((px32 & masks[3].mask) >> masks[3].shiftin);
               }
             if (ypos == 0)
               break;
@@ -745,14 +723,14 @@ ReadImage (FILE                  *fd,
 
     case 24:
       {
-        while (ReadOK (fd, row_buf, rowbytes))
+        while (ReadOK (fd, buffer, rowbytes))
           {
             temp = dest + (ypos * rowstride);
             for (xpos= 0; xpos < width; ++xpos)
               {
-                *(temp++) = row_buf[xpos * 3 + 2];
-                *(temp++) = row_buf[xpos * 3 + 1];
-                *(temp++) = row_buf[xpos * 3];
+                *(temp++)= buffer[xpos * 3 + 2];
+                *(temp++)= buffer[xpos * 3 + 1];
+                *(temp++)= buffer[xpos * 3];
               }
             if (ypos == 0)
               break;
@@ -767,17 +745,17 @@ ReadImage (FILE                  *fd,
 
     case 16:
       {
-        while (ReadOK (fd, row_buf, rowbytes))
+        while (ReadOK (fd, buffer, rowbytes))
           {
             temp = dest + (ypos * rowstride);
             for (xpos= 0; xpos < width; ++xpos)
               {
-                rgb= ToS(&row_buf[xpos * 2]);
-                *(temp++) = ((rgb & masks[0].mask) >> masks[0].shiftin) * 255.0 / masks[0].max_value + 0.5;
-                *(temp++) = ((rgb & masks[1].mask) >> masks[1].shiftin) * 255.0 / masks[1].max_value + 0.5;
-                *(temp++) = ((rgb & masks[2].mask) >> masks[2].shiftin) * 255.0 / masks[2].max_value + 0.5;
+                rgb= ToS(&buffer[xpos * 2]);
+                *(temp++) = (guchar)(((rgb & masks[0].mask) >> masks[0].shiftin) * 255.0 / masks[0].max_value + 0.5);
+                *(temp++) = (guchar)(((rgb & masks[1].mask) >> masks[1].shiftin) * 255.0 / masks[1].max_value + 0.5);
+                *(temp++) = (guchar)(((rgb & masks[2].mask) >> masks[2].shiftin) * 255.0 / masks[2].max_value + 0.5);
                 if (channels > 3)
-                  *(temp++) = ((rgb & masks[3].mask) >> masks[3].shiftin) * 255.0 / masks[3].max_value + 0.5;
+                  *(temp++) = (guchar)(((rgb & masks[3].mask) >> masks[3].shiftin) * 255.0 / masks[3].max_value + 0.5);
               }
             if (ypos == 0)
               break;
@@ -808,7 +786,7 @@ ReadImage (FILE                  *fd,
                   }
                 if (xpos == width)
                   {
-                    fread (row_buf, rowbytes - 1 - (width * bpp - 1) / 8, 1, fd);
+                    fread(buffer, rowbytes - 1 - (width * bpp - 1) / 8, 1, fd);
                     if (ypos == 0)
                       break;
                     ypos--;
@@ -829,21 +807,21 @@ ReadImage (FILE                  *fd,
             /* compressed image (either RLE8 or RLE4) */
             while (ypos >= 0 && xpos <= width)
               {
-                if (!ReadOK (fd, row_buf, 2))
+                if (!ReadOK (fd, buffer, 2))
                   {
-                    g_message (_("The bitmap ends unexpectedly."));
+                    g_message ("The bitmap ends unexpectedly.");
                     break;
                   }
 
-                if (row_buf[0] != 0)
+                if ((guchar) buffer[0] != 0)
                   /* Count + Color - record */
                   {
                     /* encoded mode run -
-                         row_buf[0] == run_length
-                         row_buf[1] == pixel data
+                         buffer[0] == run_length
+                         buffer[1] == pixel data
                     */
                     for (j = 0;
-                         ((guchar) j < row_buf[0]) && (xpos < width);)
+                         ((guchar) j < (guchar) buffer[0]) && (xpos < width);)
                       {
 #ifdef DEBUG2
                         printf("%u %u | ",xpos,width);
@@ -851,28 +829,28 @@ ReadImage (FILE                  *fd,
                         for (i = 1;
                              ((i <= (8 / bpp)) &&
                               (xpos < width) &&
-                              ((guchar) j < row_buf[0]));
+                              ((guchar) j < (unsigned char) buffer[0]));
                              i++, xpos++, j++)
                           {
                             temp = dest + (ypos * rowstride) + (xpos * channels);
-                            *temp = (row_buf[1] &
+                            *temp = (buffer[1] &
                                      (((1<<bpp)-1) << (8 - (i * bpp)))) >> (8 - (i * bpp));
                             if (grey)
                               *temp = cmap[*temp][0];
                           }
                       }
                   }
-                if ((row_buf[0] == 0) && (row_buf[1] > 2))
+                if (((guchar) buffer[0] == 0) && ((guchar) buffer[1] > 2))
                   /* uncompressed record */
                   {
-                    n = row_buf[1];
+                    n = buffer[1];
                     total_bytes_read = 0;
                     for (j = 0; j < n; j += (8 / bpp))
                       {
                         /* read the next byte in the record */
                         if (!ReadOK (fd, &v, 1))
                           {
-                            g_message (_("The bitmap ends unexpectedly."));
+                            g_message ("The bitmap ends unexpectedly.");
                             break;
                           }
                         total_bytes_read++;
@@ -901,7 +879,7 @@ ReadImage (FILE                  *fd,
                     if (total_bytes_read % 2)
                       fread(&v, 1, 1, fd);
                   }
-                if ((row_buf[0] == 0) && (row_buf[1] == 0))
+                if (((guchar) buffer[0] == 0) && ((guchar) buffer[1]==0))
                   /* Line end */
                   {
                     ypos--;
@@ -912,21 +890,21 @@ ReadImage (FILE                  *fd,
                       gimp_progress_update ((gdouble) cur_progress /
                                             (gdouble)  max_progress);
                   }
-                if ((row_buf[0] == 0) && (row_buf[1] == 1))
+                if (((guchar) buffer[0]==0) && ((guchar) buffer[1]==1))
                   /* Bitmap end */
                   {
                     break;
                   }
-                if ((row_buf[0] == 0) && (row_buf[1] == 2))
+                if (((guchar) buffer[0]==0) && ((guchar) buffer[1]==2))
                   /* Deltarecord */
                   {
-                    if (!ReadOK (fd, row_buf, 2))
+                    if (!ReadOK (fd, buffer, 2))
                       {
-                        g_message (_("The bitmap ends unexpectedly."));
+                        g_message ("The bitmap ends unexpectedly.");
                         break;
                       }
-                    xpos += row_buf[0];
-                    ypos -= row_buf[1];
+                    xpos += (guchar) buffer[0];
+                    ypos -= (guchar) buffer[1];
                   }
               }
             break;
@@ -947,19 +925,19 @@ ReadImage (FILE                  *fd,
         gimp_cmap[j++] = cmap[i][2];
       }
 
-  buffer = gimp_drawable_get_buffer (layer);
+  gimp_progress_update (1.0);
 
-  gegl_buffer_set (buffer, GEGL_RECTANGLE (0, 0, width, height), 0,
-                   NULL, dest, GEGL_AUTO_ROWSTRIDE);
-
-  g_object_unref (buffer);
-
-  g_free (dest);
+  gimp_pixel_rgn_init (&pixel_rgn, drawable,
+                       0, 0, drawable->width, drawable->height, TRUE, FALSE);
+  gimp_pixel_rgn_set_rect (&pixel_rgn, dest,
+                           0, 0, drawable->width, drawable->height);
 
   if ((!grey) && (bpp<= 8))
     gimp_image_set_colormap (image, gimp_cmap, ncols);
 
-  gimp_progress_update (1.0);
+  gimp_drawable_flush (drawable);
+  gimp_drawable_detach (drawable);
+  g_free (dest);
 
   return image;
 }

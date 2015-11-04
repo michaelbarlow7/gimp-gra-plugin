@@ -51,8 +51,6 @@
  * ----------------------------------------------------------------------------
  */
 
-//#include "config.h"
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -60,9 +58,6 @@
 #include <libgimp/gimpui.h>
 
 #include "gra.h"
-
-//#include "<libgimp/stdplugins-intl.h>"
-#include <gegl.h>
 
 const gchar *filename    = NULL;
 gboolean     interactive = FALSE;
@@ -115,37 +110,37 @@ query (void)
   };
 
   gimp_install_procedure (LOAD_PROC,
-                          "Loads files of GRA file format",
-                          "Loads files of GRA file format",
+                          "Loads files of Windows GRA file format",
+                          "Loads files of Windows GRA file format",
                           "Alexander Schulz",
                           "Alexander Schulz",
                           "1997",
-                          N_("GRA image"),
+                          "Windows GRA image",
                           NULL,
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (load_args),
                           G_N_ELEMENTS (load_return_vals),
                           load_args, load_return_vals);
 
-  gimp_register_file_handler_mime (LOAD_PROC, "image/bmp");
+  gimp_register_file_handler_mime (LOAD_PROC, "image/gra");
   gimp_register_magic_load_handler (LOAD_PROC,
                                     "gra",
                                     "",
                                     "0,string,BM");
 
   gimp_install_procedure (SAVE_PROC,
-                          "Saves files in GRA file format",
-                          "Saves files in GRA file format",
-                          "Michael Barlow",
-                          "Michael Barlow",
-                          "2015",
-                          N_("GRA image"),
+                          "Saves files in Windows GRA file format",
+                          "Saves files in Windows GRA file format",
+                          "Alexander Schulz",
+                          "Alexander Schulz",
+                          "1997",
+                          "Windows GRA image",
                           "INDEXED, GRAY, RGB*",
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (save_args), 0,
                           save_args, NULL);
 
-  gimp_register_file_handler_mime (SAVE_PROC, "image/bmp");
+  gimp_register_file_handler_mime (SAVE_PROC, "image/gra");
   gimp_register_save_handler (SAVE_PROC, "gra", "");
 }
 
@@ -164,14 +159,10 @@ run (const gchar      *name,
   GimpExportReturn   export = GIMP_EXPORT_CANCEL;
   GError            *error  = NULL;
 
-  INIT_I18N ();
-  gegl_init (NULL, NULL);
-
   run_mode = param[0].data.d_int32;
 
   *nreturn_vals = 1;
   *return_vals  = values;
-
   values[0].type          = GIMP_PDB_STATUS;
   values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
 
