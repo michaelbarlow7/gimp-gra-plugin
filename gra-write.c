@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "config.h"
+//#include "config.h"
 
 #include <errno.h>
 #include <string.h>
@@ -37,8 +37,9 @@
 #include <libgimp/gimpui.h>
 
 #include "gra.h"
+#include <gegl.h>
 
-#include "libgimp/stdplugins-intl.h"
+//#include "libgimp/stdplugins-intl.h"
 
 typedef enum
 {

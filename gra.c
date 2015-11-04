@@ -51,7 +51,7 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "config.h"
+//#include "config.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -61,8 +61,8 @@
 
 #include "gra.h"
 
-#include "libgimp/stdplugins-intl.h"
-
+//#include "<libgimp/stdplugins-intl.h>"
+#include <gegl.h>
 
 const gchar *filename    = NULL;
 gboolean     interactive = FALSE;

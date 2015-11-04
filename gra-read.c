@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "config.h"
+//#include "config.h"
 
 #include <errno.h>
 #include <string.h>
@@ -30,8 +30,9 @@
 #include <libgimp/gimp.h>
 
 #include "gra.h"
+#include <gegl.h>
 
-#include "libgimp/stdplugins-intl.h"
+//#include "libgimp/stdplugins-intl.h"
 
 
 #if !defined(WIN32) || defined(__MINGW32__)
