@@ -13,12 +13,6 @@
 /* Define to 1 if you are compiling for amd64. */
 #define ARCH_X86_64 1
 
-/* Define to 1 if SSE2 intrinsics are available. */
-#define COMPILE_SSE2_INTRINISICS 1
-
-/* Define to 1 if SSE4.1 intrinsics are available. */
-#define COMPILE_SSE4_1_INTRINISICS 1
-
 /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
    systems. This function is required for `alloca.c' support on those systems.
    */
@@ -36,8 +30,14 @@
 /* The prefix for our gettext translation domains. */
 #define GETTEXT_PACKAGE "gimp20"
 
+/* Define to 1 for RLE GIF compression */
+/* #undef GIF_RLE */
+
+/* Define to 1 for no GIF compression */
+/* #undef GIF_UN */
+
 /* Define to 1 if this is an unstable version of GIMP */
-#define GIMP_UNSTABLE 1
+/* #undef GIMP_UNSTABLE */
 
 /* Define to 1 if you have `alloca', as a function or macro. */
 #define HAVE_ALLOCA 1
@@ -60,6 +60,9 @@
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #define HAVE_BIND_TEXTDOMAIN_CODESET 1
+
+/* Define to 1 if D-Bus GLib bindings are available */
+/* #undef HAVE_DBUS_GLIB */
 
 /* Define to 1 if you have the `dcgettext' function. */
 #define HAVE_DCGETTEXT 1
@@ -109,6 +112,15 @@
 /* Define to 1 if the iso-codes package is available */
 #define HAVE_ISO_CODES 1
 
+/* Define to 1 if lcms is available */
+#define HAVE_LCMS 1
+
+/* Define to 1 if lcms1 is available */
+/* #undef HAVE_LCMS1 */
+
+/* Define to 1 if lcms2 is available */
+#define HAVE_LCMS2 1
+
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #define HAVE_LC_MESSAGES 1
 
@@ -118,14 +130,11 @@
 /* Define to 1 if you have the `execinfo' library (-lexecinfo). */
 /* #undef HAVE_LIBEXECINFO */
 
+/* Define to 1 if libexif is available */
+/* #undef HAVE_LIBEXIF */
+
 /* Define to 1 if libgudev is available */
 /* #undef HAVE_LIBGUDEV */
-
-/* Define to 1 if you have the `jpeg' library (-ljpeg). */
-#define HAVE_LIBJPEG 1
-
-/* Define to 1 if libmypaint-gegl is available */
-/* #undef HAVE_LIBMYPAINT */
 
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 /* #undef HAVE_LIBNSL */
@@ -199,9 +208,6 @@
 /* Define to 1 if you have the `vprintf' function. */
 #define HAVE_VPRINTF 1
 
-/* Define to 1 if webkit is available */
-/* #undef HAVE_WEBKIT */
-
 /* Define to 1 if you have the <X11/extensions/shape.h> header file. */
 #define HAVE_X11_EXTENSIONS_SHAPE_H 1
 
@@ -234,7 +240,7 @@
 #define PACKAGE_NAME "GIMP"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "GIMP 2.9.1"
+#define PACKAGE_STRING "GIMP 2.8.10"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gimp"
@@ -243,7 +249,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.9.1"
+#define PACKAGE_VERSION "2.8.10"
 
 /* define to 1 if compiling for Mac OS X */
 /* #undef PLATFORM_OSX */
