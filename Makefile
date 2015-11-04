@@ -4,7 +4,7 @@ SYSTEM_INSTALL_DIR = $(shell gimptool-2.0 --dry-run --install-admin-bin ./bin/bi
 USER_INSTALL_DIR = $(shell gimptool-2.0 --dry-run --install-bin ./bin/bimp | sed 's/cp \S* \(\S*\)/\1/')
 
 make: 
-	gcc -pthread -I$(GIMPCARGS) -DGTK_DISABLE_DEPRECATED -g -O2 -Wall -Wdeclaration-after-statement -Wmissing-prototypes -Werror=missing-prototypes -Wstrict-prototypes -Wmissing-declarations -Winit-self -Wpointer-arith -Wold-style-definition -Wmissing-format-attribute -Wformat-security -Wlogical-op -Wtype-limits -fno-common -fdiagnostics-show-option -Wreturn-type -MD -MP -MF .deps/gra.Tpo *.c -o file-gra $(GIMPLIBS)
+	gcc -pthread -I$(GIMPCARGS) -DGTK_DISABLE_DEPRECATED -g -O2 -Wall -Wdeclaration-after-statement -Wmissing-prototypes -Werror=missing-prototypes -Wstrict-prototypes -Wmissing-declarations -Winit-self -Wpointer-arith -Wold-style-definition -Wmissing-format-attribute -Wformat-security -Wlogical-op -Wtype-limits -fno-common -fdiagnostics-show-option -Wreturn-type *.c -o file-gra $(GIMPLIBS)
 	
 install: 
 	gimptool-2.0 --install-bin file-gra
