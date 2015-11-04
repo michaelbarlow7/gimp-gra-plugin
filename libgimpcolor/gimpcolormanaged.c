@@ -21,13 +21,11 @@
 
 #include "config.h"
 
-#include <gio/gio.h>
-#include <gegl.h>
+#include <glib-object.h>
 
 #include "gimpcolortypes.h"
 
 #include "gimpcolormanaged.h"
-#include "gimpcolorprofile.h"
 
 
 /**
@@ -93,9 +91,8 @@ gimp_color_managed_base_init (GimpColorManagedInterface *iface)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
-      iface->get_icc_profile   = NULL;
-      iface->get_color_profile = NULL;
-      iface->profile_changed   = NULL;
+      iface->get_icc_profile = NULL;
+      iface->profile_changed = NULL;
 
       initialized = TRUE;
     }
@@ -109,7 +106,7 @@ gimp_color_managed_base_init (GimpColorManagedInterface *iface)
  * Return value: A pointer to a blob of data that represents an ICC
  *               color profile.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 const guint8 *
 gimp_color_managed_get_icc_profile (GimpColorManaged *managed,
@@ -131,38 +128,12 @@ gimp_color_managed_get_icc_profile (GimpColorManaged *managed,
 }
 
 /**
- * gimp_color_managed_get_color_profile:
- * @managed: an object the implements the #GimpColorManaged interface
- *
- * This function always returns a #GimpColorProfile and falls back to
- * gimp_color_profile_new_srgb() if the method is not implemented.
- *
- * Return value: The @managed's #GimpColorProfile.
- *
- * Since: 2.10
- **/
-GimpColorProfile *
-gimp_color_managed_get_color_profile (GimpColorManaged *managed)
-{
-  GimpColorManagedInterface *iface;
-
-  g_return_val_if_fail (GIMP_IS_COLOR_MANAGED (managed), NULL);
-
-  iface = GIMP_COLOR_MANAGED_GET_INTERFACE (managed);
-
-  if (iface->get_color_profile)
-    return iface->get_color_profile (managed);
-
-  return NULL;
-}
-
-/**
  * gimp_color_managed_profile_changed:
  * @managed: an object the implements the #GimpColorManaged interface
  *
  * Emits the "profile-changed" signal.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_color_managed_profile_changed (GimpColorManaged *managed)

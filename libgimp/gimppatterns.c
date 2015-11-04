@@ -23,6 +23,8 @@
 #include <string.h>
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_PATTERNS_H__
 #include "gimppatterns.h"
 
 /**

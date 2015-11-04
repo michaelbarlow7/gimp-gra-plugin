@@ -90,7 +90,6 @@
 #  define STRICT
 #  define _WIN32_WINNT 0x0601
 #  include <windows.h>
-#  include <tlhelp32.h>
 #  undef RGB
 #  define USE_WIN32_SHM 1
 #endif
@@ -102,6 +101,7 @@
 #include "libgimpbase/gimpprotocol.h"
 #include "libgimpbase/gimpwire.h"
 
+#undef GIMP_DISABLE_DEPRECATED
 #include "gimp.h"
 #include "gimpunitcache.h"
 
@@ -119,7 +119,7 @@
  **/
 
 
-#define TILE_MAP_SIZE (_tile_width * _tile_height * 32)
+#define TILE_MAP_SIZE (_tile_width * _tile_height * 4)
 
 #define ERRMSG_SHM_FAILED "Could not attach to gimp shared memory segment"
 
@@ -261,40 +261,6 @@ gimp_main (const GimpPlugInInfo *info,
     if (p_SetDllDirectoryA)
       (*p_SetDllDirectoryA) ("");
   }
-
-  /* On Windows, set DLL search path to $INSTALLDIR/bin so that GEGL
-     file operations can find their respective file library DLLs (such
-     as jasper, etc.) without needing to set external PATH. */
-  {
-    const gchar *install_dir;
-    gchar       *bin_dir;
-    LPWSTR       w_bin_dir;
-    int          n;
-
-    w_bin_dir = NULL;
-    install_dir = gimp_installation_directory ();
-    bin_dir = g_build_filename (install_dir, "bin", NULL);
-
-    n = MultiByteToWideChar (CP_UTF8, MB_ERR_INVALID_CHARS,
-                             bin_dir, -1, NULL, 0);
-    if (n == 0)
-      goto out;
-
-    w_bin_dir = g_malloc_n (n + 1, sizeof (wchar_t));
-    n = MultiByteToWideChar (CP_UTF8, MB_ERR_INVALID_CHARS,
-                             bin_dir, -1,
-                             w_bin_dir, (n + 1) * sizeof (wchar_t));
-    if (n == 0)
-      goto out;
-
-    SetDllDirectoryW (w_bin_dir);
-
-  out:
-    if (w_bin_dir)
-      g_free (w_bin_dir);
-    g_free (bin_dir);
-  }
-
 #ifndef _WIN64
   {
     typedef BOOL (WINAPI *t_SetProcessDEPPolicy) (DWORD dwFlags);
@@ -306,17 +272,6 @@ gimp_main (const GimpPlugInInfo *info,
       (*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE|PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
   }
 #endif
-
-  /* Group all our windows together on the taskbar */
-  {
-    typedef HRESULT (WINAPI *t_SetCurrentProcessExplicitAppUserModelID) (PCWSTR lpPathName);
-    t_SetCurrentProcessExplicitAppUserModelID p_SetCurrentProcessExplicitAppUserModelID;
-
-    p_SetCurrentProcessExplicitAppUserModelID = GetProcAddress (GetModuleHandle ("shell32.dll"),
-                                                                "SetCurrentProcessExplicitAppUserModelID");
-    if (p_SetCurrentProcessExplicitAppUserModelID)
-      (*p_SetCurrentProcessExplicitAppUserModelID) (L"gimp.GimpApplication");
-  }
 
   /* Check for exe file name with spaces in the path having been split up
    * by buggy NT C runtime, or something. I don't know why this happens
@@ -446,13 +401,8 @@ gimp_main (const GimpPlugInInfo *info,
   gimp_signal_private (SIGCHLD, SIG_DFL, SA_RESTART);
 #endif
 
-#ifdef G_OS_WIN32
-  _readchannel  = g_io_channel_win32_new_fd (atoi (argv[2]));
-  _writechannel = g_io_channel_win32_new_fd (atoi (argv[3]));
-#else
   _readchannel  = g_io_channel_unix_new (atoi (argv[2]));
   _writechannel = g_io_channel_unix_new (atoi (argv[3]));
-#endif
 
   g_io_channel_set_encoding (_readchannel, NULL, NULL);
   g_io_channel_set_encoding (_writechannel, NULL, NULL);
@@ -468,6 +418,7 @@ gimp_main (const GimpPlugInInfo *info,
   gimp_wire_set_writer (gimp_write);
   gimp_wire_set_flusher (gimp_flush);
 
+  g_type_init ();
   gimp_enums_init ();
 
   /*  initialize units  */
@@ -502,31 +453,15 @@ gimp_main (const GimpPlugInInfo *info,
 
 
   /* set handler both for the "LibGimp" and "" domains */
-  {
-    const gchar * const log_domains[] =
-    {
-      "LibGimp",
-      "LibGimpBase",
-      "LibGimpColor",
-      "LibGimpConfig",
-      "LibGimpMath",
-      "LibGimpModule",
-      "LibGimpThumb",
-      "LibGimpWidgets"
-    };
-    gint i;
 
-    for (i = 0; i < G_N_ELEMENTS (log_domains); i++)
-      g_log_set_handler (log_domains[i],
-                         G_LOG_LEVEL_MESSAGE,
-                         gimp_message_func,
-                         NULL);
-
-    g_log_set_handler (NULL,
-                       G_LOG_LEVEL_MESSAGE,
-                       gimp_message_func,
-                       NULL);
-  }
+  g_log_set_handler (G_LOG_DOMAIN,
+                     G_LOG_LEVEL_MESSAGE,
+                     gimp_message_func,
+                     NULL);
+  g_log_set_handler (NULL,
+                     G_LOG_LEVEL_MESSAGE,
+                     gimp_message_func,
+                     NULL);
 
   if (gimp_debug_flags & GIMP_DEBUG_FATAL_WARNINGS)
     {
@@ -829,9 +764,7 @@ gimp_uninstall_temp_proc (const gchar *name)
  * passes them to gimp_run_procedure2(). Please look there for further
  * information.
  *
- * Return value: the procedure's return values unless there was an error,
- * in which case the zero-th return value will be the error status, and
- * the first return value will be a string detailing the error.
+ * Return value: the procedure's return values.
  **/
 GimpParam *
 gimp_run_procedure (const gchar *name,
@@ -1057,10 +990,7 @@ gimp_read_expect_msg (GimpWireMessage *msg,
  * As soon as you don't need the return values any longer, you should
  * free them using gimp_destroy_params().
  *
- * Return value: the procedure's return values unless there was an error,
- * in which case the zero-th return value will be the error status, and
- * if there are two values returned, the other return value will be a
- * string detailing the error.
+ * Return value: the procedure's return values.
  **/
 GimpParam *
 gimp_run_procedure2 (const gchar     *name,
@@ -1152,7 +1082,7 @@ gimp_destroy_paramdefs (GimpParamDef *paramdefs,
  *
  * Return value: the error message
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 const gchar *
 gimp_get_pdb_error (void)
@@ -1328,7 +1258,7 @@ gimp_show_tool_tips (void)
  *
  * Return value: the show_help_button boolean
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_show_help_button (void)
@@ -1345,7 +1275,7 @@ gimp_show_help_button (void)
  *
  * Return value: the check_size value
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GimpCheckSize
 gimp_check_size (void)
@@ -1362,7 +1292,7 @@ gimp_check_size (void)
  *
  * Return value: the check_type value
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GimpCheckType
 gimp_check_type (void)
@@ -1407,8 +1337,6 @@ gimp_wm_class (void)
  * Returns the display to be used for plug-in windows.
  *
  * This is a constant value given at plug-in configuration time.
- * Will return #NULL if GIMP has been started with no GUI, either
- * via "--no-interface" flag, or a console build.
  *
  * Return value: the display name
  **/
@@ -1444,7 +1372,7 @@ gimp_monitor_number (void)
  *
  * Return value: timestamp for plug-in window
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 guint32
 gimp_user_time (void)
@@ -1722,50 +1650,10 @@ static void
 gimp_debug_stop (void)
 {
 #ifndef G_OS_WIN32
-
   g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "Waiting for debugger...");
   raise (SIGSTOP);
-
 #else
-
-  HANDLE        hThreadSnap = NULL;
-  THREADENTRY32 te32        = { 0 };
-  pid_t         opid        = getpid ();
-
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "Debugging (restart externally): %d",
-         opid);
-
-  hThreadSnap = CreateToolhelp32Snapshot (TH32CS_SNAPTHREAD, 0);
-  if (hThreadSnap == INVALID_HANDLE_VALUE)
-    {
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-             "error getting threadsnap - debugging impossible");
-      return;
-    }
-
-  te32.dwSize = sizeof (THREADENTRY32);
-
-  if (Thread32First (hThreadSnap, &te32))
-    {
-      do
-        {
-          if (te32.th32OwnerProcessID == opid)
-            {
-              HANDLE hThread = OpenThread (THREAD_SUSPEND_RESUME, FALSE,
-                                           te32.th32ThreadID);
-              SuspendThread (hThread);
-              CloseHandle (hThread);
-            }
-        }
-      while (Thread32Next (hThreadSnap, &te32));
-    }
-  else
-    {
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "error getting threads");
-    }
-
-  CloseHandle (hThreadSnap);
-
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "Debugging not implemented on Win32");
 #endif
 }
 
@@ -2026,11 +1914,6 @@ gimp_config (GPConfig *config)
     g_set_application_name (config->app_name);
 
   gimp_cpu_accel_set_use (config->use_cpu_accel);
-
-  g_object_set (gegl_config (),
-                "use-opencl",          config->use_opencl,
-                "application-license", "GPL3",
-                NULL);
 
   if (_shm_ID != -1)
     {

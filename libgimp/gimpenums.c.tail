@@ -11,11 +11,9 @@ static const GimpGetTypeFunc get_type_funcs[] =
   gimp_channel_ops_get_type,
   gimp_channel_type_get_type,
   gimp_clone_type_get_type,
-  gimp_color_management_mode_get_type,
-  gimp_color_rendering_intent_get_type,
-  gimp_component_type_get_type,
   gimp_convert_dither_type_get_type,
   gimp_convert_palette_type_get_type,
+  gimp_convolution_type_get_type,
   gimp_convolve_type_get_type,
   gimp_desaturate_mode_get_type,
   gimp_dodge_burn_type_get_type,
@@ -43,7 +41,6 @@ static const GimpGetTypeFunc get_type_funcs[] =
   gimp_pdb_proc_type_get_type,
   gimp_pdb_status_type_get_type,
   gimp_paint_application_mode_get_type,
-  gimp_precision_get_type,
   gimp_progress_command_get_type,
   gimp_repeat_mode_get_type,
   gimp_rotation_type_get_type,
@@ -71,11 +68,9 @@ static const gchar * const type_names[] =
   "GimpChannelOps",
   "GimpChannelType",
   "GimpCloneType",
-  "GimpColorManagementMode",
-  "GimpColorRenderingIntent",
-  "GimpComponentType",
   "GimpConvertDitherType",
   "GimpConvertPaletteType",
+  "GimpConvolutionType",
   "GimpConvolveType",
   "GimpDesaturateMode",
   "GimpDodgeBurnType",
@@ -103,7 +98,6 @@ static const gchar * const type_names[] =
   "GimpPDBProcType",
   "GimpPDBStatusType",
   "GimpPaintApplicationMode",
-  "GimpPrecision",
   "GimpProgressCommand",
   "GimpRepeatMode",
   "GimpRotationType",
@@ -132,7 +126,7 @@ static gboolean enums_initialized = FALSE;
  * It's not necessary for plug-ins to call this directly, because
  * the normal plug-in initialization code will handle it implicitly.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_enums_init (void)
@@ -162,7 +156,7 @@ gimp_enums_init (void)
  *
  * Return value: an array with type names
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 const gchar **
 gimp_enums_get_type_names (gint *n_type_names)

@@ -451,8 +451,8 @@ confirm_save_dialog (const gchar *message,
   gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
   gtk_widget_show (hbox);
 
-  image = gtk_image_new_from_icon_name ("dialog-warning",
-                                        GTK_ICON_SIZE_DIALOG);
+  image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING,
+                                    GTK_ICON_SIZE_DIALOG);
   gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
   gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
   gtk_widget_show (image);
@@ -534,8 +534,8 @@ export_dialog (GSList      *actions,
   gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
   gtk_widget_show (hbox);
 
-  image = gtk_image_new_from_icon_name ("dialog-information",
-                                        GTK_ICON_SIZE_DIALOG);
+  image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_INFO,
+                                    GTK_ICON_SIZE_DIALOG);
   gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
   gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
   gtk_widget_show (image);
@@ -766,7 +766,7 @@ gimp_export_image (gint32                 *image_ID,
           /*  If this is the last layer, it's visible and has no alpha
            *  channel, then the image has a "flat" background
            */
-          if (i == n_layers - 1 && gimp_item_get_visible (layers[i]))
+                if (i == n_layers - 1 && gimp_item_get_visible (layers[i]))
             background_has_alpha = FALSE;
 
           if (capabilities & GIMP_EXPORT_NEEDS_ALPHA)
@@ -992,7 +992,7 @@ gimp_export_image (gint32                 *image_ID,
  *
  * Returns: The new export dialog.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GtkWidget *
 gimp_export_dialog_new (const gchar *format_name,
@@ -1012,8 +1012,8 @@ gimp_export_dialog_new (const gchar *format_name,
   button = gimp_dialog_add_button (GIMP_DIALOG (dialog),
                                    _("_Export"), GTK_RESPONSE_OK);
   gtk_button_set_image (GTK_BUTTON (button),
-                        gtk_image_new_from_icon_name ("document-save",
-                                                      GTK_ICON_SIZE_BUTTON));
+                        gtk_image_new_from_stock (GTK_STOCK_SAVE,
+                                                  GTK_ICON_SIZE_BUTTON));
 
   gtk_dialog_set_alternative_button_order (GTK_DIALOG (dialog),
                                            GTK_RESPONSE_OK,
@@ -1036,7 +1036,7 @@ gimp_export_dialog_new (const gchar *format_name,
  *
  * Returns: The #GtkVBox to fill with export options.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GtkWidget *
 gimp_export_dialog_get_content_area (GtkWidget *dialog)

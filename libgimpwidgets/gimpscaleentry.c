@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpcolor/gimpcolor.h"
@@ -137,11 +136,11 @@ gimp_scale_entry_new_internal (gboolean     color_scale,
                                const gchar *tooltip,
                                const gchar *help_id)
 {
-  GtkWidget     *label;
-  GtkWidget     *scale;
-  GtkWidget     *spinbutton;
-  GtkAdjustment *adjustment;
-  GtkAdjustment *return_adj;
+  GtkWidget *label;
+  GtkWidget *scale;
+  GtkWidget *spinbutton;
+  GtkObject *adjustment;
+  GtkObject *return_adj;
 
   label = gtk_label_new_with_mnemonic (text);
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -151,31 +150,28 @@ gimp_scale_entry_new_internal (gboolean     color_scale,
   gtk_widget_show (label);
 
   if (! constrain &&
-      unconstrained_lower <= lower &&
-      unconstrained_upper >= upper)
+           unconstrained_lower <= lower &&
+           unconstrained_upper >= upper)
     {
-      GtkAdjustment *constrained_adj;
+      GtkObject *constrained_adj;
 
-      constrained_adj = (GtkAdjustment *)
-        gtk_adjustment_new (value, lower, upper,
-                            step_increment, page_increment,
-                            0.0);
+      constrained_adj = gtk_adjustment_new (value, lower, upper,
+                                            step_increment, page_increment,
+                                            0.0);
 
-      adjustment = (GtkAdjustment *)
-        gtk_adjustment_new (value,
-                            unconstrained_lower,
-                            unconstrained_upper,
-                            step_increment, page_increment, 0.0);
-      spinbutton = gtk_spin_button_new (adjustment, step_increment, digits);
-      gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbutton), TRUE);
+      spinbutton = gimp_spin_button_new (&adjustment, value,
+                                         unconstrained_lower,
+                                         unconstrained_upper,
+                                         step_increment, page_increment, 0.0,
+                                         1.0, digits);
 
       g_signal_connect
-        (constrained_adj, "value-changed",
+        (G_OBJECT (constrained_adj), "value-changed",
          G_CALLBACK (gimp_scale_entry_unconstrained_adjustment_callback),
          adjustment);
 
       g_signal_connect
-        (adjustment, "value-changed",
+        (G_OBJECT (adjustment), "value-changed",
          G_CALLBACK (gimp_scale_entry_unconstrained_adjustment_callback),
          constrained_adj);
 
@@ -185,11 +181,9 @@ gimp_scale_entry_new_internal (gboolean     color_scale,
     }
   else
     {
-      adjustment = (GtkAdjustment *)
-        gtk_adjustment_new (value, lower, upper,
-                            step_increment, page_increment, 0.0);
-      spinbutton = gtk_spin_button_new (adjustment, step_increment, digits);
-      gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbutton), TRUE);
+      spinbutton = gimp_spin_button_new (&adjustment, value, lower, upper,
+                                         step_increment, page_increment, 0.0,
+                                         1.0, digits);
 
       return_adj = adjustment;
     }
@@ -209,11 +203,13 @@ gimp_scale_entry_new_internal (gboolean     color_scale,
       scale = gimp_color_scale_new (GTK_ORIENTATION_HORIZONTAL,
                                     GIMP_COLOR_SELECTOR_VALUE);
 
-      gtk_range_set_adjustment (GTK_RANGE (scale), adjustment);
+      gtk_range_set_adjustment (GTK_RANGE (scale),
+                                GTK_ADJUSTMENT (adjustment));
     }
   else
     {
-      scale = gtk_scale_new (GTK_ORIENTATION_HORIZONTAL, adjustment);
+      scale = gtk_scale_new (GTK_ORIENTATION_HORIZONTAL,
+                             GTK_ADJUSTMENT (adjustment));
     }
 
   if (scale_width > 0)
@@ -241,7 +237,9 @@ gimp_scale_entry_new_internal (gboolean     color_scale,
   g_object_set_data (G_OBJECT (return_adj), "scale",      scale);
   g_object_set_data (G_OBJECT (return_adj), "spinbutton", spinbutton);
 
-  return GTK_OBJECT (return_adj);
+
+
+  return return_adj;
 }
 
 /**
@@ -364,7 +362,7 @@ gimp_color_scale_entry_new (GtkTable    *table,
  * ranges, but smaller selections on that range require a finer
  * adjustment.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 void
 gimp_scale_entry_set_logarithmic (GtkObject *adjustment,
@@ -491,7 +489,7 @@ gimp_scale_entry_set_logarithmic (GtkObject *adjustment,
  * Return value: %TRUE if the the entry's scale widget will behave in
  *               logharithmic fashion, %FALSE for linear behaviour.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_scale_entry_get_logarithmic (GtkObject *adjustment)

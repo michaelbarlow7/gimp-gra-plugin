@@ -24,7 +24,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpbase/gimpbase.h"
@@ -321,14 +320,12 @@ gimp_size_entry_new (gint                       number_of_fields,
                 gsef->refval_digits : ((unit == GIMP_UNIT_PERCENT) ?
                                        2 : GIMP_SIZE_ENTRY_DIGITS (unit)));
 
-      gsef->value_adjustment = (GtkAdjustment *)
-        gtk_adjustment_new (gsef->value,
-                            gsef->min_value, gsef->max_value,
-                            1.0, 10.0, 0.0);
-      gsef->value_spinbutton = gtk_spin_button_new (gsef->value_adjustment,
-                                                    1.0, digits);
-      gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (gsef->value_spinbutton),
-                                   TRUE);
+      gsef->value_spinbutton = gimp_spin_button_new ((GtkObject **) &gsef->value_adjustment,
+                                                     gsef->value,
+                                                     gsef->min_value,
+                                                     gsef->max_value,
+                                                     1.0, 10.0, 0.0,
+                                                     1.0, digits);
 
       gimp_size_entry_attach_eevl (GTK_SPIN_BUTTON (gsef->value_spinbutton),
                                    gsef);
@@ -354,15 +351,11 @@ gimp_size_entry_new (gint                       number_of_fields,
 
       if (gse->show_refval)
         {
-          gsef->refval_adjustment = (GtkAdjustment *)
-            gtk_adjustment_new (gsef->refval,
-                                gsef->min_refval, gsef->max_refval,
-                                1.0, 10.0, 0.0);
-          gsef->refval_spinbutton = gtk_spin_button_new (gsef->refval_adjustment,
-                                                         1.0,
-                                                         gsef->refval_digits);
-          gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (gsef->refval_spinbutton),
-                                       TRUE);
+          gsef->refval_spinbutton =
+            gimp_spin_button_new ((GtkObject **) &gsef->refval_adjustment,
+                                  gsef->refval,
+                                  gsef->min_refval, gsef->max_refval,
+                                  1.0, 10.0, 0.0, 1.0, gsef->refval_digits);
 
           gtk_widget_set_size_request (gsef->refval_spinbutton,
                                        spinbutton_width, -1);
@@ -1437,7 +1430,7 @@ gimp_size_entry_eevl_unit_resolver (const gchar      *identifier,
  * Controls whether a unit menu is shown in the size entry.  If
  * @show is #TRUE, the menu is shown; otherwise it is hidden.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_size_entry_show_unit_menu (GimpSizeEntry *gse,
@@ -1501,7 +1494,7 @@ gimp_size_entry_grab_focus (GimpSizeEntry *gse)
  * Iterates over all entries in the #GimpSizeEntry and calls
  * gtk_entry_set_activates_default() on them.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_size_entry_set_activates_default (GimpSizeEntry *gse,

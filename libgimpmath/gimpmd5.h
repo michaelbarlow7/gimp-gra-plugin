@@ -16,10 +16,13 @@ G_BEGIN_DECLS
 
 /* For information look into the C source or the html documentation */
 
-GIMP_DEPRECATED_FOR(GChecksum)
+#ifndef GIMP_DISABLE_DEPRECATED
+
 void gimp_md5_get_digest (const gchar *buffer,
                           gint         buffer_size,
                           guchar       digest[16]);
+
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

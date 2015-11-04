@@ -22,7 +22,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpwidgets/gimpwidgets.h"
@@ -224,7 +223,7 @@ gimp_proc_browser_dialog_init (GimpProcBrowserDialog *dialog)
  *
  * Return Value: a newly created #GimpProcBrowserDialog.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkWidget *
 gimp_proc_browser_dialog_new (const gchar  *title,
@@ -264,7 +263,7 @@ gimp_proc_browser_dialog_new (const gchar  *title,
  * Return Value: The name of the selected procedure of %NULL if no
  *               procedure is selected.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_proc_browser_dialog_get_selected (GimpProcBrowserDialog *dialog)
@@ -522,9 +521,11 @@ browser_search (GimpBrowser           *browser,
           gtk_list_store_set (dialog->store, &iter,
                               COLUMN_PROC_NAME, proc_list[i],
                               -1);
+
+          g_free (proc_list[i]);
         }
 
-      g_strfreev (proc_list);
+      g_free (proc_list);
 
       gtk_tree_view_columns_autosize (GTK_TREE_VIEW (dialog->tree_view));
 

@@ -46,7 +46,7 @@
  *
  * Returns: The actual new palette name.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gchar *
 gimp_palette_new (const gchar *name)
@@ -78,7 +78,7 @@ gimp_palette_new (const gchar *name)
  *
  * Returns: The name of the palette's copy.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gchar *
 gimp_palette_duplicate (const gchar *name)
@@ -111,7 +111,7 @@ gimp_palette_duplicate (const gchar *name)
  *
  * Returns: The actual new name of the palette.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gchar *
 gimp_palette_rename (const gchar *name,
@@ -145,7 +145,7 @@ gimp_palette_rename (const gchar *name,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_delete (const gchar *name)
@@ -176,7 +176,7 @@ gimp_palette_delete (const gchar *name)
  *
  * Returns: TRUE if the palette can be edited.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_palette_is_editable (const gchar *name)
@@ -210,7 +210,7 @@ gimp_palette_is_editable (const gchar *name)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_get_info (const gchar *name,
@@ -248,7 +248,7 @@ gimp_palette_get_info (const gchar *name,
  *
  * Returns: The colors in the palette.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 GimpRGB *
 gimp_palette_get_colors (const gchar *name,
@@ -285,12 +285,12 @@ gimp_palette_get_colors (const gchar *name,
  *
  * Retrieves the number of columns to use to display this palette
  *
- * This procedures retrieves the preferred number of columns to use
- * when the palette is being displayed.
+ * This procedures retrieves the prefered number of columns to use when
+ * the palette is being displayed.
  *
  * Returns: The number of columns used to display this palette.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint
 gimp_palette_get_columns (const gchar *name)
@@ -319,13 +319,13 @@ gimp_palette_get_columns (const gchar *name)
  *
  * Sets the number of columns to use when displaying the palette
  *
- * This procedures controls how many colors are shown per row when the
- * palette is being displayed. This value can only be changed if the
- * palette is writable. The maximum allowed value is 64.
+ * This procedures allows to control how many colors are shown per row
+ * when the palette is being displayed. This value can only be changed
+ * if the palette is writable. The maximum allowed value is 64.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_palette_set_columns (const gchar *name,
@@ -357,12 +357,12 @@ gimp_palette_set_columns (const gchar *name,
  *
  * Adds a palette entry to the specified palette.
  *
- * This procedure adds an entry to the specified palette. It returns an
+ * This procedure adds an entry to the specifed palette. It returns an
  * error if the entry palette does not exist.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_add_entry (const gchar   *name,
@@ -400,12 +400,12 @@ gimp_palette_add_entry (const gchar   *name,
  *
  * Deletes a palette entry from the specified palette.
  *
- * This procedure deletes an entry from the specified palette. It
+ * This procedure deletes an entry from the specifed palette. It
  * returns an error if the entry palette does not exist.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_delete_entry (const gchar *name,
@@ -436,13 +436,13 @@ gimp_palette_delete_entry (const gchar *name,
  *
  * Gets the specified palette entry from the specified palette.
  *
- * This procedure retrieves the color of the zero-based entry specified
+ * This procedure retrieves the color of the zero-based entry specifed
  * for the specified palette. It returns an error if the entry does not
  * exist.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_entry_get_color (const gchar *name,
@@ -477,13 +477,13 @@ gimp_palette_entry_get_color (const gchar *name,
  *
  * Sets the specified palette entry in the specified palette.
  *
- * This procedure sets the color of the zero-based entry specified for
+ * This procedure sets the color of the zero-based entry specifed for
  * the specified palette. It returns an error if the entry does not
  * exist.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_entry_set_color (const gchar   *name,
@@ -516,13 +516,13 @@ gimp_palette_entry_set_color (const gchar   *name,
  *
  * Gets the specified palette entry from the specified palette.
  *
- * This procedure retrieves the name of the zero-based entry specified
+ * This procedure retrieves the name of the zero-based entry specifed
  * for the specified palette. It returns an error if the entry does not
  * exist.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_entry_get_name (const gchar  *name,
@@ -559,13 +559,13 @@ gimp_palette_entry_get_name (const gchar  *name,
  *
  * Sets the specified palette entry in the specified palette.
  *
- * This procedure sets the name of the zero-based entry specified for
+ * This procedure sets the name of the zero-based entry specifed for
  * the specified palette. It returns an error if the entry does not
  * exist.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_palette_entry_set_name (const gchar *name,

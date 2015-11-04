@@ -29,13 +29,11 @@
 #include <libgimpbase/gimpenv.h>
 #include <libgimpbase/gimplimits.h>
 #include <libgimpbase/gimpmemsize.h>
-#include <libgimpbase/gimpmetadata.h>
 #include <libgimpbase/gimpparasite.h>
 #include <libgimpbase/gimprectangle.h>
 #include <libgimpbase/gimpunit.h>
 #include <libgimpbase/gimputils.h>
 #include <libgimpbase/gimpversion.h>
-#include <libgimpbase/gimpvaluearray.h>
 
 #ifndef G_OS_WIN32
 #include <libgimpbase/gimpsignal.h>

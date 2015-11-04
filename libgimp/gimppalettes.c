@@ -21,6 +21,8 @@
 #include "config.h"
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_PALETTES_H__
 #include "gimppalettes.h"
 
 /**

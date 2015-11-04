@@ -22,9 +22,10 @@
 
 #include <string.h>
 
-#define GIMP_DISABLE_DEPRECATION_WARNINGS
-
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_LAYER_H__
+#include "gimplayer.h"
 
 
 /**
@@ -106,7 +107,7 @@ gimp_layer_copy (gint32  layer_ID)
  *
  * Returns: The newly created layer.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  */
 gint32
 gimp_layer_new_from_pixbuf (gint32                image_ID,
@@ -117,11 +118,18 @@ gimp_layer_new_from_pixbuf (gint32                image_ID,
                             gdouble               progress_start,
                             gdouble               progress_end)
 {
-  gint32  layer;
-  gint    width;
-  gint    height;
-  gint    bpp;
-  gdouble range = progress_end - progress_start;
+  GimpDrawable *drawable;
+  GimpPixelRgn	rgn;
+  const guchar *pixels;
+  gpointer      pr;
+  gint32        layer;
+  gint          width;
+  gint          height;
+  gint          rowstride;
+  gint          bpp;
+  gdouble       range = progress_end - progress_start;
+  guint         count = 0;
+  guint         done  = 0;
 
   g_return_val_if_fail (GDK_IS_PIXBUF (pixbuf), -1);
 
@@ -137,9 +145,9 @@ gimp_layer_new_from_pixbuf (gint32                image_ID,
       return -1;
     }
 
-  width     = gdk_pixbuf_get_width (pixbuf);
-  height    = gdk_pixbuf_get_height (pixbuf);
-  bpp       = gdk_pixbuf_get_n_channels (pixbuf);
+  width  = gdk_pixbuf_get_width (pixbuf);
+  height = gdk_pixbuf_get_height (pixbuf);
+  bpp    = gdk_pixbuf_get_n_channels (pixbuf);
 
   layer = gimp_layer_new (image_ID, name, width, height,
                           bpp == 3 ? GIMP_RGB_IMAGE : GIMP_RGBA_IMAGE,
@@ -148,69 +156,45 @@ gimp_layer_new_from_pixbuf (gint32                image_ID,
   if (layer == -1)
     return -1;
 
-  if (gimp_plugin_precision_enabled ())
+  drawable = gimp_drawable_get (layer);
+
+  gimp_pixel_rgn_init (&rgn, drawable, 0, 0, width, height, TRUE, FALSE);
+
+  g_assert (bpp == rgn.bpp);
+
+  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  pixels    = gdk_pixbuf_get_pixels (pixbuf);
+
+  for (pr = gimp_pixel_rgns_register (1, &rgn);
+       pr != NULL;
+       pr = gimp_pixel_rgns_process (pr))
     {
-      GeglBuffer *dest_buffer;
+      const guchar *src  = pixels + rgn.y * rowstride + rgn.x * bpp;
+      guchar       *dest = rgn.data;
+      gint          y;
 
-      dest_buffer = gimp_drawable_get_buffer (layer);
-
-      gegl_buffer_set (dest_buffer, GEGL_RECTANGLE (0, 0, width, height), 0,
-                       gimp_pixbuf_get_format (pixbuf),
-                       gdk_pixbuf_get_pixels (pixbuf),
-                       gdk_pixbuf_get_rowstride (pixbuf));
-
-      g_object_unref (dest_buffer);
-    }
-  else
-    {
-      GimpDrawable *drawable;
-      GimpPixelRgn  rgn;
-      gpointer      pr;
-      const guchar *pixels;
-      gint          rowstride;
-      guint         done  = 0;
-      guint         count = 0;
-
-      drawable = gimp_drawable_get (layer);
-
-      gimp_pixel_rgn_init (&rgn, drawable, 0, 0, width, height, TRUE, FALSE);
-
-      g_assert (bpp == rgn.bpp);
-
-      rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-      pixels    = gdk_pixbuf_get_pixels (pixbuf);
-
-      for (pr = gimp_pixel_rgns_register (1, &rgn);
-           pr != NULL;
-           pr = gimp_pixel_rgns_process (pr))
+      for (y = 0; y < rgn.h; y++)
         {
-          const guchar *src  = pixels + rgn.y * rowstride + rgn.x * bpp;
-          guchar       *dest = rgn.data;
-          gint          y;
+          memcpy (dest, src, rgn.w * rgn.bpp);
 
-          for (y = 0; y < rgn.h; y++)
-            {
-              memcpy (dest, src, rgn.w * rgn.bpp);
-
-              src  += rowstride;
-              dest += rgn.rowstride;
-            }
-
-          if (range > 0.0)
-            {
-              done += rgn.h * rgn.w;
-
-              if (count++ % 32 == 0)
-                gimp_progress_update (progress_start +
-                                      (gdouble) done / (width * height) * range);
-            }
+          src  += rowstride;
+          dest += rgn.rowstride;
         }
 
-      gimp_drawable_detach (drawable);
+      if (range > 0.0)
+        {
+          done += rgn.h * rgn.w;
+
+          if (count++ % 32 == 0)
+            gimp_progress_update (progress_start +
+                                  (gdouble) done / (width * height) * range);
+        }
     }
 
   if (range > 0.0)
     gimp_progress_update (progress_end);
+
+  gimp_drawable_detach (drawable);
 
   return layer;
 }
@@ -235,7 +219,7 @@ gimp_layer_new_from_pixbuf (gint32                image_ID,
  *
  * Returns: The newly created layer.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  */
 gint32
 gimp_layer_new_from_surface (gint32                image_ID,
@@ -244,11 +228,18 @@ gimp_layer_new_from_surface (gint32                image_ID,
                              gdouble               progress_start,
                              gdouble               progress_end)
 {
-  gint32         layer;
-  gint           width;
-  gint           height;
-  cairo_format_t format;
-  gdouble        range = progress_end - progress_start;
+  GimpDrawable    *drawable;
+  GimpPixelRgn	   rgn;
+  const guchar    *pixels;
+  gpointer         pr;
+  gint32           layer;
+  cairo_format_t   format;
+  gint             width;
+  gint             height;
+  gint             rowstride;
+  gdouble          range = progress_end - progress_start;
+  guint            count = 0;
+  guint            done  = 0;
 
   g_return_val_if_fail (surface != NULL, -1);
   g_return_val_if_fail (cairo_surface_get_type (surface) ==
@@ -279,106 +270,81 @@ gimp_layer_new_from_surface (gint32                image_ID,
   if (layer == -1)
     return -1;
 
-  if (gimp_plugin_precision_enabled ())
+  drawable = gimp_drawable_get (layer);
+
+  gimp_pixel_rgn_init (&rgn, drawable, 0, 0, width, height, TRUE, FALSE);
+
+  rowstride = cairo_image_surface_get_stride (surface);
+  pixels    = cairo_image_surface_get_data (surface);
+
+  for (pr = gimp_pixel_rgns_register (1, &rgn);
+       pr != NULL;
+       pr = gimp_pixel_rgns_process (pr))
     {
-      GeglBuffer *src_buffer;
-      GeglBuffer *dest_buffer;
+      const guchar *src  = pixels + rgn.y * rowstride + rgn.x * 4;
+      guchar       *dest = rgn.data;
+      gint          y;
 
-      src_buffer = gimp_cairo_surface_create_buffer (surface);
-      dest_buffer = gimp_drawable_get_buffer (layer);
-
-      gegl_buffer_copy (src_buffer, NULL, GEGL_ABYSS_NONE,
-                        dest_buffer, NULL);
-
-      g_object_unref (src_buffer);
-      g_object_unref (dest_buffer);
-    }
-  else
-    {
-      GimpDrawable   *drawable;
-      GimpPixelRgn    rgn;
-      const guchar   *pixels;
-      gpointer        pr;
-      gint            rowstride;
-      guint           count = 0;
-      guint           done  = 0;
-
-      drawable = gimp_drawable_get (layer);
-
-      gimp_pixel_rgn_init (&rgn, drawable, 0, 0, width, height, TRUE, FALSE);
-
-      rowstride = cairo_image_surface_get_stride (surface);
-      pixels    = cairo_image_surface_get_data (surface);
-
-      for (pr = gimp_pixel_rgns_register (1, &rgn);
-           pr != NULL;
-           pr = gimp_pixel_rgns_process (pr))
+      switch (format)
         {
-          const guchar *src  = pixels + rgn.y * rowstride + rgn.x * 4;
-          guchar       *dest = rgn.data;
-          gint          y;
-
-          switch (format)
+        case CAIRO_FORMAT_RGB24:
+          for (y = 0; y < rgn.h; y++)
             {
-            case CAIRO_FORMAT_RGB24:
-              for (y = 0; y < rgn.h; y++)
+              const guchar *s = src;
+              guchar       *d = dest;
+              gint          w = rgn.w;
+
+              while (w--)
                 {
-                  const guchar *s = src;
-                  guchar       *d = dest;
-                  gint          w = rgn.w;
+                  GIMP_CAIRO_RGB24_GET_PIXEL (s, d[0], d[1], d[2]);
 
-                  while (w--)
-                    {
-                      GIMP_CAIRO_RGB24_GET_PIXEL (s, d[0], d[1], d[2]);
-
-                      s += 4;
-                      d += 3;
-                    }
-
-                  src  += rowstride;
-                  dest += rgn.rowstride;
+                  s += 4;
+                  d += 3;
                 }
-              break;
 
-            case CAIRO_FORMAT_ARGB32:
-              for (y = 0; y < rgn.h; y++)
-                {
-                  const guchar *s = src;
-                  guchar       *d = dest;
-                  gint          w = rgn.w;
-
-                  while (w--)
-                    {
-                      GIMP_CAIRO_ARGB32_GET_PIXEL (s, d[0], d[1], d[2], d[3]);
-
-                      s += 4;
-                      d += 4;
-                    }
-
-                  src  += rowstride;
-                  dest += rgn.rowstride;
-                }
-              break;
-
-            default:
-              break;
+              src  += rowstride;
+              dest += rgn.rowstride;
             }
+          break;
 
-          if (range > 0.0)
+        case CAIRO_FORMAT_ARGB32:
+          for (y = 0; y < rgn.h; y++)
             {
-              done += rgn.h * rgn.w;
+              const guchar *s = src;
+              guchar       *d = dest;
+              gint          w = rgn.w;
 
-              if (count++ % 32 == 0)
-                gimp_progress_update (progress_start +
-                                      (gdouble) done / (width * height) * range);
+              while (w--)
+                {
+                  GIMP_CAIRO_ARGB32_GET_PIXEL (s, d[0], d[1], d[2], d[3]);
+
+                  s += 4;
+                  d += 4;
+                }
+
+              src  += rowstride;
+              dest += rgn.rowstride;
             }
+          break;
+
+        default:
+          break;
         }
 
-      gimp_drawable_detach (drawable);
-   }
+     if (range > 0.0)
+        {
+          done += rgn.h * rgn.w;
+
+          if (count++ % 32 == 0)
+            gimp_progress_update (progress_start +
+                                  (gdouble) done / (width * height) * range);
+        }
+    }
 
   if (range > 0.0)
     gimp_progress_update (progress_end);
+
+  gimp_drawable_detach (drawable);
 
   return layer;
 }

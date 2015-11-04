@@ -19,20 +19,12 @@
 #ifndef __GIMP_COLOR_TYPES_H__
 #define __GIMP_COLOR_TYPES_H__
 
-
-#include <libgimpbase/gimpbasetypes.h>
-
-
 G_BEGIN_DECLS
 
 /* For information look into the C source or the html documentation */
 
 
 typedef struct _GimpColorManaged GimpColorManaged;  /* dummy typedef */
-typedef struct _GimpColorProfile GimpColorProfile;
-
-typedef gpointer GimpColorTransform;
-
 
 /*  usually we don't keep the structure definitions in the types file
  *  but GimpRGB appears in too many header files...

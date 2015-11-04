@@ -23,6 +23,9 @@
 #include "config.h"
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_LAYER_PDB_H__
+#include "gimplayer_pdb.h"
 
 
 /**
@@ -103,7 +106,7 @@ _gimp_layer_new (gint32                image_ID,
  *
  * Returns: The newly created layer.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 gint32
 gimp_layer_new_from_visible (gint32       image_ID,
@@ -176,13 +179,10 @@ gimp_layer_new_from_drawable (gint32 drawable_ID,
  * mode and opacity should be set with explicit procedure calls. Add
  * the new layer group (which is a kind of layer) with the
  * gimp_image_insert_layer() command.
- * Other procedures useful with layer groups:
- * gimp_image_reorder_item(), gimp_item_get_parent(),
- * gimp_item_get_children(), gimp_item_is_group().
  *
  * Returns: The newly created layer group.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_layer_group_new (gint32 image_ID)
@@ -288,7 +288,7 @@ gimp_layer_add_alpha (gint32 layer_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_layer_flatten (gint32 layer_ID)
@@ -364,7 +364,7 @@ gimp_layer_scale (gint32   layer_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 gboolean
 gimp_layer_scale_full (gint32                layer_ID,
@@ -549,28 +549,18 @@ gimp_layer_set_offsets (gint32 layer_ID,
  * @layer_ID: The layer to which to add the mask.
  * @mask_type: The type of mask.
  *
- * Create a layer mask for the specified layer.
+ * Create a layer mask for the specified specified layer.
  *
- * This procedure creates a layer mask for the specified layer.
- * Layer masks serve as an additional alpha channel for a layer.
- * Different types of masks are allowed for initialisation:
- * - white mask (leaves the layer fully visible);
- * - black mask (gives the layer complete transparency);
- * - the layer's alpha channel (either a copy, or a transfer, which
- * leaves the layer fully visible, but which may be more useful than a
- * white mask);
- * - the current selection;
- * - a grayscale copy of the layer;
- * - or a copy of the active channel.
- *
- * The layer mask still needs to be added to the layer. This can be
- * done with a call to gimp_layer_add_mask().
- *
- * gimp_layer_create_mask() will fail if there are no active channels
- * on the image, when called with 'ADD-CHANNEL-MASK'. It will return a
- * black mask when called with 'ADD-ALPHA-MASK' or
- * 'ADD-ALPHA-TRANSFER-MASK' on a layer with no alpha channels, or with
- * 'ADD-SELECTION-MASK' when there is no selection on the image.
+ * This procedure creates a layer mask for the specified layer. Layer
+ * masks serve as an additional alpha channel for a layer. A number of
+ * different types of masks are allowed for initialisation: completely
+ * white masks (which will leave the layer fully visible), completely
+ * black masks (which will give the layer complete transparency, the
+ * layer's already existing alpha channel (which will leave the layer
+ * fully visible, but which may be more useful than a white mask), the
+ * current selection or a grayscale copy of the layer. The layer mask
+ * still needs to be added to the layer. This can be done with a call
+ * to gimp_layer_add_mask().
  *
  * Returns: The newly created mask.
  **/
@@ -638,7 +628,7 @@ gimp_layer_get_mask (gint32 layer_ID)
  *
  * Returns: The mask's layer.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_layer_from_mask (gint32 mask_ID)

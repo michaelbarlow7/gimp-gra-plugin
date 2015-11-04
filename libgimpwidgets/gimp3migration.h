@@ -28,7 +28,7 @@
 
 
 /* This file is evil. Its purpose is to keep GIMP's gtk3-port branch
- * manageable, and contains functions that are only in GTK+ 3.x but
+ * managable, and contains functions that are only in GTK+ 3.x but
  * are *not* in GTK+ 2.x. Please just ignore the uglyness and move
  * along. This file will be removed in GIMP 3.
  */
@@ -66,12 +66,5 @@ GdkModifierType gdk_keymap_get_modifier_mask    (GdkKeymap         *keymap,
 GdkModifierType gtk_widget_get_modifier_mask    (GtkWidget         *widget,
                                                  GdkModifierIntent  intent);
 #endif
-
-gboolean        gdk_cairo_get_clip_rectangle    (cairo_t           *cr,
-                                                 GdkRectangle      *rect);
-void            gdk_screen_get_monitor_workarea (GdkScreen         *screen,
-                                                 gint               monitor_num,
-                                                 GdkRectangle      *dest);
-
 
 #endif /* __GIMP_3_MIGRATION_H__ */

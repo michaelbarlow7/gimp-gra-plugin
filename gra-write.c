@@ -27,7 +27,6 @@
  */
 
 #include "config.h"
-#include <gegl.h>
 
 #include <errno.h>
 #include <string.h>
@@ -56,7 +55,7 @@ static struct
   RGBMode rgb_format;
   gint    use_run_length_encoding;
 
-  /* Whether or not to write BITMAPV5HEADER color space data */
+  /* Weather or not to write BITMAPV5HEADER color space data */
   gint    dont_write_color_space_data;
 } GRASaveData;
 
@@ -73,9 +72,7 @@ static  void      write_image     (FILE   *f,
                                    gint    bpp,
                                    gint    spzeile,
                                    gint    MapSize,
-                                   RGBMode rgb_format,
-                                   gint    mask_info_size,
-                                   gint    color_space_size);
+                                   RGBMode rgb_format);
 
 static  gboolean  save_dialog     (gint    channels);
 
@@ -84,18 +81,18 @@ static void
 FromL (gint32  wert,
        guchar *bopuffer)
 {
-  bopuffer[0] = (wert)         & 0xff;
-  bopuffer[1] = (wert >> 0x08) & 0xff;
-  bopuffer[2] = (wert >> 0x10) & 0xff;
-  bopuffer[3] = (wert >> 0x18) & 0xff;
+  bopuffer[0] = (wert & 0x000000ff)>>0x00;
+  bopuffer[1] = (wert & 0x0000ff00)>>0x08;
+  bopuffer[2] = (wert & 0x00ff0000)>>0x10;
+  bopuffer[3] = (wert & 0xff000000)>>0x18;
 }
 
 static void
 FromS (gint16  wert,
        guchar *bopuffer)
 {
-  bopuffer[0] = (wert)         & 0xff;
-  bopuffer[1] = (wert >> 0x08) & 0xff;
+  bopuffer[0] = (wert & 0x00ff)>>0x00;
+  bopuffer[1] = (wert & 0xff00)>>0x08;
 }
 
 static void
@@ -157,27 +154,24 @@ WriteGRA (const gchar  *filename,
   glong          BitsPerPixel;
   gint           colors;
   guchar        *pixels;
-  GeglBuffer    *buffer;
-  const Babl    *format;
+  GimpPixelRgn   pixel_rgn;
+  GimpDrawable  *drawable;
   GimpImageType  drawable_type;
-  gint           drawable_width;
-  gint           drawable_height;
   guchar         puffer[128];
   gint           i;
   gint           mask_info_size;
   gint           color_space_size;
   guint32        Mask[4];
 
-  buffer = gimp_drawable_get_buffer (drawable_ID);
+  drawable = gimp_drawable_get (drawable_ID);
+  drawable_type = gimp_drawable_type (drawable_ID);
 
-  drawable_type   = gimp_drawable_type   (drawable_ID);
-  drawable_width  = gimp_drawable_width  (drawable_ID);
-  drawable_height = gimp_drawable_height (drawable_ID);
+  gimp_pixel_rgn_init (&pixel_rgn, drawable,
+                       0, 0, drawable->width, drawable->height, FALSE, FALSE);
 
   switch (drawable_type)
     {
     case GIMP_RGBA_IMAGE:
-      format       = babl_format ("R'G'B'A u8");
       colors       = 0;
       BitsPerPixel = 32;
       MapSize      = 0;
@@ -186,7 +180,6 @@ WriteGRA (const gchar  *filename,
       break;
 
     case GIMP_RGB_IMAGE:
-      format       = babl_format ("R'G'B' u8");
       colors       = 0;
       BitsPerPixel = 24;
       MapSize      = 0;
@@ -196,9 +189,9 @@ WriteGRA (const gchar  *filename,
 
     case GIMP_GRAYA_IMAGE:
       if (interactive && !warning_dialog (_("Cannot save indexed image with "
-                                            "transparency in GRA file format."),
+    					    "transparency in GRA file format."),
                                           _("Alpha channel will be ignored.")))
-        return GIMP_PDB_CANCEL;
+          return GIMP_PDB_CANCEL;
 
      /* fallthrough */
 
@@ -208,15 +201,9 @@ WriteGRA (const gchar  *filename,
       MapSize      = 1024;
 
       if (drawable_type == GIMP_GRAYA_IMAGE)
-        {
-          format   = babl_format ("Y'A u8");
-          channels = 2;
-        }
+        channels = 2;
       else
-        {
-          format   = babl_format ("Y' u8");
-          channels = 1;
-        }
+        channels = 1;
 
       for (i = 0; i < colors; i++)
         {
@@ -228,14 +215,13 @@ WriteGRA (const gchar  *filename,
 
     case GIMP_INDEXEDA_IMAGE:
       if (interactive && !warning_dialog (_("Cannot save indexed image with "
-                                            "transparency in GRA file format."),
+    			                    "transparency in GRA file format."),
                                           _("Alpha channel will be ignored.")))
-        return GIMP_PDB_CANCEL;
+          return GIMP_PDB_CANCEL;
 
      /* fallthrough */
 
     case GIMP_INDEXED_IMAGE:
-      format   = gimp_drawable_get_format (drawable_ID);
       cmap     = gimp_image_get_colormap (image, &colors);
       MapSize  = 4 * colors;
 
@@ -315,10 +301,6 @@ WriteGRA (const gchar  *filename,
 
   gimp_set_data (SAVE_PROC, &GRASaveData, sizeof (GRASaveData));
 
-  /* Let's begin the progress */
-  gimp_progress_init_printf (_("Saving '%s'"),
-                             gimp_filename_to_utf8 (filename));
-
   /* Let's take some file */
   outfile = g_fopen (filename, "wb");
   if (!outfile)
@@ -330,21 +312,20 @@ WriteGRA (const gchar  *filename,
     }
 
   /* fetch the image */
-  pixels = g_new (guchar, drawable_width * drawable_height * channels);
+  pixels = g_new (guchar, drawable->width * drawable->height * channels);
+  gimp_pixel_rgn_get_rect (&pixel_rgn, pixels,
+                           0, 0, drawable->width, drawable->height);
 
-  gegl_buffer_get (buffer, GEGL_RECTANGLE (0, 0,
-                                           drawable_width, drawable_height), 1.0,
-                   format, pixels,
-                   GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-
-  g_object_unref (buffer);
+  /* And let's begin the progress */
+  gimp_progress_init_printf (_("Saving '%s'"),
+                             gimp_filename_to_utf8 (filename));
 
   cur_progress = 0;
-  max_progress = drawable_height;
+  max_progress = drawable->height;
 
   /* Now, we need some further information ... */
-  cols = drawable_width;
-  rows = drawable_height;
+  cols = drawable->width;
+  rows = drawable->height;
 
   /* ... that we write to our headers. */
   if ((BitsPerPixel <= 8) && (cols % (8 / BitsPerPixel)))
@@ -357,10 +338,9 @@ WriteGRA (const gchar  *filename,
   else
     SpZeile = ((gint) (((Spcols * BitsPerPixel) / 8) / 4) + 1) * 4;
 
+  color_space_size = 0;
   if (! GRASaveData.dont_write_color_space_data)
     color_space_size = 68;
-  else
-    color_space_size = 0;
 
   Bitmap_File_Head.bfSize    = (0x36 + MapSize + (rows * SpZeile) +
                                 mask_info_size + color_space_size);
@@ -401,7 +381,7 @@ WriteGRA (const gchar  *filename,
       {
         /*
          * xresolution and yresolution are in dots per inch.
-         * the BMP spec says that biXPels and biYPels are in
+         * the GRA spec says that biXPels and biYPels are in
          * pixels per meter as long ints (actually, "DWORDS"),
          * so...
          *    n dots    inch     100 cm   m dots
@@ -460,17 +440,17 @@ WriteGRA (const gchar  *filename,
         default:
         case RGB_888:
         case RGBX_8888:
-          Mask[0] = 0x00ff0000;
-          Mask[1] = 0x0000ff00;
-          Mask[2] = 0x000000ff;
+          Mask[0] = 0xff000000;
+          Mask[1] = 0x00ff0000;
+          Mask[2] = 0x0000ff00;
           Mask[3] = 0x00000000;
           break;
 
         case RGBA_8888:
-          Mask[0] = 0x00ff0000;
-          Mask[1] = 0x0000ff00;
-          Mask[2] = 0x000000ff;
-          Mask[3] = 0xff000000;
+          Mask[0] = 0xff000000;
+          Mask[1] = 0x00ff0000;
+          Mask[2] = 0x0000ff00;
+          Mask[3] = 0x000000ff;
           break;
 
         case RGB_565:
@@ -545,12 +525,12 @@ WriteGRA (const gchar  *filename,
                pixels, cols, rows,
                GRASaveData.use_run_length_encoding,
                channels, BitsPerPixel, SpZeile,
-               MapSize, GRASaveData.rgb_format,
-               mask_info_size, color_space_size);
+               MapSize, GRASaveData.rgb_format);
 
   /* ... and exit normally */
 
   fclose (outfile);
+  gimp_drawable_detach (drawable);
   g_free (pixels);
 
   return GIMP_PDB_SUCCESS;
@@ -587,9 +567,7 @@ write_image (FILE   *f,
              gint    bpp,
              gint    spzeile,
              gint    MapSize,
-             RGBMode rgb_format,
-             gint    mask_info_size,
-             gint    color_space_size)
+             RGBMode rgb_format)
 {
   guchar  buf[16] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0 };
   guchar  puffer[8];
@@ -624,20 +602,20 @@ write_image (FILE   *f,
                   Write (f, buf, 3);
                   break;
                 case RGBX_8888:
+                  buf[3] = *temp++;
                   buf[2] = *temp++;
                   buf[1] = *temp++;
-                  buf[0] = *temp++;
-                  buf[3] = 0;
+                  buf[0] = 0;
                   xpos++;
                   if (channels > 3 && (guchar) *temp == 0)
                     buf[0] = buf[1] = buf[2] = 0xff;
                   Write (f, buf, 4);
                   break;
                 case RGBA_8888:
+                  buf[3] = *temp++;
                   buf[2] = *temp++;
                   buf[1] = *temp++;
-                  buf[0] = *temp++;
-                  buf[3] = *temp;
+                  buf[0] = *temp;
                   xpos++;
                   Write (f, buf, 4);
                   break;
@@ -837,7 +815,7 @@ write_image (FILE   *f,
             FromL (length, puffer);
             Write (f, puffer, 4);
             fseek (f, 0x02, SEEK_SET);            /* Write length of file */
-            length += (0x36 + MapSize + mask_info_size + color_space_size);
+            length += (0x36 + MapSize);
             FromL (length, puffer);
             Write (f, puffer, 4);
             g_free (ketten);

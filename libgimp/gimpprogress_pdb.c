@@ -37,7 +37,7 @@
 /**
  * _gimp_progress_init:
  * @message: Message to use in the progress dialog.
- * @gdisplay_ID: GimpDisplay to update progressbar in, or -1 for a separate window.
+ * @gdisplay_ID: GimpDisplay to update progressbar in, or -1 for a seperate window.
  *
  * Initializes the progress bar for the current plug-in.
  *
@@ -110,7 +110,7 @@ _gimp_progress_update (gdouble percentage)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_progress_pulse (void)
@@ -136,13 +136,13 @@ gimp_progress_pulse (void)
  *
  * Changes the text in the progress bar for the current plug-in.
  *
- * This function changes the text in the progress bar for the current
- * plug-in. Unlike gimp_progress_init() it does not change the
+ * This function allows to change the text in the progress bar for the
+ * current plug-in. Unlike gimp_progress_init() it does not change the
  * displayed value.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_progress_set_text (const gchar *message)
@@ -174,7 +174,7 @@ gimp_progress_set_text (const gchar *message)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_progress_end (void)
@@ -205,7 +205,7 @@ gimp_progress_end (void)
  *
  * Returns: The progress bar's toplevel window.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint
 gimp_progress_get_window_handle (void)
@@ -239,7 +239,7 @@ gimp_progress_get_window_handle (void)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 _gimp_progress_install (const gchar *progress_callback)
@@ -271,7 +271,7 @@ _gimp_progress_install (const gchar *progress_callback)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 _gimp_progress_uninstall (const gchar *progress_callback)
@@ -302,7 +302,7 @@ _gimp_progress_uninstall (const gchar *progress_callback)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_progress_cancel (const gchar *progress_callback)

@@ -10,8 +10,6 @@ EXPORTS
 	gimp_cairo_checkerboard_create
 	gimp_cairo_set_source_rgb
 	gimp_cairo_set_source_rgba
-	gimp_cairo_surface_create_buffer
-	gimp_cairo_surface_get_format
 	gimp_cmyk_get_type
 	gimp_cmyk_get_uchar
 	gimp_cmyk_set
@@ -21,34 +19,11 @@ EXPORTS
 	gimp_cmyka_get_uchar
 	gimp_cmyka_set
 	gimp_cmyka_set_uchar
-	gimp_color_managed_get_color_profile
 	gimp_color_managed_get_icc_profile
 	gimp_color_managed_interface_get_type
 	gimp_color_managed_profile_changed
-	gimp_color_profile_get_copyright
-	gimp_color_profile_get_description
-	gimp_color_profile_get_format
-	gimp_color_profile_get_icc_profile
-	gimp_color_profile_get_label
-	gimp_color_profile_get_lcms_profile
-	gimp_color_profile_get_manufacturer
-	gimp_color_profile_get_model
-	gimp_color_profile_get_summary
-	gimp_color_profile_get_type
-	gimp_color_profile_is_cmyk
-	gimp_color_profile_is_equal
-	gimp_color_profile_is_rgb
-	gimp_color_profile_new_adobe_rgb
-	gimp_color_profile_new_from_file
-	gimp_color_profile_new_from_icc_profile
-	gimp_color_profile_new_from_lcms_profile
-	gimp_color_profile_new_linear_rgb
-	gimp_color_profile_new_linear_rgb_from_color_profile
-	gimp_color_profile_new_srgb
-	gimp_color_profile_new_srgb_gamma_from_color_profile
 	gimp_hsl_get_type
 	gimp_hsl_set
-	gimp_hsl_set_alpha
 	gimp_hsl_to_rgb
 	gimp_hsl_to_rgb_int
 	gimp_hsv_clamp
@@ -62,15 +37,11 @@ EXPORTS
 	gimp_param_rgb_get_type
 	gimp_param_spec_rgb
 	gimp_param_spec_rgb_has_alpha
-	gimp_pixbuf_create_buffer
-	gimp_pixbuf_get_format
-	gimp_pixbuf_get_icc_profile
 	gimp_rgb_add
 	gimp_rgb_clamp
 	gimp_rgb_composite
 	gimp_rgb_distance
 	gimp_rgb_gamma
-	gimp_rgb_get_pixel
 	gimp_rgb_get_type
 	gimp_rgb_get_uchar
 	gimp_rgb_intensity
@@ -86,7 +57,6 @@ EXPORTS
 	gimp_rgb_parse_name
 	gimp_rgb_set
 	gimp_rgb_set_alpha
-	gimp_rgb_set_pixel
 	gimp_rgb_set_uchar
 	gimp_rgb_subtract
 	gimp_rgb_to_cmyk
@@ -100,12 +70,10 @@ EXPORTS
 	gimp_rgb_to_l_int
 	gimp_rgba_add
 	gimp_rgba_distance
-	gimp_rgba_get_pixel
 	gimp_rgba_get_uchar
 	gimp_rgba_multiply
 	gimp_rgba_parse_css
 	gimp_rgba_set
-	gimp_rgba_set_pixel
 	gimp_rgba_set_uchar
 	gimp_rgba_subtract
 	gimp_value_get_rgb

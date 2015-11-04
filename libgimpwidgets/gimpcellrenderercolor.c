@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpbase/gimpbase.h"
@@ -318,7 +317,7 @@ gimp_cell_renderer_color_render (GtkCellRenderer      *cell,
  *
  * Return value: a new #GimpCellRendererColor
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GtkCellRenderer *
 gimp_cell_renderer_color_new (void)

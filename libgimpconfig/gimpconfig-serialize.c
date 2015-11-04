@@ -22,8 +22,7 @@
 #include "config.h"
 
 #include <cairo.h>
-#include <gegl.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 #include "libgimpmath/gimpmath.h"
@@ -61,7 +60,7 @@ static gboolean  gimp_config_serialize_rgb (const GValue *value,
  *
  * Returns: %TRUE if serialization succeeded, %FALSE otherwise
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_serialize_properties (GimpConfig       *config,
@@ -107,7 +106,7 @@ gimp_config_serialize_properties (GimpConfig       *config,
  *
  * Returns: %TRUE if serialization succeeded, %FALSE otherwise
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_serialize_changed_properties (GimpConfig       *config,
@@ -162,7 +161,7 @@ gimp_config_serialize_changed_properties (GimpConfig       *config,
  *
  * Returns: %TRUE if serialization succeeded, %FALSE otherwise
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_serialize_property (GimpConfig       *config,
@@ -328,7 +327,7 @@ gimp_config_serialize_property (GimpConfig       *config,
  *
  * Returns: %TRUE if serialization succeeded, %FALSE otherwise
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 gboolean
 gimp_config_serialize_property_by_name (GimpConfig       *config,
@@ -356,7 +355,7 @@ gimp_config_serialize_property_by_name (GimpConfig       *config,
  *
  * Return value: %TRUE if serialization succeeded, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_serialize_value (const GValue *value,
@@ -453,25 +452,24 @@ gimp_config_serialize_value (const GValue *value,
       return TRUE;
     }
 
-  if (G_VALUE_TYPE (value) == GIMP_TYPE_VALUE_ARRAY)
+  if (G_VALUE_TYPE (value) == G_TYPE_VALUE_ARRAY)
     {
-      GimpValueArray *array;
+      GValueArray *array;
 
       array = g_value_get_boxed (value);
 
       if (array)
         {
-          gint length = gimp_value_array_length (array);
           gint i;
 
-          g_string_append_printf (str, "%d", length);
+          g_string_append_printf (str, "%d", array->n_values);
 
-          for (i = 0; i < length; i++)
+          for (i = 0; i < array->n_values; i++)
             {
               g_string_append (str, " ");
 
-              if (! gimp_config_serialize_value (gimp_value_array_index (array,
-                                                                         i),
+              if (! gimp_config_serialize_value (g_value_array_get_nth (array,
+                                                                        i),
                                                  str, TRUE))
                 return FALSE;
             }

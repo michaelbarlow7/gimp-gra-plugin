@@ -22,9 +22,7 @@
 
 #include <string.h>
 
-#include <gio/gio.h>
-
-#define GIMP_DISABLE_DEPRECATION_WARNINGS
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 #include "libgimpbase/gimpprotocol.h"
@@ -148,7 +146,7 @@ gimp_tile_cache_size (gulong kilobytes)
  * @ntiles: number of tiles that should fit into the cache
  *
  * Sets the size of the tile cache on the plug-in side. This function
- * is similar to gimp_tile_cache_size() but supports specifying the
+ * is similar to gimp_tile_cache_size() but allows to specify the
  * number of tiles directly.
  *
  * If your plug-in access pixels tile-by-tile, it doesn't need a tile

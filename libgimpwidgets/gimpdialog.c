@@ -114,7 +114,7 @@ gimp_dialog_class_init (GimpDialogClass *klass)
   /**
    * GimpDialog:help-func:
    *
-   * Since: 2.2
+   * Since: GIMP 2.2
    **/
   g_object_class_install_property (object_class, PROP_HELP_FUNC,
                                    g_param_spec_pointer ("help-func", NULL, NULL,
@@ -124,7 +124,7 @@ gimp_dialog_class_init (GimpDialogClass *klass)
   /**
    * GimpDialog:help-id:
    *
-   * Since: 2.2
+   * Since: GIMP 2.2
    **/
   g_object_class_install_property (object_class, PROP_HELP_ID,
                                    g_param_spec_string ("help-id", NULL, NULL,
@@ -135,7 +135,7 @@ gimp_dialog_class_init (GimpDialogClass *klass)
   /**
    * GimpDialog:parent:
    *
-   * Since: 2.8
+   * Since: GIMP 2.8
    **/
   g_object_class_install_property (object_class, PROP_PARENT,
                                    g_param_spec_object ("parent", NULL, NULL,
@@ -159,7 +159,8 @@ gimp_dialog_constructed (GObject *object)
 {
   GimpDialogPrivate *private = GET_PRIVATE (object);
 
-  G_OBJECT_CLASS (parent_class)->constructed (object);
+  if (G_OBJECT_CLASS (parent_class)->constructed)
+    G_OBJECT_CLASS (parent_class)->constructed (object);
 
   if (private->help_func)
     gimp_help_connect (GTK_WIDGET (object),
@@ -244,17 +245,11 @@ gimp_dialog_set_property (GObject      *object,
         if (parent)
           {
             if (GTK_IS_WINDOW (parent))
-              {
-                gtk_window_set_transient_for (GTK_WINDOW (object),
-                                              GTK_WINDOW (parent));
-              }
+              gtk_window_set_transient_for (GTK_WINDOW (object),
+                                            GTK_WINDOW (parent));
             else
-              {
-                gtk_window_set_screen (GTK_WINDOW (object),
-                                       gtk_widget_get_screen (parent));
-                gtk_window_set_position (GTK_WINDOW (object),
-                                         GTK_WIN_POS_MOUSE);
-              }
+              gtk_window_set_screen (GTK_WINDOW (object),
+                                     gtk_widget_get_screen (parent));
           }
       }
       break;
@@ -678,7 +673,7 @@ gimp_dialog_run (GimpDialog *dialog)
  *
  * This function is for internal use only.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 void
 gimp_dialogs_show_help_button (gboolean  show)

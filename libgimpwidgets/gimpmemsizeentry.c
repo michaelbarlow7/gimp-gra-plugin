@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "gimpwidgetstypes.h"
@@ -35,10 +34,10 @@
 /**
  * SECTION: gimpmemsizeentry
  * @title: GimpMemSizeEntry
- * @short_description: A composite widget to enter a memory size.
+ * @short_description: A composite widget that allows to enter a memory size.
  *
  * Similar to a #GimpSizeEntry but instead of lengths, this widget is
- * used to let the user enter memory sizes. A combo box allows one to
+ * used to let the user enter memory sizes. An option menu allows to
  * switch between Kilobytes, Megabytes and Gigabytes. Used in the GIMP
  * preferences dialog.
  **/
@@ -174,7 +173,7 @@ gimp_memsize_entry_new (guint64  value,
                         guint64  upper)
 {
   GimpMemsizeEntry *entry;
-  GtkAdjustment    *adj;
+  GtkObject        *adj;
   guint             shift;
 
 #if _MSC_VER < 1300
@@ -199,13 +198,11 @@ gimp_memsize_entry_new (guint64  value,
   entry->upper = upper;
   entry->shift = shift;
 
-  adj = (GtkAdjustment *) gtk_adjustment_new (CAST (value >> shift),
-                                              CAST (lower >> shift),
-                                              CAST (upper >> shift),
-                                              1, 8, 0);
-
-  entry->spinbutton = gtk_spin_button_new (adj, 1.0, 0);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (entry->spinbutton), TRUE);
+  entry->spinbutton = gimp_spin_button_new (&adj,
+                                            CAST (value >> shift),
+                                            CAST (lower >> shift),
+                                            CAST (upper >> shift),
+                                            1, 8, 0, 1, 0);
 
 #undef CAST
 

@@ -19,14 +19,14 @@ endif
 if OS_WIN32
 gimp_def = gimp.def
 gimpui_def = gimpui.def
-libgimp_export_symbols = -export-symbols $(srcdir)/gimp.def
-libgimpui_export_symbols = -export-symbols $(srcdir)/gimpui.def
+libgimp_export_symbols = -export-symbols gimp.def
+libgimpui_export_symbols = -export-symbols gimpui.def
 
 install-libtool-import-lib:
 	$(INSTALL) .libs/libgimp-$(GIMP_API_VERSION).dll.a $(DESTDIR)$(libdir)
 	$(INSTALL) .libs/libgimpui-$(GIMP_API_VERSION).dll.a $(DESTDIR)$(libdir)
-	$(INSTALL) $(srcdir)/gimp.def $(DESTDIR)$(libdir)
-	$(INSTALL) $(srcdir)/gimpui.def $(DESTDIR)$(libdir)
+	$(INSTALL) gimp.def $(DESTDIR)$(libdir)
+	$(INSTALL) gimpui.def $(DESTDIR)$(libdir)
 
 uninstall-libtool-import-lib:
 	-rm $(DESTDIR)$(libdir)/libgimp-$(GIMP_API_VERSION).dll.a
@@ -64,15 +64,15 @@ gimpincludedir = $(includedir)/gimp-$(GIMP_API_VERSION)/libgimp
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"LibGimp\"	\
-	-DGIMP_COMPILATION		\
-	-I$(top_srcdir)			\
-	$(GTK_CFLAGS)			\
-	$(GEGL_CFLAGS)			\
-	$(GEXIV2_CFLAGS)		\
-	-I$(includedir)			\
+	-DGIMP_COMPILATION
+
+INCLUDES = \
+	-I$(top_srcdir)	\
+	$(GTK_CFLAGS)	\
+	-I$(includedir)	\
 	$(xobjective_c)
 
-lib_LTLIBRARIES = libgimp-@GIMP_API_VERSION@.la libgimpui-@GIMP_API_VERSION@.la
+lib_LTLIBRARIES = libgimp-2.0.la libgimpui-2.0.la
 
 PDB_WRAPPERS_C = \
 	gimp_pdb.c			\
@@ -83,9 +83,9 @@ PDB_WRAPPERS_C = \
 	gimpchannel_pdb.c		\
 	gimpcolor_pdb.c			\
 	gimpcontext_pdb.c		\
+	gimpconvert_pdb.c		\
 	gimpdisplay_pdb.c		\
 	gimpdrawable_pdb.c		\
-	gimpdrawablecolor_pdb.c		\
 	gimpdrawabletransform_pdb.c	\
 	gimpdynamics_pdb.c		\
 	gimpedit_pdb.c			\
@@ -97,15 +97,11 @@ PDB_WRAPPERS_C = \
 	gimpgradient_pdb.c		\
 	gimpgradients_pdb.c		\
 	gimpgradientselect_pdb.c	\
+	gimpguides_pdb.c		\
+	gimpgrid_pdb.c			\
 	gimphelp_pdb.c			\
 	gimpimage_pdb.c			\
-	gimpimagecolorprofile_pdb.c	\
-	gimpimageconvert_pdb.c		\
-	gimpimagegrid_pdb.c		\
-	gimpimageguides_pdb.c		\
 	gimpimageselect_pdb.c		\
-	gimpimagetransform_pdb.c	\
-	gimpimageundo_pdb.c		\
 	gimpitem_pdb.c			\
 	gimpitemtransform_pdb.c		\
 	gimplayer_pdb.c			\
@@ -126,6 +122,7 @@ PDB_WRAPPERS_C = \
 	gimptextlayer_pdb.c		\
 	gimptexttool_pdb.c		\
 	gimptransformtools_pdb.c	\
+	gimpundo_pdb.c			\
 	gimpunit_pdb.c			\
 	gimpvectors_pdb.c
 
@@ -139,9 +136,9 @@ PDB_WRAPPERS_H = \
 	gimpchannel_pdb.h		\
 	gimpcolor_pdb.h			\
 	gimpcontext_pdb.h		\
+	gimpconvert_pdb.h		\
 	gimpdisplay_pdb.h		\
 	gimpdrawable_pdb.h		\
-	gimpdrawablecolor_pdb.h		\
 	gimpdrawabletransform_pdb.h	\
 	gimpdynamics_pdb.h		\
 	gimpedit_pdb.h			\
@@ -153,15 +150,11 @@ PDB_WRAPPERS_H = \
 	gimpgradient_pdb.h		\
 	gimpgradients_pdb.h		\
 	gimpgradientselect_pdb.h	\
+	gimpgrid_pdb.h			\
+	gimpguides_pdb.h		\
 	gimphelp_pdb.h			\
 	gimpimage_pdb.h			\
-	gimpimagecolorprofile_pdb.h	\
-	gimpimageconvert_pdb.h		\
-	gimpimagegrid_pdb.h		\
-	gimpimageguides_pdb.h		\
 	gimpimageselect_pdb.h		\
-	gimpimagetransform_pdb.h	\
-	gimpimageundo_pdb.h		\
 	gimpitem_pdb.h			\
 	gimpitemtransform_pdb.h		\
 	gimplayer_pdb.h			\
@@ -182,12 +175,14 @@ PDB_WRAPPERS_H = \
 	gimptextlayer_pdb.h		\
 	gimptexttool_pdb.h		\
 	gimptransformtools_pdb.h	\
+	gimpundo_pdb.h			\
 	gimpunit_pdb.h			\
 	gimpvectors_pdb.h
 
-libgimp_sources = \
+libgimp_2_0_la_sources = \
 	gimp.c			\
 	gimp.h			\
+	gimpcompat.h		\
 	gimptypes.h		\
 	gimpenums.h		\
 	${PDB_WRAPPERS_C}	\
@@ -210,8 +205,6 @@ libgimp_sources = \
 	gimpgradientselect.h	\
 	gimpimage.c		\
 	gimpimage.h		\
-	gimpimagecolorprofile.c	\
-	gimpimagecolorprofile.h	\
 	gimplayer.c		\
 	gimplayer.h		\
 	gimppalette.c		\
@@ -242,8 +235,6 @@ libgimp_sources = \
 	gimpselection.h		\
 	gimptile.c		\
 	gimptile.h		\
-	gimptilebackendplugin.c \
-	gimptilebackendplugin.h \
 	gimpunitcache.c		\
 	gimpunitcache.h		\
 	gimpvectors.c		\
@@ -251,16 +242,16 @@ libgimp_sources = \
 	stdplugins-intl.h	\
 	libgimp-intl.h
 
-libgimp_built_sources = \
+libgimp_2_0_la_built_sources = \
 	gimpenums.c
 
-libgimp_extra_sources = gimpenums.c.tail
+libgimp_2_0_la_extra_sources = gimpenums.c.tail
 
-libgimp_@GIMP_API_VERSION@_la_SOURCES = \
-	$(libgimp_built_sources)	\
-	$(libgimp_sources)
+libgimp_2_0_la_SOURCES = \
+	$(libgimp_2_0_la_built_sources)	\
+	$(libgimp_2_0_la_sources)
 
-libgimpui_sources = \
+libgimpui_2_0_la_sources = \
 	gimpui.c			\
 	gimpui.h			\
 	gimpuitypes.h			\
@@ -284,8 +275,6 @@ libgimpui_sources = \
 	gimpgradientselectbutton.h	\
 	gimpimagecombobox.c		\
 	gimpimagecombobox.h		\
-	gimpimagemetadata.c		\
-	gimpimagemetadata.h		\
 	gimpitemcombobox.c		\
 	gimpitemcombobox.h		\
 	gimpmenu.c			\
@@ -309,18 +298,19 @@ libgimpui_sources = \
 	gimpzoompreview.c		\
 	gimpzoompreview.h
 
-libgimpui_built_sources = \
+libgimpui_2_0_la_built_sources = \
 	gimpuimarshal.c			\
 	gimpuimarshal.h
 
-libgimpui_extra_sources = gimpuimarshal.list
+libgimpui_2_0_la_extra_sources = gimpuimarshal.list
 
-libgimpui_@GIMP_API_VERSION@_la_SOURCES = \
-	$(libgimpui_built_sources)	\
-	$(libgimpui_sources)
+libgimpui_2_0_la_SOURCES = \
+	$(libgimpui_2_0_la_built_sources)	\
+	$(libgimpui_2_0_la_sources)
 
 gimpinclude_HEADERS = \
 	gimp.h				\
+	gimpcompat.h			\
 	gimptypes.h			\
 	gimpenums.h			\
 	${PDB_WRAPPERS_H}		\
@@ -333,7 +323,6 @@ gimpinclude_HEADERS = \
 	gimpgradients.h			\
 	gimpgradientselect.h		\
 	gimpimage.h			\
-	gimpimagecolorprofile.h		\
 	gimplayer.h			\
 	gimppalette.h			\
 	gimppalettes.h			\
@@ -362,7 +351,6 @@ gimpinclude_HEADERS = \
 	gimpgradientmenu.h		\
 	gimpgradientselectbutton.h	\
 	gimpimagecombobox.h		\
-	gimpimagemetadata.h		\
 	gimpitemcombobox.h		\
 	gimpmenu.h			\
 	gimppalettemenu.h		\
@@ -376,47 +364,53 @@ gimpinclude_HEADERS = \
 	gimpselectbutton.h		\
 	gimpzoompreview.h
 
-libgimp_@GIMP_API_VERSION@_la_LDFLAGS = \
+libgimp_2_0_la_LDFLAGS = \
 	-version-info $(LT_VERSION_INFO)	\
 	$(no_undefined)				\
 	$(libgimp_export_symbols)		\
 	$(framework_cocoa)
 
-EXTRA_libgimp_@GIMP_API_VERSION@_la_DEPENDENCIES = $(gimp_def)
-
-libgimp_@GIMP_API_VERSION@_la_LIBADD = \
+libgimp_2_0_la_LIBADD = \
 	$(libgimpconfig)	\
 	$(libgimpcolor)		\
 	$(libgimpbase)		\
 	$(CAIRO_LIBS)		\
-	$(GEGL_LIBS)		\
 	$(GDK_PIXBUF_LIBS)	\
 	$(RT_LIBS)
 
-libgimpui_@GIMP_API_VERSION@_la_LDFLAGS = \
+libgimp_2_0_la_DEPENDENCIES = \
+	$(gimp_def)		\
+	$(libgimpconfig)	\
+	$(libgimpcolor)		\
+	$(libgimpbase)
+
+libgimpui_2_0_la_LDFLAGS = \
 	-version-info $(LT_VERSION_INFO)	\
 	$(no_undefined)				\
 	$(libgimpui_export_symbols)		\
 	$(framework_cocoa)
 
-EXTRA_libgimpui_@GIMP_API_VERSION@_la_DEPENDENCIES = $(gimpui_def)
-
-libgimpui_@GIMP_API_VERSION@_la_LIBADD = \
+libgimpui_2_0_la_LIBADD = \
 	$(libgimp)		\
 	$(libgimpwidgets)	\
 	$(libgimpcolor)		\
 	$(libgimpbase)		\
 	$(libgimpmodule)	\
 	$(GTK_LIBS)		\
-	$(GEXIV2_LIBS)		\
 	$(RT_LIBS)
+
+libgimpui_2_0_la_DEPENDENCIES = \
+	$(gimpui_def)		\
+	$(libgimp)		\
+	$(libgimpwidgets)	\
+	$(libgimpbase)
 
 EXTRA_DIST = \
 	COPYING				\
 	gimp.def			\
 	gimpui.def			\
-	$(libgimp_extra_sources)	\
-	$(libgimpui_extra_sources)
+	$(libgimp_2_0_la_extra_sources)	\
+	$(libgimpui_2_0_la_extra_sources)
 
 install-data-local: install-ms-lib install-libtool-import-lib
 
@@ -431,7 +425,7 @@ CLEANFILES = $(gen_sources)
 
 gimpenums.c: $(srcdir)/gimpenums.h $(srcdir)/gimpenums.c.tail $(GIMP_MKENUMS)
 	$(GIMP_MKENUMS) \
-		--fhead "#include \"config.h\"\n#include <gio/gio.h>\n#undef GIMP_DISABLE_DEPRECATED\n#include \"libgimpbase/gimpbase.h\"\n#include \"libgimpconfig/gimpcolorconfig-enums.h\"\n#include \"gimpenums.h\"" \
+		--fhead "#include \"config.h\"\n#include <glib-object.h>\n#undef GIMP_DISABLE_DEPRECATED\n#include \"libgimpbase/gimpbase.h\"\n#include \"gimpenums.h\"" \
 		--fprod "\n/* enumerations from \"@filename@\" */" \
 		--vhead "GType\n@enum_name@_get_type (void)\n{\n  static const G@Type@Value values[] =\n  {" \
 		--vprod "    { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \

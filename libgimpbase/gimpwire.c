@@ -20,7 +20,7 @@
 
 #include <string.h>
 
-#include <glib-object.h>
+#include <glib.h>
 
 #include <libgimpcolor/gimpcolortypes.h>
 
@@ -96,6 +96,8 @@ gimp_wire_read (GIOChannel *channel,
                 gsize       count,
                 gpointer    user_data)
 {
+  g_return_val_if_fail (count >= 0, FALSE);
+
   if (wire_read_func)
     {
       if (!(* wire_read_func) (channel, buf, count, user_data))
@@ -165,6 +167,8 @@ gimp_wire_write (GIOChannel   *channel,
                  gsize         count,
                  gpointer      user_data)
 {
+  g_return_val_if_fail (count >= 0, FALSE);
+
   if (wire_write_func)
     {
       if (!(* wire_write_func) (channel, (guint8 *) buf, count, user_data))

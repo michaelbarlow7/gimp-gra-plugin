@@ -24,21 +24,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifdef PLATFORM_OSX
-#include <AppKit/AppKit.h>
-#endif
-
-#include <gio/gio.h>
-
-#if defined(G_OS_WIN32)
-/* This is a hack for Windows known directory support.
- * DATADIR (autotools-generated constant) is a type defined in objidl.h
- * so we must #undef it before including shlobj.h in order to avoid a
- * name clash. */
-#undef DATADIR
-#include <windows.h>
-#include <shlobj.h>
-#endif
+#include <glib-object.h>
 
 #include "gimpbasetypes.h"
 #include "gimputils.h"
@@ -247,251 +233,6 @@ gimp_filename_to_utf8 (const gchar *filename)
   return filename_utf8;
 }
 
-/**
- * gimp_file_get_utf8_name:
- * @file: a #GFile
- *
- * This function works like gimp_filename_to_utf8() and returns
- * a UTF-8 encoded string that does not need to be freed.
- *
- * It converts a #GFile's path or uri to UTF-8 temporarily.  The
- * return value is a pointer to a string that is guaranteed to be
- * valid only during the current iteration of the main loop or until
- * the next call to gimp_file_get_utf8_name().
- *
- * The only purpose of this function is to provide an easy way to pass
- * a #GFile's name to a function that expects an UTF-8 encoded string.
- *
- * See g_file_get_parse_name().
- *
- * Since: 2.10
- *
- * Return value: A temporarily valid UTF-8 representation of @file's name.
- *               This string must not be changed or freed.
- **/
-const gchar *
-gimp_file_get_utf8_name (GFile *file)
-{
-  gchar *name;
-
-  g_return_val_if_fail (G_IS_FILE (file), NULL);
-
-  name = g_file_get_parse_name (file);
-
-  g_object_set_data_full (G_OBJECT (file), "gimp-parse-name", name,
-                          (GDestroyNotify) g_free);
-
-  return name;
-}
-
-/**
- * gimp_file_has_extension:
- * @file:      a #GFile
- * @extension: an ASCII extension
- *
- * This function checks if @file's URI ends with @extension. It behaves
- * like g_str_has_suffix() on g_file_get_uri(), except that the string
- * comparison is done case-insensitively using g_ascii_strcasecmp().
- *
- * Since: 2.10
- *
- * Return value: %TRUE if @file's URI ends with @extension,
- *               %FALSE otherwise.
- **/
-gboolean
-gimp_file_has_extension (GFile       *file,
-                         const gchar *extension)
-{
-  gchar    *uri;
-  gint      uri_len;
-  gint      ext_len;
-  gboolean  result = FALSE;
-
-  g_return_val_if_fail (G_IS_FILE (file), FALSE);
-  g_return_val_if_fail (extension != NULL, FALSE);
-
-  uri = g_file_get_uri (file);
-
-  uri_len = strlen (uri);
-  ext_len = strlen (extension);
-
-  if (uri_len && ext_len && (uri_len > ext_len))
-    {
-      if (g_ascii_strcasecmp (uri + uri_len - ext_len, extension) == 0)
-        result = TRUE;
-    }
-
-  g_free (uri);
-
-  return result;
-}
-
-/**
- * gimp_file_show_in_file_manager:
- * @file:  a #GFile
- * @error: return location for a #GError
- *
- * Shows @file in the system file manager.
- *
- * Since: 2.10
- *
- * Return value: %TRUE on success, %FALSE otherwise. On %FALSE, @error
- *               is set.
- **/
-gboolean
-gimp_file_show_in_file_manager (GFile   *file,
-                                GError **error)
-{
-  g_return_val_if_fail (G_IS_FILE (file), FALSE);
-  g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-#if defined(G_OS_WIN32)
-
-  {
-    gboolean ret;
-    char *filename;
-    int n;
-    LPWSTR w_filename = NULL;
-    ITEMIDLIST *pidl = NULL;
-
-    ret = FALSE;
-
-    /* Calling this function mutiple times should do no harm, but it is
-       easier to put this here as it needs linking against ole32. */
-    CoInitialize (NULL);
-
-    filename = g_file_get_path (file);
-    if (!filename)
-      {
-        g_set_error_literal (error, G_FILE_ERROR, 0,
-                             _("File path is NULL"));
-        goto out;
-      }
-
-    n = MultiByteToWideChar (CP_UTF8, MB_ERR_INVALID_CHARS,
-                             filename, -1, NULL, 0);
-    if (n == 0)
-      {
-        g_set_error_literal (error, G_FILE_ERROR, 0,
-                             _("Error converting UTF-8 filename to wide char"));
-        goto out;
-      }
-
-    w_filename = g_malloc_n (n + 1, sizeof (wchar_t));
-    n = MultiByteToWideChar (CP_UTF8, MB_ERR_INVALID_CHARS,
-                             filename, -1,
-                             w_filename, (n + 1) * sizeof (wchar_t));
-    if (n == 0)
-      {
-        g_set_error_literal (error, G_FILE_ERROR, 0,
-                             _("Error converting UTF-8 filename to wide char"));
-        goto out;
-      }
-
-    pidl = ILCreateFromPathW (w_filename);
-    if (!pidl)
-      {
-        g_set_error_literal (error, G_FILE_ERROR, 0,
-                             _("ILCreateFromPath() failed"));
-        goto out;
-      }
-
-    SHOpenFolderAndSelectItems (pidl, 0, NULL, 0);
-    ret = TRUE;
-
-  out:
-    if (pidl)
-      ILFree (pidl);
-    g_free (w_filename);
-    g_free (filename);
-
-    return ret;
-  }
-
-#elif defined(PLATFORM_OSX)
-
-  {
-    gchar    *uri;
-    NSString *filename;
-    NSURL    *url;
-    gboolean  retval = TRUE;
-
-    uri = g_file_get_uri (file);
-    filename = [NSString stringWithUTF8String:uri];
-
-    url = [NSURL URLWithString:filename];
-    if (url)
-      {
-        NSArray *url_array = [NSArray arrayWithObject:url];
-
-        [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:url_array];
-      }
-    else
-      {
-        g_set_error (error, G_FILE_ERROR, 0,
-                     _("Cannot convert '%s' into a valid NSURL."), uri);
-        retval = FALSE;
-      }
-
-    g_free (uri);
-
-    return retval;
-  }
-
-#else /* UNIX */
-
-  {
-    GDBusProxy      *proxy;
-    GVariant        *retval;
-    GVariantBuilder *builder;
-    gchar           *uri;
-
-    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
-                                           G_DBUS_PROXY_FLAGS_NONE,
-                                           NULL,
-                                           "org.freedesktop.FileManager1",
-                                           "/org/freedesktop/FileManager1",
-                                           "org.freedesktop.FileManager1",
-                                           NULL, error);
-
-    if (! proxy)
-      {
-        g_prefix_error (error,
-                        _("Connecting to org.freedesktop.FileManager1 failed: "));
-        return FALSE;
-      }
-
-    uri = g_file_get_uri (file);
-
-    builder = g_variant_builder_new (G_VARIANT_TYPE ("as"));
-    g_variant_builder_add (builder, "s", uri);
-
-    g_free (uri);
-
-    retval = g_dbus_proxy_call_sync (proxy,
-                                     "ShowItems",
-                                     g_variant_new ("(ass)",
-                                                    builder,
-                                                    ""),
-                                     G_DBUS_CALL_FLAGS_NONE,
-                                     -1, NULL, error);
-
-    g_variant_builder_unref (builder);
-    g_object_unref (proxy);
-
-    if (! retval)
-      {
-        g_prefix_error (error, _("Calling ShowItems failed: "));
-        return FALSE;
-      }
-
-    g_variant_unref (retval);
-
-    return TRUE;
-  }
-
-#endif
-}
 
 /**
  * gimp_strip_uline:
@@ -569,7 +310,7 @@ gimp_strip_uline (const gchar *str)
  * Return value: A (possibly escaped) copy of @str which should be
  * freed using g_free() when it is not needed any longer.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gchar *
 gimp_escape_uline (const gchar *str)
@@ -614,7 +355,7 @@ gimp_escape_uline (const gchar *str)
  *               allocated string that should be freed with g_free()
  *               when no longer needed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_canonicalize_identifier (const gchar *identifier)
@@ -651,7 +392,7 @@ gimp_canonicalize_identifier (const gchar *identifier)
  *
  * Return value: the value's #GimpEnumDesc.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GimpEnumDesc *
 gimp_enum_get_desc (GEnumClass *enum_class,
@@ -695,7 +436,7 @@ gimp_enum_get_desc (GEnumClass *enum_class,
  * Return value: %TRUE if @value is valid for the @enum_type,
  *               %FALSE otherwise
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_enum_get_value (GType         enum_type,
@@ -777,7 +518,7 @@ gimp_enum_get_value (GType         enum_type,
  *
  * Return value: the translated description of the enum value
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 const gchar *
 gimp_enum_value_get_desc (GEnumClass *enum_class,
@@ -816,7 +557,7 @@ gimp_enum_value_get_desc (GEnumClass *enum_class,
  *
  * Return value: the translated help of the enum value
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 const gchar *
 gimp_enum_value_get_help (GEnumClass *enum_class,
@@ -843,7 +584,7 @@ gimp_enum_value_get_help (GEnumClass *enum_class,
  *
  * Return value: the value's #GimpFlagsDesc.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GimpFlagsDesc *
 gimp_flags_get_first_desc (GFlagsClass *flags_class,
@@ -887,7 +628,7 @@ gimp_flags_get_first_desc (GFlagsClass *flags_class,
  * Return value: %TRUE if @value is valid for the @flags_type,
  *               %FALSE otherwise
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_flags_get_first_value (GType         flags_type,
@@ -947,7 +688,7 @@ gimp_flags_get_first_value (GType         flags_type,
  *
  * Return value: the translated description of the flags value
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 const gchar *
 gimp_flags_value_get_desc (GFlagsClass *flags_class,
@@ -974,7 +715,7 @@ gimp_flags_value_get_desc (GFlagsClass *flags_class,
  *
  * Return value: the translated help of the flags value
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 const gchar *
 gimp_flags_value_get_help (GFlagsClass *flags_class,

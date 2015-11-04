@@ -1,9 +1,9 @@
 /* LIBGIMP - The GIMP Library
  * Copyright (C) 1995-1997 Peter Mattis and Spencer Kimball
  *
- * gimpcairo.h
- * Copyright (C) 2007      Sven Neumann <sven@gimp.org>
- *               2010-2012 Michael Natterer <mitch@gimp.org>
+ * gimpcairocolor.h
+ * Copyright (C) 2007 Sven Neumann <sven@gimp.org>
+ *               2010 Michael Natterer <mitch@gimp.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,22 +20,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __GIMP_CAIRO_H__
-#define __GIMP_CAIRO_H__
+#ifndef __GIMP_CAIRO_COLOR_H__
+#define __GIMP_CAIRO_COLOR_H__
 
 
-void              gimp_cairo_set_source_rgb        (cairo_t         *cr,
-                                                    const GimpRGB   *color);
-void              gimp_cairo_set_source_rgba       (cairo_t         *cr,
-                                                    const GimpRGB   *color);
+void              gimp_cairo_set_source_rgb      (cairo_t       *cr,
+                                                  const GimpRGB *color);
+void              gimp_cairo_set_source_rgba     (cairo_t       *cr,
+                                                  const GimpRGB *color);
 
-cairo_pattern_t * gimp_cairo_checkerboard_create   (cairo_t         *cr,
-                                                    gint             size,
-                                                    const GimpRGB   *light,
-                                                    const GimpRGB   *dark);
-
-const Babl      * gimp_cairo_surface_get_format    (cairo_surface_t *surface);
-GeglBuffer      * gimp_cairo_surface_create_buffer (cairo_surface_t *surface);
+cairo_pattern_t * gimp_cairo_checkerboard_create (cairo_t       *cr,
+                                                  gint           size,
+                                                  const GimpRGB *light,
+                                                  const GimpRGB *dark);
 
 
 /*  some useful macros for writing directly to a Cairo surface  */
@@ -49,7 +46,7 @@ GeglBuffer      * gimp_cairo_surface_create_buffer (cairo_surface_t *surface);
  *
  * Sets a single pixel in an Cairo image surface in %CAIRO_FORMAT_RGB24.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 #define GIMP_CAIRO_RGB24_SET_PIXEL(d, r, g, b) \
@@ -69,7 +66,7 @@ GeglBuffer      * gimp_cairo_surface_create_buffer (cairo_surface_t *surface);
  *
  * Gets a single pixel from a Cairo image surface in %CAIRO_FORMAT_RGB24.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 #define GIMP_CAIRO_RGB24_GET_PIXEL(s, r, g, b) \
@@ -90,7 +87,7 @@ GeglBuffer      * gimp_cairo_surface_create_buffer (cairo_surface_t *surface);
  *
  * Sets a single pixel in an Cairo image surface in %CAIRO_FORMAT_ARGB32.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 #define GIMP_CAIRO_ARGB32_SET_PIXEL(d, r, g, b, a) \
@@ -127,7 +124,7 @@ GeglBuffer      * gimp_cairo_surface_create_buffer (cairo_surface_t *surface);
  *
  * Gets a single pixel from a Cairo image surface in %CAIRO_FORMAT_ARGB32.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 #define GIMP_CAIRO_ARGB32_GET_PIXEL(s, r, g, b, a) \
@@ -156,4 +153,4 @@ GeglBuffer      * gimp_cairo_surface_create_buffer (cairo_surface_t *surface);
 #endif
 
 
-#endif /* __GIMP_CAIRO_H__ */
+#endif /* __GIMP_CAIRO_COLOR_H__ */

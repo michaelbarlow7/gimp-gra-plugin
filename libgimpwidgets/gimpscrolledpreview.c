@@ -216,8 +216,7 @@ gimp_scrolled_preview_init (GimpScrolledPreview *preview)
                     preview->nav_icon, 1,2, 1,2,
                     GTK_SHRINK, GTK_SHRINK, 0, 0);
 
-  image = gtk_image_new_from_icon_name (GIMP_STOCK_NAVIGATION,
-                                        GTK_ICON_SIZE_MENU);
+  image = gtk_image_new_from_stock (GIMP_STOCK_NAVIGATION, GTK_ICON_SIZE_MENU);
   gtk_container_add (GTK_CONTAINER (preview->nav_icon), image);
   gtk_widget_show (image);
 
@@ -809,7 +808,7 @@ gimp_scrolled_preview_set_cursor (GimpPreview *preview)
  * @x:       horizontal scroll offset
  * @y:       vertical scroll offset
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_scrolled_preview_set_position (GimpScrolledPreview *preview,
@@ -840,7 +839,7 @@ gimp_scrolled_preview_set_position (GimpScrolledPreview *preview,
  * @hscrollbar_policy: policy for horizontal scrollbar
  * @vscrollbar_policy: policy for vertical scrollbar
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_scrolled_preview_set_policy (GimpScrolledPreview *preview,
@@ -870,7 +869,7 @@ gimp_scrolled_preview_set_policy (GimpScrolledPreview *preview,
  * This function should only be used to implement widgets derived from
  * #GimpScrolledPreview. There is no point in calling this from a plug-in.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_scrolled_preview_freeze (GimpScrolledPreview *preview)
@@ -894,7 +893,7 @@ gimp_scrolled_preview_freeze (GimpScrolledPreview *preview)
  * This function should only be used to implement widgets derived from
  * #GimpScrolledPreview. There is no point in calling this from a plug-in.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_scrolled_preview_thaw (GimpScrolledPreview *preview)

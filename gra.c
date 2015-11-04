@@ -115,12 +115,12 @@ query (void)
   };
 
   gimp_install_procedure (LOAD_PROC,
-                          "Loads files of GRA file format",
-                          "Loads files of GRA file format",
+                          "Loads files of Windows GRA file format",
+                          "Loads files of Windows GRA file format",
                           "Alexander Schulz",
                           "Alexander Schulz",
                           "1997",
-                          N_("GRA image"),
+                          N_("Windows GRA image"),
                           NULL,
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (load_args),
@@ -134,12 +134,12 @@ query (void)
                                     "0,string,BM");
 
   gimp_install_procedure (SAVE_PROC,
-                          "Saves files in GRA file format",
-                          "Saves files in GRA file format",
-                          "Michael Barlow",
-                          "Michael Barlow",
-                          "2015",
-                          N_("GRA image"),
+                          "Saves files in Windows GRA file format",
+                          "Saves files in Windows GRA file format",
+                          "Alexander Schulz",
+                          "Alexander Schulz",
+                          "1997",
+                          N_("Windows GRA image"),
                           "INDEXED, GRAY, RGB*",
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (save_args), 0,
@@ -164,14 +164,12 @@ run (const gchar      *name,
   GimpExportReturn   export = GIMP_EXPORT_CANCEL;
   GError            *error  = NULL;
 
-  INIT_I18N ();
-  gegl_init (NULL, NULL);
-
   run_mode = param[0].data.d_int32;
+
+  INIT_I18N ();
 
   *nreturn_vals = 1;
   *return_vals  = values;
-
   values[0].type          = GIMP_PDB_STATUS;
   values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
 

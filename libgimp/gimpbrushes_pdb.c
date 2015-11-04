@@ -25,6 +25,9 @@
 #include <string.h>
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_BRUSHES_PDB_H__
+#include "gimpbrushes_pdb.h"
 
 
 /**
@@ -75,8 +78,7 @@ gimp_brushes_refresh (void)
  * Each name returned can be used as input to the
  * gimp_context_set_brush() procedure.
  *
- * Returns: The list of brush names. The returned value must be freed
- * with g_strfreev().
+ * Returns: The list of brush names.
  **/
 gchar **
 gimp_brushes_get_list (const gchar *filter,
@@ -97,12 +99,9 @@ gimp_brushes_get_list (const gchar *filter,
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
     {
       *num_brushes = return_vals[1].data.d_int32;
-      if (*num_brushes > 0)
-        {
-          brush_list = g_new0 (gchar *, *num_brushes + 1);
-          for (i = 0; i < *num_brushes; i++)
-            brush_list[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
-        }
+      brush_list = g_new (gchar *, *num_brushes);
+      for (i = 0; i < *num_brushes; i++)
+        brush_list[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
     }
 
   gimp_destroy_params (return_vals, nreturn_vals);

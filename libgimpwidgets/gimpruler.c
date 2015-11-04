@@ -39,9 +39,8 @@
  **/
 
 
-#define DEFAULT_RULER_FONT_SCALE    PANGO_SCALE_SMALL
-#define MINIMUM_INCR                5
-#define IMMEDIATE_REDRAW_THRESHOLD  20
+#define DEFAULT_RULER_FONT_SCALE  PANGO_SCALE_SMALL
+#define MINIMUM_INCR              5
 
 
 enum
@@ -70,11 +69,11 @@ typedef struct
 
   GdkWindow       *input_window;
   cairo_surface_t *backing_store;
-  gboolean         backing_store_valid;
-  GdkRectangle     last_pos_rect;
-  guint            pos_redraw_idle_id;
   PangoLayout     *layout;
   gdouble          font_scale;
+
+  gint             xsrc;
+  gint             ysrc;
 
   GList           *track_widgets;
 } GimpRulerPrivate;
@@ -94,42 +93,37 @@ static const struct
 };
 
 
-static void          gimp_ruler_dispose               (GObject        *object);
-static void          gimp_ruler_set_property          (GObject        *object,
-                                                       guint           prop_id,
-                                                       const GValue   *value,
-                                                       GParamSpec     *pspec);
-static void          gimp_ruler_get_property          (GObject        *object,
-                                                       guint           prop_id,
-                                                       GValue         *value,
-                                                       GParamSpec     *pspec);
+static void          gimp_ruler_dispose       (GObject        *object);
+static void          gimp_ruler_set_property  (GObject        *object,
+                                               guint            prop_id,
+                                               const GValue   *value,
+                                               GParamSpec     *pspec);
+static void          gimp_ruler_get_property  (GObject        *object,
+                                               guint           prop_id,
+                                               GValue         *value,
+                                               GParamSpec     *pspec);
 
-static void          gimp_ruler_realize               (GtkWidget      *widget);
-static void          gimp_ruler_unrealize             (GtkWidget      *widget);
-static void          gimp_ruler_map                   (GtkWidget      *widget);
-static void          gimp_ruler_unmap                 (GtkWidget      *widget);
-static void          gimp_ruler_size_allocate         (GtkWidget      *widget,
-                                                       GtkAllocation  *allocation);
-static void          gimp_ruler_size_request          (GtkWidget      *widget,
-                                                       GtkRequisition *requisition);
-static void          gimp_ruler_style_set             (GtkWidget      *widget,
-                                                       GtkStyle       *prev_style);
-static gboolean      gimp_ruler_motion_notify         (GtkWidget      *widget,
-                                                       GdkEventMotion *event);
-static gboolean      gimp_ruler_expose                (GtkWidget      *widget,
-                                                       GdkEventExpose *event);
+static void          gimp_ruler_realize       (GtkWidget      *widget);
+static void          gimp_ruler_unrealize     (GtkWidget      *widget);
+static void          gimp_ruler_map           (GtkWidget      *widget);
+static void          gimp_ruler_unmap         (GtkWidget      *widget);
+static void          gimp_ruler_size_allocate (GtkWidget      *widget,
+                                               GtkAllocation  *allocation);
+static void          gimp_ruler_size_request  (GtkWidget      *widget,
+                                               GtkRequisition *requisition);
+static void          gimp_ruler_style_set     (GtkWidget      *widget,
+                                               GtkStyle       *prev_style);
+static gboolean      gimp_ruler_motion_notify (GtkWidget      *widget,
+                                               GdkEventMotion *event);
+static gboolean      gimp_ruler_expose        (GtkWidget      *widget,
+                                               GdkEventExpose *event);
 
-static void          gimp_ruler_draw_ticks            (GimpRuler      *ruler);
-static GdkRectangle  gimp_ruler_get_pos_rect          (GimpRuler      *ruler,
-                                                       gdouble         position);
-static gboolean      gimp_ruler_idle_queue_pos_redraw (gpointer        data);
-static void          gimp_ruler_queue_pos_redraw      (GimpRuler      *ruler);
-static void          gimp_ruler_draw_pos              (GimpRuler      *ruler,
-                                                       cairo_t        *cr);
-static void          gimp_ruler_make_pixmap           (GimpRuler      *ruler);
+static void          gimp_ruler_draw_ticks    (GimpRuler      *ruler);
+static void          gimp_ruler_draw_pos      (GimpRuler      *ruler);
+static void          gimp_ruler_make_pixmap   (GimpRuler      *ruler);
 
-static PangoLayout * gimp_ruler_get_layout            (GtkWidget      *widget,
-                                                       const gchar    *text);
+static PangoLayout * gimp_ruler_get_layout    (GtkWidget      *widget,
+                                               const gchar    *text);
 
 
 G_DEFINE_TYPE (GimpRuler, gimp_ruler, GTK_TYPE_WIDGET)
@@ -169,7 +163,7 @@ gimp_ruler_class_init (GimpRulerClass *klass)
                                                       GIMP_PARAM_READWRITE));
 
   g_object_class_install_property (object_class,
-                                   PROP_UNIT,
+                                   PROP_LOWER,
                                    gimp_param_spec_unit ("unit",
                                                          "Unit",
                                                          "Unit of ruler",
@@ -233,23 +227,14 @@ gimp_ruler_init (GimpRuler *ruler)
 
   gtk_widget_set_has_window (GTK_WIDGET (ruler), FALSE);
 
-  priv->orientation         = GTK_ORIENTATION_HORIZONTAL;
-  priv->unit                = GIMP_PIXELS;
-  priv->lower               = 0;
-  priv->upper               = 0;
-  priv->position            = 0;
-  priv->max_size            = 0;
-
-  priv->backing_store       = NULL;
-  priv->backing_store_valid = FALSE;
-
-  priv->last_pos_rect.x      = 0;
-  priv->last_pos_rect.y      = 0;
-  priv->last_pos_rect.width  = 0;
-  priv->last_pos_rect.height = 0;
-  priv->pos_redraw_idle_id   = 0;
-
-  priv->font_scale          = DEFAULT_RULER_FONT_SCALE;
+  priv->orientation   = GTK_ORIENTATION_HORIZONTAL;
+  priv->unit          = GIMP_PIXELS;
+  priv->lower         = 0;
+  priv->upper         = 0;
+  priv->position      = 0;
+  priv->max_size      = 0;
+  priv->backing_store = NULL;
+  priv->font_scale    = DEFAULT_RULER_FONT_SCALE;
 }
 
 static void
@@ -260,12 +245,6 @@ gimp_ruler_dispose (GObject *object)
 
   while (priv->track_widgets)
     gimp_ruler_remove_track_widget (ruler, priv->track_widgets->data);
-
-  if (priv->pos_redraw_idle_id)
-    {
-      g_source_remove (priv->pos_redraw_idle_id);
-      priv->pos_redraw_idle_id = 0;
-    }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -369,7 +348,7 @@ gimp_ruler_get_property (GObject    *object,
  *
  * Return value: a new #GimpRuler widget.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GtkWidget *
 gimp_ruler_new (GtkOrientation orientation)
@@ -511,7 +490,7 @@ gimp_ruler_track_widget_motion_notify (GtkWidget      *widget,
  * for the track widget's children, regardless of whether they are
  * ordinary children of off-screen children.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  */
 void
 gimp_ruler_add_track_widget (GimpRuler *ruler,
@@ -544,7 +523,7 @@ gimp_ruler_add_track_widget (GimpRuler *ruler,
  * Removes a previously added track widget from the ruler. See
  * gimp_ruler_add_track_widget().
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  */
 void
 gimp_ruler_remove_track_widget (GimpRuler *ruler,
@@ -576,7 +555,7 @@ gimp_ruler_remove_track_widget (GimpRuler *ruler,
  *
  * This sets the unit of the ruler.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  */
 void
 gimp_ruler_set_unit (GimpRuler *ruler,
@@ -593,7 +572,6 @@ gimp_ruler_set_unit (GimpRuler *ruler,
       priv->unit = unit;
       g_object_notify (G_OBJECT (ruler), "unit");
 
-      priv->backing_store_valid = FALSE;
       gtk_widget_queue_draw (GTK_WIDGET (ruler));
     }
 }
@@ -604,7 +582,7 @@ gimp_ruler_set_unit (GimpRuler *ruler,
  *
  * Return value: the unit currently used in the @ruler widget.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GimpUnit
 gimp_ruler_get_unit (GimpRuler *ruler)
@@ -621,7 +599,7 @@ gimp_ruler_get_unit (GimpRuler *ruler)
  *
  * This sets the position of the ruler.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  */
 void
 gimp_ruler_set_position (GimpRuler *ruler,
@@ -635,39 +613,10 @@ gimp_ruler_set_position (GimpRuler *ruler,
 
   if (priv->position != position)
     {
-      GdkRectangle rect;
-      gint xdiff, ydiff;
-
       priv->position = position;
       g_object_notify (G_OBJECT (ruler), "position");
 
-      rect = gimp_ruler_get_pos_rect (ruler, priv->position);
-
-      xdiff = rect.x - priv->last_pos_rect.x;
-      ydiff = rect.y - priv->last_pos_rect.y;
-
-      /*
-       * If the position has changed far enough, queue a redraw immediately.
-       * Otherwise, we only queue a redraw in a low priority idle handler, to
-       * allow for other things (like updating the canvas) to run.
-       *
-       * TODO: This might not be necessary any more in GTK3 with the frame
-       *       clock. Investigate this more after the port to GTK3.
-       */
-      if (priv->last_pos_rect.width  != 0 &&
-          priv->last_pos_rect.height != 0 &&
-          (ABS (xdiff) > IMMEDIATE_REDRAW_THRESHOLD ||
-           ABS (ydiff) > IMMEDIATE_REDRAW_THRESHOLD))
-        {
-          gimp_ruler_queue_pos_redraw (ruler);
-        }
-      else if (! priv->pos_redraw_idle_id)
-        {
-          priv->pos_redraw_idle_id =
-            g_idle_add_full (G_PRIORITY_LOW,
-                             gimp_ruler_idle_queue_pos_redraw,
-                             ruler, NULL);
-        }
+      gimp_ruler_draw_pos (ruler);
     }
 }
 
@@ -677,7 +626,7 @@ gimp_ruler_set_position (GimpRuler *ruler,
  *
  * Return value: the current position of the @ruler widget.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gdouble
 gimp_ruler_get_position (GimpRuler *ruler)
@@ -697,7 +646,7 @@ gimp_ruler_get_position (GimpRuler *ruler)
  *
  * This sets the range of the ruler.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  */
 void
 gimp_ruler_set_range (GimpRuler *ruler,
@@ -729,7 +678,6 @@ gimp_ruler_set_range (GimpRuler *ruler,
     }
   g_object_thaw_notify (G_OBJECT (ruler));
 
-  priv->backing_store_valid = FALSE;
   gtk_widget_queue_draw (GTK_WIDGET (ruler));
 }
 
@@ -744,7 +692,7 @@ gimp_ruler_set_range (GimpRuler *ruler,
  * Retrieves values indicating the range and current position of a #GimpRuler.
  * See gimp_ruler_set_range().
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 void
 gimp_ruler_get_range (GimpRuler *ruler,
@@ -809,8 +757,6 @@ gimp_ruler_unrealize (GtkWidget *widget)
       cairo_surface_destroy (priv->backing_store);
       priv->backing_store = NULL;
     }
-
-  priv->backing_store_valid = FALSE;
 
   if (priv->layout)
     {
@@ -936,19 +882,19 @@ gimp_ruler_expose (GtkWidget      *widget,
       GtkAllocation     allocation;
       cairo_t          *cr;
 
-      if (! priv->backing_store_valid)
-        gimp_ruler_draw_ticks (ruler);
+      gimp_ruler_draw_ticks (ruler);
 
       cr = gdk_cairo_create (gtk_widget_get_window (widget));
       gdk_cairo_region (cr, event->region);
       cairo_clip (cr);
 
       gtk_widget_get_allocation (widget, &allocation);
-      cairo_set_source_surface (cr, priv->backing_store,
-                                allocation.x, allocation.y);
+      cairo_translate (cr, allocation.x, allocation.y);
+
+      cairo_set_source_surface (cr, priv->backing_store, 0, 0);
       cairo_paint (cr);
 
-      gimp_ruler_draw_pos (ruler, cr);
+      gimp_ruler_draw_pos (ruler);
 
       cairo_destroy (cr);
     }
@@ -1190,30 +1136,26 @@ gimp_ruler_draw_ticks (GimpRuler *ruler)
     }
 
   cairo_fill (cr);
-
-  priv->backing_store_valid = TRUE;
-
 out:
   cairo_destroy (cr);
 }
 
-static GdkRectangle
-gimp_ruler_get_pos_rect (GimpRuler *ruler,
-                         gdouble    position)
+static void
+gimp_ruler_draw_pos (GimpRuler *ruler)
 {
   GtkWidget        *widget = GTK_WIDGET (ruler);
   GtkStyle         *style  = gtk_widget_get_style (widget);
   GimpRulerPrivate *priv   = GIMP_RULER_GET_PRIVATE (ruler);
+  GtkStateType      state  = gtk_widget_get_state (widget);
   GtkAllocation     allocation;
+  gint              x, y;
   gint              width, height;
+  gint              bs_width, bs_height;
   gint              xthickness;
   gint              ythickness;
-  gdouble           upper, lower;
-  gdouble           increment;
-  GdkRectangle      rect = { 0, };
 
   if (! gtk_widget_is_drawable (widget))
-    return rect;
+    return;
 
   gtk_widget_get_allocation (widget, &allocation);
 
@@ -1225,123 +1167,84 @@ gimp_ruler_get_pos_rect (GimpRuler *ruler,
       width  = allocation.width;
       height = allocation.height - ythickness * 2;
 
-      rect.width = height / 2 + 2;
-      rect.width |= 1;  /* make sure it's odd */
-      rect.height = rect.width / 2 + 1;
+      bs_width = height / 2 + 2;
+      bs_width |= 1;  /* make sure it's odd */
+      bs_height = bs_width / 2 + 1;
     }
   else
     {
       width  = allocation.width - xthickness * 2;
       height = allocation.height;
 
-      rect.height = width / 2 + 2;
-      rect.height |= 1;  /* make sure it's odd */
-      rect.width = rect.height / 2 + 1;
+      bs_height = width / 2 + 2;
+      bs_height |= 1;  /* make sure it's odd */
+      bs_width = bs_height / 2 + 1;
     }
 
-  gimp_ruler_get_range (ruler, &lower, &upper, NULL);
-
-  if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+  if ((bs_width > 0) && (bs_height > 0))
     {
-      increment = (gdouble) width / (upper - lower);
+      cairo_t *cr = gdk_cairo_create (gtk_widget_get_window (widget));
+      gdouble  lower;
+      gdouble  upper;
+      gdouble  position;
+      gdouble  increment;
 
-      rect.x = ROUND ((position - lower) * increment) + (xthickness - rect.width) / 2 - 1;
-      rect.y = (height + rect.height) / 2 + ythickness;
-    }
-  else
-    {
-      increment = (gdouble) height / (upper - lower);
+      cairo_rectangle (cr,
+                       allocation.x, allocation.y,
+                       allocation.width, allocation.height);
+      cairo_clip (cr);
 
-      rect.x = (width + rect.width) / 2 + xthickness;
-      rect.y = ROUND ((position - lower) * increment) + (ythickness - rect.height) / 2 - 1;
-    }
+      cairo_translate (cr, allocation.x, allocation.y);
 
-  rect.x += allocation.x;
-  rect.y += allocation.y;
+      /*  If a backing store exists, restore the ruler  */
+      if (priv->backing_store)
+        {
+          cairo_set_source_surface (cr, priv->backing_store, 0, 0);
+          cairo_rectangle (cr, priv->xsrc, priv->ysrc, bs_width, bs_height);
+          cairo_fill (cr);
+        }
 
-  return rect;
-}
+      position = gimp_ruler_get_position (ruler);
 
-static gboolean
-gimp_ruler_idle_queue_pos_redraw (gpointer data)
-{
-  GimpRuler        *ruler = data;
-  GimpRulerPrivate *priv  = GIMP_RULER_GET_PRIVATE (ruler);
-
-  gimp_ruler_queue_pos_redraw (ruler);
-
-  priv->pos_redraw_idle_id = 0;
-
-  return G_SOURCE_REMOVE;
-}
-
-static void
-gimp_ruler_queue_pos_redraw (GimpRuler *ruler)
-{
-  GimpRulerPrivate  *priv = GIMP_RULER_GET_PRIVATE (ruler);
-  const GdkRectangle rect = gimp_ruler_get_pos_rect (ruler, priv->position);
-
-  gtk_widget_queue_draw_area (GTK_WIDGET(ruler),
-                              rect.x,
-                              rect.y,
-                              rect.width,
-                              rect.height);
-
-  if (priv->last_pos_rect.width != 0 || priv->last_pos_rect.height != 0)
-    {
-      gtk_widget_queue_draw_area (GTK_WIDGET(ruler),
-                                  priv->last_pos_rect.x,
-                                  priv->last_pos_rect.y,
-                                  priv->last_pos_rect.width,
-                                  priv->last_pos_rect.height);
-
-      priv->last_pos_rect.x      = 0;
-      priv->last_pos_rect.y      = 0;
-      priv->last_pos_rect.width  = 0;
-      priv->last_pos_rect.height = 0;
-    }
-}
-
-static void
-gimp_ruler_draw_pos (GimpRuler *ruler,
-                     cairo_t   *cr)
-{
-  GtkWidget        *widget = GTK_WIDGET (ruler);
-  GtkStyle         *style  = gtk_widget_get_style (widget);
-  GimpRulerPrivate *priv   = GIMP_RULER_GET_PRIVATE (ruler);
-  GtkStateType      state  = gtk_widget_get_state (widget);
-  GdkRectangle      pos_rect;
-
-  if (! gtk_widget_is_drawable (widget))
-    return;
-
-  pos_rect = gimp_ruler_get_pos_rect (ruler, gimp_ruler_get_position (ruler));
-
-  if ((pos_rect.width > 0) && (pos_rect.height > 0))
-    {
-      gdk_cairo_set_source_color (cr, &style->fg[state]);
-
-      cairo_move_to (cr, pos_rect.x, pos_rect.y);
+      gimp_ruler_get_range (ruler, &lower, &upper, NULL);
 
       if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
         {
-          cairo_line_to (cr, pos_rect.x + pos_rect.width / 2.0,
-                             pos_rect.y + pos_rect.height);
-          cairo_line_to (cr, pos_rect.x + pos_rect.width,
-                             pos_rect.y);
+          increment = (gdouble) width / (upper - lower);
+
+          x = ROUND ((position - lower) * increment) + (xthickness - bs_width) / 2 - 1;
+          y = (height + bs_height) / 2 + ythickness;
         }
       else
         {
-          cairo_line_to (cr, pos_rect.x + pos_rect.width,
-                             pos_rect.y + pos_rect.height / 2.0);
-          cairo_line_to (cr, pos_rect.x,
-                             pos_rect.y + pos_rect.height);
+          increment = (gdouble) height / (upper - lower);
+
+          x = (width + bs_width) / 2 + xthickness;
+          y = ROUND ((position - lower) * increment) + (ythickness - bs_height) / 2 - 1;
+        }
+
+      gdk_cairo_set_source_color (cr, &style->fg[state]);
+
+      cairo_move_to (cr, x, y);
+
+      if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+        {
+          cairo_line_to (cr, x + bs_width / 2.0, y + bs_height);
+          cairo_line_to (cr, x + bs_width,       y);
+        }
+      else
+        {
+          cairo_line_to (cr, x + bs_width, y + bs_height / 2.0);
+          cairo_line_to (cr, x,            y + bs_height);
         }
 
       cairo_fill (cr);
-    }
 
-  priv->last_pos_rect = pos_rect;
+      cairo_destroy (cr);
+
+      priv->xsrc = x;
+      priv->ysrc = y;
+    }
 }
 
 static void
@@ -1361,9 +1264,8 @@ gimp_ruler_make_pixmap (GimpRuler *ruler)
                                        CAIRO_CONTENT_COLOR,
                                        allocation.width,
                                        allocation.height);
-
-  priv->backing_store_valid = FALSE;
 }
+
 
 static PangoLayout *
 gimp_ruler_create_layout (GtkWidget   *widget,

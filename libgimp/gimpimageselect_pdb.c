@@ -50,18 +50,18 @@
  * drawable) that have color sufficiently close to the specified color
  * (as determined by the threshold and criterion context values) are
  * included in the selection. To select transparent regions, the color
- * specified must also have minimum alpha.
- * This procedure is affected by the following context setters:
- * gimp_context_set_antialias(), gimp_context_set_feather(),
- * gimp_context_set_feather_radius(), gimp_context_set_sample_merged(),
+ * specified must also have minimum alpha. This procedure is affected
+ * by the following context setters: gimp_context_set_antialias(),
+ * gimp_context_set_feather(), gimp_context_set_feather_radius(),
+ * gimp_context_set_sample_merged(),
  * gimp_context_set_sample_criterion(),
  * gimp_context_set_sample_threshold(),
- * gimp_context_set_sample_transparent().
- * In the case of a merged sampling, the supplied drawable is ignored.
+ * gimp_context_set_sample_transparent(). In the case of a merged
+ * sampling, the supplied drawable is ignored.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_color (gint32          image_ID,
@@ -110,21 +110,19 @@ gimp_image_select_color (gint32          image_ID,
  * until no more expansion is possible. If antialiasing is turned on,
  * the final selection mask will contain intermediate values based on
  * close misses to the threshold bar at pixels along the seed fill
- * boundary.
- * This procedure is affected by the following context setters:
- * gimp_context_set_antialias(), gimp_context_set_feather(),
+ * boundary. This procedure is affected by the following context
+ * setters: gimp_context_set_antialias(), gimp_context_set_feather(),
  * gimp_context_set_feather_radius(), gimp_context_set_sample_merged(),
  * gimp_context_set_sample_criterion(),
  * gimp_context_set_sample_threshold(),
- * gimp_context_set_sample_transparent().
- * In the case of a merged sampling, the supplied drawable is ignored.
- * If the sample is merged, the specified coordinates are relative to
- * the image origin; otherwise, they are relative to the drawable's
- * origin.
+ * gimp_context_set_sample_transparent(). In the case of a merged
+ * sampling, the supplied drawable is ignored. If the sample is merged,
+ * the specified coordinates are relative to the image origin;
+ * otherwise, they are relative to the drawable's origin.
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_contiguous_color (gint32         image_ID,
@@ -166,13 +164,13 @@ gimp_image_select_contiguous_color (gint32         image_ID,
  *
  * This tool creates a rectangular selection over the specified image.
  * The rectangular region can be either added to, subtracted from, or
- * replace the contents of the previous selection mask.
- * This procedure is affected by the following context setters:
+ * replace the contents of the previous selection mask. This procedure
+ * is affected by the following context setters:
  * gimp_context_set_feather(), gimp_context_set_feather_radius().
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_rectangle (gint32         image_ID,
@@ -220,14 +218,13 @@ gimp_image_select_rectangle (gint32         image_ID,
  * This tool creates a rectangular selection with round corners over
  * the specified image. The rectangular region can be either added to,
  * subtracted from, or replace the contents of the previous selection
- * mask.
- * This procedure is affected by the following context setters:
+ * mask. This procedure is affected by the following context setters:
  * gimp_context_set_antialias(), gimp_context_set_feather(),
  * gimp_context_set_feather_radius().
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_round_rectangle (gint32         image_ID,
@@ -275,14 +272,14 @@ gimp_image_select_round_rectangle (gint32         image_ID,
  *
  * This tool creates an elliptical selection over the specified image.
  * The elliptical region can be either added to, subtracted from, or
- * replace the contents of the previous selection mask.
- * This procedure is affected by the following context setters:
+ * replace the contents of the previous selection mask. This procedure
+ * is affected by the following context setters:
  * gimp_context_set_antialias(), gimp_context_set_feather(),
  * gimp_context_set_feather_radius().
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_ellipse (gint32         image_ID,
@@ -329,14 +326,14 @@ gimp_image_select_ellipse (gint32         image_ID,
  * The length of array must be 2n, where n is the number of points.
  * Each point is defined by 2 floating point values which correspond to
  * the x and y coordinates. If the final point does not connect to the
- * starting point, a connecting segment is automatically added.
- * This procedure is affected by the following context setters:
+ * starting point, a connecting segment is automatically added. This
+ * procedure is affected by the following context setters:
  * gimp_context_set_antialias(), gimp_context_set_feather(),
  * gimp_context_set_feather_radius().
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_polygon (gint32          image_ID,
@@ -374,14 +371,13 @@ gimp_image_select_polygon (gint32          image_ID,
  * This procedure renders the item's outline into the current selection
  * of the image the item belongs to. What exactly the item's outline is
  * depends on the item type: for layers, it's the layer's alpha
- * channel, for vectors the vector's shape.
- * This procedure is affected by the following context setters:
- * gimp_context_set_antialias(), gimp_context_set_feather(),
- * gimp_context_set_feather_radius().
+ * channel, for vectors the vector's shape. This procedure is affected
+ * by the following context setters: gimp_context_set_antialias(),
+ * gimp_context_set_feather(), gimp_context_set_feather_radius().
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_image_select_item (gint32         image_ID,

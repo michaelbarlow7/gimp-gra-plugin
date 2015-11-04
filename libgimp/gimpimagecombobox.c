@@ -23,7 +23,6 @@
 
 #include <stdlib.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpwidgets/gimpwidgets.h"
@@ -124,7 +123,7 @@ gimp_image_combo_box_init (GimpImageComboBox *combo_box)
  *
  * Return value: a new #GimpIntComboBox.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GtkWidget *
 gimp_image_combo_box_new (GimpImageConstraintFunc constraint,

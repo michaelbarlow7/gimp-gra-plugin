@@ -49,8 +49,7 @@
  * area lies completely outside the bounds of the current drawable and
  * there is nothing to copy from.
  *
- * Returns: TRUE if the cut was successful, FALSE if there was nothing
- * to copy from.
+ * Returns: TRUE if the cut was successful, FALSE if there was nothing to copy from.
  **/
 gboolean
 gimp_edit_cut (gint32 drawable_ID)
@@ -87,8 +86,7 @@ gimp_edit_cut (gint32 drawable_ID)
  * completely outside the bounds of the current drawable and there is
  * nothing to copy from.
  *
- * Returns: TRUE if the cut was successful, FALSE if there was nothing
- * to copy from.
+ * Returns: TRUE if the cut was successful, FALSE if there was nothing to copy from.
  **/
 gboolean
 gimp_edit_copy (gint32 drawable_ID)
@@ -125,7 +123,7 @@ gimp_edit_copy (gint32 drawable_ID)
  *
  * Returns: TRUE if the copy was successful.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_edit_copy_visible (gint32 image_ID)
@@ -206,7 +204,7 @@ gimp_edit_paste (gint32   drawable_ID,
  *
  * Returns: The new image.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint32
 gimp_edit_paste_as_new (void)
@@ -239,10 +237,9 @@ gimp_edit_paste_as_new (void)
  * later pasting, regardless of any intermediate copy or cut
  * operations.
  *
- * Returns: The real name given to the buffer, or NULL if the cut
- * failed.
+ * Returns: The real name given to the buffer, or NULL if the cut failed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_edit_named_cut (gint32       drawable_ID,
@@ -278,10 +275,9 @@ gimp_edit_named_cut (gint32       drawable_ID,
  * later pasting, regardless of any intermediate copy or cut
  * operations.
  *
- * Returns: The real name given to the buffer, or NULL if the copy
- * failed.
+ * Returns: The real name given to the buffer, or NULL if the copy failed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_edit_named_copy (gint32       drawable_ID,
@@ -317,10 +313,9 @@ gimp_edit_named_copy (gint32       drawable_ID,
  * available for later pasting, regardless of any intermediate copy or
  * cut operations.
  *
- * Returns: The real name given to the buffer, or NULL if the copy
- * failed.
+ * Returns: The real name given to the buffer, or NULL if the copy failed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_edit_named_copy_visible (gint32       image_ID,
@@ -357,7 +352,7 @@ gimp_edit_named_copy_visible (gint32       image_ID,
  *
  * Returns: The new floating selection.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint32
 gimp_edit_named_paste (gint32       drawable_ID,
@@ -394,7 +389,7 @@ gimp_edit_named_paste (gint32       drawable_ID,
  *
  * Returns: The new image.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint32
 gimp_edit_named_paste_as_new (const gchar *buffer_name)
@@ -580,7 +575,7 @@ gimp_edit_bucket_fill (gint32               drawable_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_edit_bucket_fill_full (gint32               drawable_ID,
@@ -741,7 +736,7 @@ gimp_edit_stroke (gint32 drawable_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_edit_stroke_vectors (gint32 drawable_ID,

@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include <gio/gio.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 

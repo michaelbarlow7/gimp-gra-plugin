@@ -1,7 +1,7 @@
 /* LIBGIMP - The GIMP Library
  * Copyright (C) 1995-2003 Peter Mattis and Spencer Kimball
  *
- * gimpimageconvert_pdb.c
+ * gimpconvert_pdb.c
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,8 +26,8 @@
 
 
 /**
- * SECTION: gimpimageconvert
- * @title: gimpimageconvert
+ * SECTION: gimpconvert
+ * @title: gimpconvert
  * @short_description: Conversions between RGB, indexed, and grayscale modes.
  *
  * Conversions between RGB, indexed, and grayscale modes.
@@ -170,7 +170,7 @@ gimp_image_convert_indexed (gint32                  image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_convert_set_dither_matrix (gint          width,
@@ -188,42 +188,6 @@ gimp_image_convert_set_dither_matrix (gint          width,
                                     GIMP_PDB_INT32, height,
                                     GIMP_PDB_INT32, matrix_length,
                                     GIMP_PDB_INT8ARRAY, matrix,
-                                    GIMP_PDB_END);
-
-  success = return_vals[0].data.d_status == GIMP_PDB_SUCCESS;
-
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return success;
-}
-
-/**
- * gimp_image_convert_precision:
- * @image_ID: The image.
- * @precision: The new precision.
- *
- * Convert the image to the specified precision
- *
- * This procedure converts the image to the specified precision. Note
- * that indexed images cannot be converted and are always in
- * GIMP_PRECISION_U8.
- *
- * Returns: TRUE on success.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_image_convert_precision (gint32        image_ID,
-                              GimpPrecision precision)
-{
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  gboolean success = TRUE;
-
-  return_vals = gimp_run_procedure ("gimp-image-convert-precision",
-                                    &nreturn_vals,
-                                    GIMP_PDB_IMAGE, image_ID,
-                                    GIMP_PDB_INT32, precision,
                                     GIMP_PDB_END);
 
   success = return_vals[0].data.d_status == GIMP_PDB_SUCCESS;

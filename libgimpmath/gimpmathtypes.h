@@ -21,10 +21,6 @@
 #ifndef __GIMP_MATH_TYPES_H__
 #define __GIMP_MATH_TYPES_H__
 
-
-#include <libgimpbase/gimpbasetypes.h>
-
-
 G_BEGIN_DECLS
 
 typedef struct _GimpMatrix2 GimpMatrix2;

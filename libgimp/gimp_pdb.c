@@ -72,7 +72,7 @@ gimp_version (void)
  *
  * Returns: The PID.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint
 gimp_getpid (void)
@@ -103,7 +103,7 @@ gimp_getpid (void)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_attach_parasite (const GimpParasite *parasite)
@@ -135,7 +135,7 @@ gimp_attach_parasite (const GimpParasite *parasite)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_detach_parasite (const gchar *name)
@@ -166,7 +166,7 @@ gimp_detach_parasite (const gchar *name)
  *
  * Returns: The found parasite.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GimpParasite *
 gimp_get_parasite (const gchar *name)
@@ -196,10 +196,9 @@ gimp_get_parasite (const gchar *name)
  *
  * Returns a list of all currently attached global parasites.
  *
- * Returns: The names of currently attached parasites. The returned
- * value must be freed with g_strfreev().
+ * Returns: The names of currently attached parasites.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gchar **
 gimp_get_parasite_list (gint *num_parasites)
@@ -218,12 +217,9 @@ gimp_get_parasite_list (gint *num_parasites)
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
     {
       *num_parasites = return_vals[1].data.d_int32;
-      if (*num_parasites > 0)
-        {
-          parasites = g_new0 (gchar *, *num_parasites + 1);
-          for (i = 0; i < *num_parasites; i++)
-            parasites[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
-        }
+      parasites = g_new (gchar *, *num_parasites);
+      for (i = 0; i < *num_parasites; i++)
+        parasites[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
     }
 
   gimp_destroy_params (return_vals, nreturn_vals);

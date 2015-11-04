@@ -66,7 +66,7 @@ struct _GimpCellRendererToggleClass
 
 GType             gimp_cell_renderer_toggle_get_type (void) G_GNUC_CONST;
 
-GtkCellRenderer * gimp_cell_renderer_toggle_new      (const gchar *icon_name);
+GtkCellRenderer * gimp_cell_renderer_toggle_new      (const gchar *stock_id);
 
 void    gimp_cell_renderer_toggle_clicked (GimpCellRendererToggle *cell,
                                            const gchar            *path,

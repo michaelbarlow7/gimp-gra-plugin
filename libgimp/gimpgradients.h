@@ -29,10 +29,12 @@ G_BEGIN_DECLS
 
 /* For information look into the C source or the html documentation */
 
-GIMP_DEPRECATED_FOR(gimp_context_get_gradient)
+#ifndef GIMP_DISABLE_DEPRECATED
+
 gchar    * gimp_gradients_get_gradient (void);
-GIMP_DEPRECATED_FOR(gimp_context_set_gradient)
 gboolean   gimp_gradients_set_gradient (const gchar *name);
+
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

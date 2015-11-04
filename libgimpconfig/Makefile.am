@@ -10,11 +10,11 @@ endif
 
 if OS_WIN32
 gimpconfig_def = gimpconfig.def
-libgimpconfig_export_symbols = -export-symbols $(srcdir)/gimpconfig.def
+libgimpconfig_export_symbols = -export-symbols gimpconfig.def
 
 install-libtool-import-lib:
 	$(INSTALL) .libs/libgimpconfig-$(GIMP_API_VERSION).dll.a $(DESTDIR)$(libdir)
-	$(INSTALL) $(srcdir)/gimpconfig.def $(DESTDIR)$(libdir)
+	$(INSTALL) gimpconfig.def $(DESTDIR)$(libdir)
 
 uninstall-libtool-import-lib:
 	-rm $(DESTDIR)$(libdir)/libgimpconfig-$(GIMP_API_VERSION).dll.a
@@ -45,19 +45,18 @@ libgimpconfigincludedir = $(includedir)/gimp-$(GIMP_API_VERSION)/libgimpconfig
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"LibGimpConfig\"	\
-	-DGIMP_CONFIG_COMPILATION		\
-	-I$(top_srcdir)				\
-	$(GIO_UNIX_CFLAGS)			\
-	$(GIO_WINDOWS_CFLAGS)			\
-	$(GEGL_CFLAGS)				\
-	$(CAIRO_CFLAGS)				\
-	$(GDK_PIXBUF_CFLAGS)			\
+	-DGIMP_CONFIG_COMPILATION
+
+INCLUDES = \
+	-I$(top_srcdir)	\
+	$(CAIRO_CFLAGS)	\
+	$(GLIB_CFLAGS)	\
 	-I$(includedir)
 
 EXTRA_DIST = \
 	gimpconfig.def
 
-lib_LTLIBRARIES = libgimpconfig-@GIMP_API_VERSION@.la
+lib_LTLIBRARIES = libgimpconfig-2.0.la
 
 libgimpconfig_sources = 		\
 	gimpconfig.h			\
@@ -86,9 +85,8 @@ libgimpconfig_sources = 		\
 libgimpconfig_built_sources = \
 	gimpcolorconfig-enums.c
 
-libgimpconfig_@GIMP_API_VERSION@_la_SOURCES = \
-	$(libgimpconfig_sources)	\
-	$(libgimpconfig_built_sources)
+libgimpconfig_2_0_la_SOURCES = \
+	$(libgimpconfig_sources) $(libgimpconfig_built_sources)
 
 
 libgimpconfiginclude_HEADERS = \
@@ -107,22 +105,19 @@ libgimpconfiginclude_HEADERS = \
 	gimpcolorconfig-enums.h
 
 
-libgimpconfig_@GIMP_API_VERSION@_la_LDFLAGS = \
+libgimpconfig_2_0_la_LDFLAGS = \
 	-version-info $(LT_VERSION_INFO)	\
 	$(no_undefined) 			\
 	$(libgimpconfig_export_symbols)
 
-EXTRA_libgimpconfig_@GIMP_API_VERSION@_la_DEPENDENCIES = $(gimpconfig_def)
+libgimpconfig_2_0_la_DEPENDENCIES = $(gimpconfig_def)
 
-libgimpconfig_@GIMP_API_VERSION@_la_LIBADD = \
-	$(libgimpbase)		\
-	$(libgimpcolor)		\
-	$(libgimpmath)		\
-	$(GIO_UNIX_LIBS)	\
-	$(GIO_WINDOWS_LIBS)	\
-	$(GEGL_LIBS)		\
-	$(CAIRO_LIBS)		\
-	$(GDK_PIXBUF_LIBS)
+libgimpconfig_2_0_la_LIBADD = \
+	$(libgimpbase)	\
+	$(libgimpcolor)	\
+	$(libgimpmath)	\
+	$(CAIRO_LIBS)	\
+	$(GLIB_LIBS)
 
 
 install-data-local: install-ms-lib install-libtool-import-lib
@@ -139,7 +134,7 @@ CLEANFILES = $(gen_sources)
 
 $(srcdir)/gimpcolorconfig-enums.c: $(srcdir)/gimpcolorconfig-enums.h $(GIMP_MKENUMS)
 	$(GIMP_MKENUMS) \
-		--fhead "#include \"config.h\"\n#include <gio/gio.h>\n#include \"libgimpbase/gimpbase.h\"\n#include \"gimpcolorconfig-enums.h\"\n#include \"libgimp/libgimp-intl.h\"" \
+		--fhead "#include \"config.h\"\n#include <glib-object.h>\n#include \"libgimpbase/gimpbase.h\"\n#include \"gimpcolorconfig-enums.h\"\n#include \"libgimp/libgimp-intl.h\"" \
 		--fprod "\n/* enumerations from \"@filename@\" */" \
 		--vhead "GType\n@enum_name@_get_type (void)\n{\n  static const G@Type@Value values[] =\n  {" \
 		--vprod "    { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \

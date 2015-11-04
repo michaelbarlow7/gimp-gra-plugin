@@ -38,10 +38,8 @@
 #include <libgimpwidgets/gimpcolordisplaystack.h>
 #include <libgimpwidgets/gimpcolorhexentry.h>
 #include <libgimpwidgets/gimpcolornotebook.h>
-#include <libgimpwidgets/gimpcolorprofilechooserdialog.h>
 #include <libgimpwidgets/gimpcolorprofilecombobox.h>
 #include <libgimpwidgets/gimpcolorprofilestore.h>
-#include <libgimpwidgets/gimpcolorprofileview.h>
 #include <libgimpwidgets/gimpcolorscale.h>
 #include <libgimpwidgets/gimpcolorscales.h>
 #include <libgimpwidgets/gimpcolorselector.h>
@@ -79,7 +77,6 @@
 #include <libgimpwidgets/gimpunitmenu.h>
 #include <libgimpwidgets/gimpunitstore.h>
 #include <libgimpwidgets/gimpwidgets-error.h>
-#include <libgimpwidgets/gimpwidgetsutils.h>
 #include <libgimpwidgets/gimpzoommodel.h>
 
 #include <libgimpwidgets/gimp3migration.h>
@@ -145,7 +142,6 @@ void   gimp_radio_group_set_active (GtkRadioButton     *radio_button,
                                     gpointer            item_data);
 
 
-GIMP_DEPRECATED_FOR(gtk_spin_button_new)
 GtkWidget * gimp_spin_button_new   (/* return value: */
                                     GtkObject         **adjustment,
 
@@ -247,6 +243,25 @@ void gimp_float_adjustment_update        (GtkAdjustment   *adjustment,
 
 void gimp_double_adjustment_update       (GtkAdjustment   *adjustment,
                                           gpointer         data);
+
+
+/*
+ *  Helper Functions
+ */
+
+GtkWidget * gimp_table_attach_aligned    (GtkTable        *table,
+                                          gint             column,
+                                          gint             row,
+                                          const gchar     *label_text,
+                                          gfloat           xalign,
+                                          gfloat           yalign,
+                                          GtkWidget       *widget,
+                                          gint             colspan,
+                                          gboolean         left_align);
+
+
+void        gimp_label_set_attributes    (GtkLabel        *label,
+                                          ...);
 
 
 G_END_DECLS

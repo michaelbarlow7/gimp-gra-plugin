@@ -23,7 +23,6 @@
 
 #undef GSEAL_ENABLE
 
-#include <gegl.h>
 /* FIXME: #undef GTK_DISABLE_DEPRECATED */
 #undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
@@ -395,11 +394,11 @@ gimp_unit_menu_get_unit (GimpUnitMenu *menu)
  * by attached spinbuttons. Please refer to the documentation of
  * gimp_unit_menu_update() to see how this is done.
  *
- * This function specifies the number of digits shown for a size in
- * pixels. Usually this is 0 (only full pixels). If you want to allow
- * the user to specify sub-pixel sizes using the attached spinbuttons,
- * specify the number of digits after the decimal point here. You
- * should do this after attaching your spinbuttons.
+ * This function allows to specify the number of digits shown for a
+ * size in pixels. Usually this is 0 (only full pixels). If you want
+ * to allow the user to specify sub-pixel sizes using the attached
+ * spinbuttons, specify the number of digits after the decimal point
+ * here. You should do this after attaching your spinbuttons.
  **/
 void
 gimp_unit_menu_set_pixel_digits (GimpUnitMenu *menu,

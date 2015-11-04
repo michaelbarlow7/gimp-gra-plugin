@@ -50,7 +50,7 @@ gboolean gimp_text_get_extents_fontname (const gchar  *text,
                                          gint         *height,
                                          gint         *ascent,
                                          gint         *descent);
-GIMP_DEPRECATED_FOR(gimp_text_fontname)
+#ifndef GIMP_DISABLE_DEPRECATED
 gint32   gimp_text                      (gint32        image_ID,
                                          gint32        drawable_ID,
                                          gdouble       x,
@@ -68,7 +68,6 @@ gint32   gimp_text                      (gint32        image_ID,
                                          const gchar  *spacing,
                                          const gchar  *registry,
                                          const gchar  *encoding);
-GIMP_DEPRECATED_FOR(gimp_text_get_extents_fontname)
 gboolean gimp_text_get_extents          (const gchar  *text,
                                          gdouble       size,
                                          GimpSizeType  size_type,
@@ -84,6 +83,7 @@ gboolean gimp_text_get_extents          (const gchar  *text,
                                          gint         *height,
                                          gint         *ascent,
                                          gint         *descent);
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 
 G_END_DECLS

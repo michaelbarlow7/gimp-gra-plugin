@@ -7,10 +7,9 @@
 
 #include "config.h"
 
-#include <glib-object.h>
+#include <glib.h>
 
-#include "gimpmathtypes.h"
-
+#undef GIMP_DISABLE_DEPRECATED
 #include "gimpmd5.h"
 
 

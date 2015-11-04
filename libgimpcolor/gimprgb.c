@@ -18,10 +18,8 @@
 
 #include "config.h"
 
-#include <babl/babl.h>
 #include <glib-object.h>
 
-#define GIMP_DISABLE_DEPRECATION_WARNINGS /*  for GIMP_RGB_INTENSITY()  */
 #include "libgimpmath/gimpmath.h"
 
 #include "gimpcolortypes.h"
@@ -130,58 +128,6 @@ gimp_rgb_set_alpha (GimpRGB *rgb,
   g_return_if_fail (rgb != NULL);
 
   rgb->a = a;
-}
-
-/**
- * gimp_rgb_set_pixel:
- * @rgb:    a #GimpRGB struct
- * @format: a Babl format
- * @pixel:  pointer to the source pixel
- *
- * Sets the red, green and blue components of @rgb from the color
- * stored in @pixel. The pixel format of @pixel is determined by
- * @format.
- *
- * Since: 2.10
- **/
-void
-gimp_rgb_set_pixel (GimpRGB       *rgb,
-                    const Babl    *format,
-                    gconstpointer  pixel)
-{
-  g_return_if_fail (rgb != NULL);
-  g_return_if_fail (format != NULL);
-  g_return_if_fail (pixel != NULL);
-
-  babl_process (babl_fish (format,
-                           babl_format ("R'G'B' double")),
-                pixel, rgb, 1);
-}
-
-/**
- * gimp_rgb_get_pixel:
- * @rgb:    a #GimpRGB struct
- * @format: a Babl format
- * @pixel:  pointer to the destination pixel
- *
- * Writes the red, green, blue and alpha components of @rgb to the
- * color stored in @pixel. The pixel format of @pixel is determined by
- * @format.
- *
- * Since: 2.10
- **/
-void
-gimp_rgb_get_pixel (const GimpRGB *rgb,
-                    const Babl    *format,
-                    gpointer       pixel)
-{
-  g_return_if_fail (rgb != NULL);
-  g_return_if_fail (format != NULL);
-  g_return_if_fail (pixel != NULL);
-
-  babl_process (babl_fish (babl_format ("R'G'B' double"),
-                           format),
-                rgb, pixel, 1);
 }
 
 /**
@@ -324,7 +270,7 @@ gimp_rgb_gamma (GimpRGB *rgb,
  *
  * Return value: the luminous intensity of the range from 0.0 to 1.0.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gdouble
 gimp_rgb_luminance (const GimpRGB *rgb)
@@ -344,7 +290,7 @@ gimp_rgb_luminance (const GimpRGB *rgb)
  *
  * Return value: the luminous intensity in the range from 0 to 255.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 guchar
 gimp_rgb_luminance_uchar (const GimpRGB *rgb)
@@ -436,58 +382,6 @@ gimp_rgb_composite (GimpRGB              *color1,
 }
 
 /*  RGBA functions  */
-
-/**
- * gimp_rgba_set_pixel:
- * @rgba:   a #GimpRGB struct
- * @format: a Babl format
- * @pixel:  pointer to the source pixel
- *
- * Sets the red, green, blue and alpha components of @rgba from the
- * color stored in @pixel. The pixel format of @pixel is determined
- * by @format.
- *
- * Since: 2.10
- **/
-void
-gimp_rgba_set_pixel (GimpRGB       *rgba,
-                     const Babl    *format,
-                     gconstpointer  pixel)
-{
-  g_return_if_fail (rgba != NULL);
-  g_return_if_fail (format != NULL);
-  g_return_if_fail (pixel != NULL);
-
-  babl_process (babl_fish (format,
-                           babl_format ("R'G'B'A double")),
-                pixel, rgba, 1);
-}
-
-/**
- * gimp_rgba_get_pixel:
- * @rgba:   a #GimpRGB struct
- * @format: a Babl format
- * @pixel:  pointer to the destination pixel
- *
- * Writes the red, green, blue and alpha components of @rgba to the
- * color stored in @pixel. The pixel format of @pixel is determined by
- * @format.
- *
- * Since: 2.10
- **/
-void
-gimp_rgba_get_pixel (const GimpRGB *rgba,
-                     const Babl    *format,
-                     gpointer       pixel)
-{
-  g_return_if_fail (rgba != NULL);
-  g_return_if_fail (format != NULL);
-  g_return_if_fail (pixel != NULL);
-
-  babl_process (babl_fish (babl_format ("R'G'B'A double"),
-                           format),
-                rgba, pixel, 1);
-}
 
 /**
  * gimp_rgba_set:
@@ -642,7 +536,7 @@ static gint       gimp_param_rgb_values_cmp  (GParamSpec      *pspec,
  *
  * Returns: the #GType for a GimpParamRGB object
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_param_rgb_get_type (void)
@@ -783,7 +677,7 @@ gimp_param_rgb_values_cmp (GParamSpec   *pspec,
  *
  * Returns: a newly allocated #GParamSpec instance
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GParamSpec *
 gimp_param_spec_rgb (const gchar   *name,
@@ -812,7 +706,7 @@ gimp_param_spec_rgb (const gchar   *name,
  *
  * Returns: %TRUE if the alpha channel is relevant.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_param_spec_rgb_has_alpha (GParamSpec *pspec)

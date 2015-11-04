@@ -122,7 +122,7 @@ gimp_plugin_help_register (const gchar *domain_name,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_plugin_menu_register (const gchar *procedure_name,
@@ -159,7 +159,7 @@ gimp_plugin_menu_register (const gchar *procedure_name,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_plugin_menu_branch_register (const gchar *menu_path,
@@ -195,7 +195,7 @@ gimp_plugin_menu_branch_register (const gchar *menu_path,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 _gimp_plugin_icon_register (const gchar  *procedure_name,
@@ -239,7 +239,7 @@ _gimp_plugin_icon_register (const gchar  *procedure_name,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 gboolean
 gimp_plugin_set_pdb_error_handler (GimpPDBErrorHandler handler)
@@ -271,7 +271,7 @@ gimp_plugin_set_pdb_error_handler (GimpPDBErrorHandler handler)
  *
  * Returns: Who is responsible for handling procedure call errors.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 GimpPDBErrorHandler
 gimp_plugin_get_pdb_error_handler (void)
@@ -290,68 +290,4 @@ gimp_plugin_get_pdb_error_handler (void)
   gimp_destroy_params (return_vals, nreturn_vals);
 
   return handler;
-}
-
-/**
- * gimp_plugin_enable_precision:
- *
- * Switches this plug-in to using the real bit depth of drawables.
- *
- * Switches this plug-in to using the real bit depth of drawables. This
- * setting can only be enabled, and not disabled again during the
- * lifetime of the plug-in. Using gimp_drawable_get_buffer(),
- * gimp_drawable_get_shadow_buffer() or gimp_drawable_get_format() will
- * automatically call this function.
- *
- * Returns: TRUE on success.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_plugin_enable_precision (void)
-{
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  gboolean success = TRUE;
-
-  return_vals = gimp_run_procedure ("gimp-plugin-enable-precision",
-                                    &nreturn_vals,
-                                    GIMP_PDB_END);
-
-  success = return_vals[0].data.d_status == GIMP_PDB_SUCCESS;
-
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return success;
-}
-
-/**
- * gimp_plugin_precision_enabled:
- *
- * Whether this plug-in is using the real bit depth of drawables.
- *
- * Returns whether this plug-in is using the real bit depth of
- * drawables, which can be more than 8 bits per channel.
- *
- * Returns: Whether precision is enabled.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_plugin_precision_enabled (void)
-{
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  gboolean enabled = FALSE;
-
-  return_vals = gimp_run_procedure ("gimp-plugin-precision-enabled",
-                                    &nreturn_vals,
-                                    GIMP_PDB_END);
-
-  if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-    enabled = return_vals[1].data.d_int32;
-
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return enabled;
 }

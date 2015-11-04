@@ -55,14 +55,10 @@ struct _GimpColorConfig
   gboolean                    simulation_gamut_check;
   GimpRGB                     out_of_gamut_color;
 
-  gboolean                    display_use_black_point_compensation;
-  gboolean                    simulation_use_black_point_compensation;
-
   /*< private >*/
   /* Padding for future expansion */
-#if (GLIB_SIZEOF_VOID_P == 8)
+  void (* _gimp_reserved1) (void);
   void (* _gimp_reserved2) (void);
-#endif
   void (* _gimp_reserved3) (void);
   void (* _gimp_reserved4) (void);
   void (* _gimp_reserved5) (void);
@@ -77,16 +73,7 @@ struct _GimpColorConfigClass
 };
 
 
-GType              gimp_color_config_get_type                  (void) G_GNUC_CONST;
-
-GimpColorProfile * gimp_color_config_get_rgb_color_profile     (GimpColorConfig  *config,
-                                                                GError          **error);
-GimpColorProfile * gimp_color_config_get_cmyk_color_profile    (GimpColorConfig  *config,
-                                                                GError          **error);
-GimpColorProfile * gimp_color_config_get_display_color_profile (GimpColorConfig  *config,
-                                                                GError          **error);
-GimpColorProfile * gimp_color_config_get_printer_color_profile (GimpColorConfig  *config,
-                                                                GError          **error);
+GType  gimp_color_config_get_type (void) G_GNUC_CONST;
 
 
 #endif /* GIMP_COLOR_CONFIG_H__ */

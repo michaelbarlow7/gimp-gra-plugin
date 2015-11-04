@@ -25,7 +25,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpcolor/gimpcolor.h"
@@ -96,7 +95,7 @@ gimp_color_selector_class_init (GimpColorSelectorClass *klass)
 
   klass->name                  = "Unnamed";
   klass->help_id               = NULL;
-  klass->icon_name             = "gtk-select-color";
+  klass->stock_id              = GTK_STOCK_SELECT_COLOR;
 
   klass->set_toggles_visible   = NULL;
   klass->set_toggles_sensitive = NULL;
@@ -278,7 +277,7 @@ gimp_color_selector_channel_changed (GimpColorSelector *selector)
  *
  * Sets the color management configuration to use with this color selector.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  */
 void
 gimp_color_selector_set_config (GimpColorSelector *selector,

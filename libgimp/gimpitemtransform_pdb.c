@@ -51,13 +51,13 @@
  * the axis needs to be specified. The return value is the ID of the
  * flipped item. If there was no selection or the item is not a
  * drawable, this will be equal to the item ID supplied as input.
- * Otherwise, this will be the newly created and flipped drawable.
- * This procedure is affected by the following context setters:
+ * Otherwise, this will be the newly created and flipped drawable. This
+ * procedure is affected by the following context setters:
  * gimp_context_set_transform_resize().
  *
  * Returns: The flipped item.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_item_transform_flip_simple (gint32              item_ID,
@@ -103,15 +103,15 @@ gimp_item_transform_flip_simple (gint32              item_ID,
  * is the ID of the flipped item. If there was no selection or the item
  * is not a drawable, this will be equal to the item ID supplied as
  * input. Otherwise, this will be the newly created and flipped
- * drawable.
- * This procedure is affected by the following context setters:
- * gimp_context_set_interpolation(),
+ * drawable. This procedure is affected by the following context
+ * setters: gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The flipped item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_flip (gint32  item_ID,
@@ -170,15 +170,15 @@ gimp_item_transform_flip (gint32  item_ID,
  * values, any affine transformation (rotation, scaling, translation)
  * can be affected. Additionally, these values can be specified such
  * that the resulting transformed item will appear to have been
- * projected via a perspective transform.
- * This procedure is affected by the following context setters:
- * gimp_context_set_interpolation(),
+ * projected via a perspective transform. This procedure is affected by
+ * the following context setters: gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The newly mapped item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_perspective (gint32  item_ID,
@@ -234,13 +234,12 @@ gimp_item_transform_perspective (gint32  item_ID,
  * value is the ID of the rotated item. If there was no selection or
  * the item is not a drawable, this will be equal to the item ID
  * supplied as input. Otherwise, this will be the newly created and
- * rotated drawable.
- * This procedure is affected by the following context setters:
- * gimp_context_set_transform_resize().
+ * rotated drawable. This procedure is affected by the following
+ * context setters: gimp_context_set_transform_resize().
  *
  * Returns: The rotated item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_rotate_simple (gint32           item_ID,
@@ -288,15 +287,15 @@ gimp_item_transform_rotate_simple (gint32           item_ID,
  * value is the ID of the rotated item. If there was no selection or
  * the item is not a drawable, this will be equal to the item ID
  * supplied as input. Otherwise, this will be the newly created and
- * rotated drawable.
- * This procedure is affected by the following context setters:
- * gimp_context_set_interpolation(),
+ * rotated drawable. This procedure is affected by the following
+ * context setters: gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The rotated item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_rotate (gint32   item_ID,
@@ -343,15 +342,15 @@ gimp_item_transform_rotate (gint32   item_ID,
  * value is the ID of the scaled item. If there was no selection or the
  * item is not a drawable, this will be equal to the item ID supplied
  * as input. Otherwise, this will be the newly created and scaled
- * drawable.
- * This procedure is affected by the following context setters:
- * gimp_context_set_interpolation(),
+ * drawable. This procedure is affected by the following context
+ * setters: gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The scaled item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_scale (gint32  item_ID,
@@ -400,15 +399,15 @@ gimp_item_transform_scale (gint32  item_ID,
  * drawable. The shear type parameter indicates whether the shear will
  * be applied horizontally or vertically. The magnitude can be either
  * positive or negative and indicates the extent (in pixels) to shear
- * by.
- * This procedure is affected by the following context setters:
+ * by. This procedure is affected by the following context setters:
  * gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The sheared item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_shear (gint32              item_ID,
@@ -457,15 +456,15 @@ gimp_item_transform_shear (gint32              item_ID,
  * The return value is the ID of the rotated drawable. If there was no
  * selection or the item is not a drawable, this will be equal to the
  * item ID supplied as input. Otherwise, this will be the newly created
- * and transformed drawable.
- * This procedure is affected by the following context setters:
- * gimp_context_set_interpolation(),
+ * and transformed drawable. This procedure is affected by the
+ * following context setters: gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The transformed item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_2d (gint32  item_ID,
@@ -524,15 +523,15 @@ gimp_item_transform_2d (gint32  item_ID,
  * return value is the ID of the transformed item. If there was no
  * selection or the item is not a drawable, this will be equal to the
  * item ID supplied as input. Otherwise, this will be the newly created
- * and transformed drawable.
- * This procedure is affected by the following context setters:
- * gimp_context_set_interpolation(),
+ * and transformed drawable. This procedure is affected by the
+ * following context setters: gimp_context_set_interpolation(),
  * gimp_context_set_transform_direction(),
- * gimp_context_set_transform_resize().
+ * gimp_context_set_transform_resize(),
+ * gimp_context_set_transform_recursion().
  *
  * Returns: The transformed item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_transform_matrix (gint32  item_ID,

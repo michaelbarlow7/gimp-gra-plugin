@@ -79,7 +79,7 @@ gimp_enum_store_class_init (GimpEnumStoreClass *klass)
    *
    * Sets the #GType of the enum to be used in the store.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class,
                                    PROP_ENUM_TYPE,
@@ -174,7 +174,7 @@ gimp_enum_store_add_value (GtkListStore *store,
  *
  * Return value: a new #GimpEnumStore.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkListStore *
 gimp_enum_store_new (GType enum_type)
@@ -207,7 +207,7 @@ gimp_enum_store_new (GType enum_type)
  *
  * Return value: a new #GimpEnumStore.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkListStore *
 gimp_enum_store_new_with_range (GType  enum_type,
@@ -248,7 +248,7 @@ gimp_enum_store_new_with_range (GType  enum_type,
  *
  * Return value: a new #GimpEnumStore.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkListStore *
 gimp_enum_store_new_with_values (GType enum_type,
@@ -277,7 +277,7 @@ gimp_enum_store_new_with_values (GType enum_type,
  *
  * Return value: a new #GimpEnumStore.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkListStore *
 gimp_enum_store_new_with_values_valist (GType     enum_type,
@@ -317,32 +317,11 @@ gimp_enum_store_new_with_values_valist (GType     enum_type,
  *
  * See also: gimp_enum_combo_box_set_stock_prefix().
  *
- * Since: 2.4
- *
- * Deprecated: GIMP 2.10
+ * Since: GIMP 2.4
  **/
 void
 gimp_enum_store_set_stock_prefix (GimpEnumStore *store,
                                   const gchar   *stock_prefix)
-{
-  gimp_enum_store_set_icon_prefix (store, stock_prefix);
-}
-
-/**
- * gimp_enum_store_set_icon_prefix:
- * @store:       a #GimpEnumStore
- * @icon_prefix: a prefix to create icon names from enum values
- *
- * Creates an icon name for each enum value in the @store by appending
- * the value's nick to the given @icon_prefix, separated by a hyphen.
- *
- * See also: gimp_enum_combo_box_set_icon_prefix().
- *
- * Since: 2.10
- **/
-void
-gimp_enum_store_set_icon_prefix (GimpEnumStore *store,
-                                 const gchar   *icon_prefix)
 {
   GtkTreeModel *model;
   GtkTreeIter   iter;
@@ -356,9 +335,9 @@ gimp_enum_store_set_icon_prefix (GimpEnumStore *store,
        iter_valid;
        iter_valid = gtk_tree_model_iter_next (model, &iter))
     {
-      gchar *icon_name = NULL;
+      gchar *stock_id = NULL;
 
-      if (icon_prefix)
+      if (stock_prefix)
         {
           GEnumValue *enum_value;
           gint        value;
@@ -369,16 +348,16 @@ gimp_enum_store_set_icon_prefix (GimpEnumStore *store,
 
           enum_value = g_enum_get_value (store->enum_class, value);
 
-          icon_name = g_strconcat (icon_prefix, "-",
-                                   enum_value->value_nick,
-                                   NULL);
+          stock_id = g_strconcat (stock_prefix, "-",
+                                  enum_value->value_nick,
+                                  NULL);
         }
 
       gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-                          GIMP_INT_STORE_ICON_NAME, icon_name,
+                          GIMP_INT_STORE_STOCK_ID, stock_id,
                           -1);
 
-      if (icon_name)
-        g_free (icon_name);
+      if (stock_id)
+        g_free (stock_id);
     }
 }

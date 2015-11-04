@@ -87,7 +87,7 @@ G_DEFINE_TYPE (GimpChainButton, gimp_chain_button, GTK_TYPE_TABLE)
 
 static guint gimp_chain_button_signals[LAST_SIGNAL] = { 0 };
 
-static const gchar * const gimp_chain_icon_names[] =
+static const gchar * const gimp_chain_stock_items[] =
 {
   GIMP_STOCK_HCHAIN,
   GIMP_STOCK_HCHAIN_BROKEN,
@@ -121,7 +121,7 @@ gimp_chain_button_class_init (GimpChainButtonClass *klass)
    *
    * The position in which the chain button will be used.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_POSITION,
                                    g_param_spec_enum ("position", NULL, NULL,
@@ -153,7 +153,8 @@ gimp_chain_button_constructed (GObject *object)
 {
   GimpChainButton *button = GIMP_CHAIN_BUTTON (object);
 
-  G_OBJECT_CLASS (parent_class)->constructed (object);
+  if (G_OBJECT_CLASS (parent_class)->constructed)
+    G_OBJECT_CLASS (parent_class)->constructed (object);
 
   button->line1 = gimp_chain_line_new (button->position, 1);
   button->line2 = gimp_chain_line_new (button->position, -1);
@@ -308,9 +309,9 @@ gimp_chain_button_update_image (GimpChainButton *button)
 
   i = ((button->position & GIMP_CHAIN_LEFT) << 1) + (button->active ? 0 : 1);
 
-  gtk_image_set_from_icon_name (GTK_IMAGE (button->image),
-                                gimp_chain_icon_names[i],
-                                GTK_ICON_SIZE_BUTTON);
+  gtk_image_set_from_stock (GTK_IMAGE (button->image),
+                            gimp_chain_stock_items[i],
+                            GTK_ICON_SIZE_BUTTON);
 }
 
 

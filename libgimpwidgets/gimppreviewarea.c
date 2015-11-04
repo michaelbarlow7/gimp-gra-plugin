@@ -747,30 +747,30 @@ gimp_preview_area_blend (GimpPreviewArea *area,
                             (((a << 8) + (b  - a) * opacity) >> 8) / inter[3];
                         }
                     }
-                }
 
-              switch (inter[3])
-                {
-                case 0:
-                  d[0] = d[1] = d[2] = CHECK_COLOR (area, row, col);
-                  break;
+                  switch (inter[3])
+                    {
+                    case 0:
+                      d[0] = d[1] = d[2] = CHECK_COLOR (area, row, col);
+                      break;
 
-                case 255:
-                  d[0] = inter[0];
-                  d[1] = inter[1];
-                  d[2] = inter[2];
-                  break;
+                    case 255:
+                      d[0] = inter[0];
+                      d[1] = inter[1];
+                      d[2] = inter[2];
+                      break;
 
-                default:
-                  {
-                    register guint alpha = inter[3] + 1;
-                    register guint check = CHECK_COLOR (area, row, col);
+                    default:
+                      {
+                        register guint alpha = inter[3] + 1;
+                        register guint check = CHECK_COLOR (area, row, col);
 
-                    d[0] = ((check << 8) + (inter[0] - check) * alpha) >> 8;
-                    d[1] = ((check << 8) + (inter[1] - check) * alpha) >> 8;
-                    d[2] = ((check << 8) + (inter[2] - check) * alpha) >> 8;
-                  }
-                  break;
+                        d[0] = ((check << 8) + (inter[0] - check) * alpha) >> 8;
+                        d[1] = ((check << 8) + (inter[1] - check) * alpha) >> 8;
+                        d[2] = ((check << 8) + (inter[2] - check) * alpha) >> 8;
+                      }
+                      break;
+                    }
                 }
             }
 
@@ -1614,7 +1614,7 @@ gimp_preview_area_fill (GimpPreviewArea *area,
  * Sets the offsets of the previewed area. This information is used
  * when drawing the checkerboard and to determine the dither offsets.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 void
 gimp_preview_area_set_offsets (GimpPreviewArea *area,
@@ -1671,11 +1671,11 @@ gimp_preview_area_set_colormap (GimpPreviewArea *area,
  * @height: the maximum height in pixels or -1 to unset the limit
  *
  * Usually a #GimpPreviewArea fills the size that it is
- * allocated. This function allows you to limit the preview area to a
+ * allocated. This funtion allows you to limit the preview area to a
  * maximum size. If a larger size is allocated for the widget, the
  * preview will draw itself centered into the allocated area.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 void
 gimp_preview_area_set_max_size (GimpPreviewArea *area,
@@ -1779,10 +1779,10 @@ gimp_preview_area_menu_new (GimpPreviewArea *area,
  * @area:  a #GimpPreviewArea
  * @event: the button event that causes the menu to popup or %NULL
  *
- * Creates a popup menu that allows one to configure the size and type of
+ * Creates a popup menu that allows to configure the size and type of
  * the checkerboard pattern that the @area uses to visualize transparency.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 void
 gimp_preview_area_menu_popup (GimpPreviewArea *area,

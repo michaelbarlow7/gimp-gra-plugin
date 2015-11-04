@@ -23,7 +23,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpcolor/gimpcolor.h"
@@ -54,8 +53,8 @@
  *
  * On click a color selection dialog is opened. Additionally the
  * button supports Drag and Drop and has a right-click menu that
- * allows one to choose the color from the current FG or BG color. If
- * the user changes the color, the "color-changed" signal is emitted.
+ * allows to choose the color from the current FG or BG color. If the
+ * user changes the color, the "color-changed" signal is emitted.
  **/
 
 
@@ -222,7 +221,7 @@ gimp_color_button_class_init (GimpColorButtonClass *klass)
    *
    * The title to be used for the color selection dialog.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_TITLE,
                                    g_param_spec_string ("title", NULL, NULL,
@@ -234,7 +233,7 @@ gimp_color_button_class_init (GimpColorButtonClass *klass)
    *
    * The color displayed in the button's color area.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_COLOR,
                                    gimp_param_spec_rgb ("color", NULL, NULL,
@@ -246,7 +245,7 @@ gimp_color_button_class_init (GimpColorButtonClass *klass)
    *
    * The type of the button's color area.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_TYPE,
                                    g_param_spec_enum ("type", NULL, NULL,
@@ -259,7 +258,7 @@ gimp_color_button_class_init (GimpColorButtonClass *klass)
    *
    * The update policy of the color button.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_UPDATE,
                                    g_param_spec_boolean ("continuous-update",
@@ -273,7 +272,7 @@ gimp_color_button_class_init (GimpColorButtonClass *klass)
    *
    * The minimum width of the button's #GimpColorArea.
    *
-   * Since: 2.8
+   * Since: GIMP 2.8
    */
   g_object_class_install_property (object_class, PROP_AREA_WIDTH,
                                    g_param_spec_int ("area-width",
@@ -287,7 +286,7 @@ gimp_color_button_class_init (GimpColorButtonClass *klass)
    *
    * The minimum height of the button's #GimpColorArea.
    *
-   * Since: 2.8
+   * Since: GIMP 2.8
    */
   g_object_class_install_property (object_class, PROP_AREA_HEIGHT,
                                    g_param_spec_int ("area-height",
@@ -331,10 +330,10 @@ gimp_color_button_init (GimpColorButton      *button,
       GtkAction   *action;
 
       action = g_object_new (klass->get_action_type (button),
-                             "name",      actions[i].name,
-                             "label",     label,
-                             "tooltip",   tooltip,
-                             "icon-name", actions[i].stock_id,
+                             "name",     actions[i].name,
+                             "label",    label,
+                             "tooltip",  tooltip,
+                             "stock-id", actions[i].stock_id,
                              NULL);
 
       if (actions[i].callback)

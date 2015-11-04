@@ -22,7 +22,6 @@
 #define __GIMP_H__
 
 #include <cairo.h>
-#include <gegl.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <libgimpbase/gimpbase.h>
@@ -44,7 +43,6 @@
 #include <libgimp/gimpgradients.h>
 #include <libgimp/gimpgradientselect.h>
 #include <libgimp/gimpimage.h>
-#include <libgimp/gimpimagecolorprofile.h>
 #include <libgimp/gimplayer.h>
 #include <libgimp/gimppalette.h>
 #include <libgimp/gimppalettes.h>
@@ -316,6 +314,7 @@ void           gimp_destroy_paramdefs   (GimpParamDef    *paramdefs,
  */
 const gchar  * gimp_get_pdb_error       (void);
 
+
 /* Return various constants given by the GIMP core at plug-in config time.
  */
 guint          gimp_tile_width          (void) G_GNUC_CONST;
@@ -335,25 +334,20 @@ guint32        gimp_user_time           (void) G_GNUC_CONST;
 
 const gchar  * gimp_get_progname        (void) G_GNUC_CONST;
 
-GIMP_DEPRECATED
+#ifndef GIMP_DISABLE_DEPRECATED
 gboolean       gimp_install_cmap        (void) G_GNUC_CONST;
-GIMP_DEPRECATED
 gint           gimp_min_colors          (void) G_GNUC_CONST;
 
-GIMP_DEPRECATED_FOR(gimp_get_parasite)
 GimpParasite * gimp_parasite_find       (const gchar        *name);
-GIMP_DEPRECATED_FOR(gimp_attach_parasite)
 gboolean       gimp_parasite_attach     (const GimpParasite *parasite);
-GIMP_DEPRECATED_FOR(gimp_detach_parasite)
 gboolean       gimp_parasite_detach     (const gchar        *name);
-GIMP_DEPRECATED_FOR(gimp_get_parasite_list)
 gboolean       gimp_parasite_list       (gint               *num_parasites,
                                          gchar            ***parasites);
-GIMP_DEPRECATED_FOR(gimp_attach_parasite)
 gboolean       gimp_attach_new_parasite (const gchar        *name,
                                          gint                flags,
                                          gint                size,
                                          gconstpointer       data);
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 
 G_END_DECLS

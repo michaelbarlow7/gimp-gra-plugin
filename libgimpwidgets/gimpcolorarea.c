@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpcolor/gimpcolor.h"
@@ -154,7 +153,7 @@ gimp_color_area_class_init (GimpColorAreaClass *klass)
    *
    * The color displayed in the color area.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_COLOR,
                                    gimp_param_spec_rgb ("color", NULL, NULL,
@@ -166,7 +165,7 @@ gimp_color_area_class_init (GimpColorAreaClass *klass)
    *
    * The type of the color area.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_TYPE,
                                    g_param_spec_enum ("type", NULL, NULL,
@@ -179,7 +178,7 @@ gimp_color_area_class_init (GimpColorAreaClass *klass)
    *
    * The event_mask that should trigger drags.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_DRAG_MASK,
                                    g_param_spec_flags ("drag-mask", NULL, NULL,
@@ -192,7 +191,7 @@ gimp_color_area_class_init (GimpColorAreaClass *klass)
    *
    * Whether to draw a thin border in the foreground color around the area.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class, PROP_DRAW_BORDER,
                                    g_param_spec_boolean ("draw-border",
@@ -475,9 +474,9 @@ gimp_color_area_has_alpha (GimpColorArea *area)
  * @area: Pointer to a #GimpColorArea.
  * @type: A #GimpColorAreaType.
  *
- * Changes the type of @area. The #GimpColorAreaType determines
- * whether the widget shows transparency information and chooses the
- * size of the checkerboard used to do that.
+ * Allows to change the type of @area. The #GimpColorAreaType determines
+ * whether the widget shows transparency information and chooses the size of
+ * the checkerboard used to do that.
  **/
 void
 gimp_color_area_set_type (GimpColorArea     *area,
@@ -502,8 +501,8 @@ gimp_color_area_set_type (GimpColorArea     *area,
  * @draw_border: whether to draw a border or not
  *
  * The @area can draw a thin border in the foreground color around
- * itself.  This function toggles this behaviour on and off. The
- * default is not draw a border.
+ * itself.  This function allows to toggle this behaviour on and
+ * off. The default is not draw a border.
  **/
 void
 gimp_color_area_set_draw_border (GimpColorArea *area,

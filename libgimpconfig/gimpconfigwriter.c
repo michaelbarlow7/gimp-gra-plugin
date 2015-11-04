@@ -21,14 +21,21 @@
 
 #include "config.h"
 
+#include <errno.h>
+#include <fcntl.h>
 #include <string.h>
 
-#include <gio/gio.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include <sys/types.h>
+
+#include <glib-object.h>
+#include <glib/gstdio.h>
 
 #ifdef G_OS_WIN32
-#include <gio/gwin32outputstream.h>
-#else
-#include <gio/gunixoutputstream.h>
+#include <io.h>
 #endif
 
 #include "libgimpbase/gimpbase.h"
@@ -56,41 +63,29 @@
 
 struct _GimpConfigWriter
 {
-  GOutputStream *output;
-  GFile         *file;
-  GError        *error;
-  GString       *buffer;
-  gboolean       comment;
-  gint           depth;
-  gint           marker;
+  gint      fd;
+  gchar    *filename;
+  gchar    *tmpname;
+  GError   *error;
+  GString  *buffer;
+  gboolean  comment;
+  gint      depth;
+  gint      marker;
 };
 
 
-static inline void  gimp_config_writer_flush        (GimpConfigWriter  *writer);
-static inline void  gimp_config_writer_newline      (GimpConfigWriter  *writer);
-static gboolean     gimp_config_writer_close_output (GimpConfigWriter  *writer,
-                                                     GError           **error);
+static inline void  gimp_config_writer_flush      (GimpConfigWriter  *writer);
+static inline void  gimp_config_writer_newline    (GimpConfigWriter  *writer);
+static gboolean     gimp_config_writer_close_file (GimpConfigWriter  *writer,
+                                                   GError           **error);
 
 static inline void
 gimp_config_writer_flush (GimpConfigWriter *writer)
 {
-  GError *error = NULL;
-
-  if (! writer->output)
-    return;
-
-  if (! g_output_stream_write_all (writer->output,
-                                   writer->buffer->str,
-                                   writer->buffer->len,
-                                   NULL, NULL, &error))
-    {
-      g_set_error (&writer->error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
-                   _("Error writing to '%s': %s"),
-                   writer->file ?
-                   gimp_file_get_utf8_name (writer->file) : "output stream",
-                   error->message);
-      g_clear_error (&error);
-    }
+  if (write (writer->fd, writer->buffer->str, writer->buffer->len) < 0)
+    g_set_error (&writer->error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                 _("Error writing to '%s': %s"),
+                 gimp_filename_to_utf8 (writer->filename), g_strerror (errno));
 
   g_string_truncate (writer->buffer, 0);
 }
@@ -123,7 +118,7 @@ gimp_config_writer_newline (GimpConfigWriter *writer)
  *
  * Return value: a new #GimpConfigWriter or %NULL in case of an error
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpConfigWriter *
 gimp_config_writer_new_file (const gchar  *filename,
@@ -132,111 +127,46 @@ gimp_config_writer_new_file (const gchar  *filename,
                              GError      **error)
 {
   GimpConfigWriter *writer;
-  GFile            *file;
+  gchar            *tmpname = NULL;
+  gint              fd;
 
   g_return_val_if_fail (filename != NULL, NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-  file = g_file_new_for_path (filename);
-
-  writer = gimp_config_writer_new_gfile (file, atomic, header, error);
-
-  g_object_unref (file);
-
-  return writer;
-}
-
-/**
- * gimp_config_writer_new_gfile:
- * @file: a #GFile
- * @atomic: if %TRUE the file is written atomically
- * @header: text to include as comment at the top of the file
- * @error: return location for errors
- *
- * Creates a new #GimpConfigWriter and sets it up to write to
- * @file. If @atomic is %TRUE, a temporary file is used to avoid
- * possible race conditions. The temporary file is then moved to @file
- * when the writer is closed.
- *
- * Return value: a new #GimpConfigWriter or %NULL in case of an error
- *
- * Since: 2.10
- **/
-GimpConfigWriter *
-gimp_config_writer_new_gfile (GFile        *file,
-                              gboolean      atomic,
-                              const gchar  *header,
-                              GError      **error)
-{
-  GimpConfigWriter *writer;
-  GOutputStream    *output;
-
-  g_return_val_if_fail (G_IS_FILE (file), NULL);
-  g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
   if (atomic)
     {
-      output = G_OUTPUT_STREAM (g_file_replace (file,
-                                                NULL, FALSE, G_FILE_CREATE_NONE,
-                                                NULL, error));
-      if (! output)
-        g_prefix_error (error,
-                        _("Could not create temporary file for '%s': "),
-                        gimp_file_get_utf8_name (file));
+      tmpname = g_strconcat (filename, "XXXXXX", NULL);
+
+      fd = g_mkstemp (tmpname);
+
+      if (fd == -1)
+        {
+          g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                       _("Could not create temporary file for '%s': %s"),
+                       gimp_filename_to_utf8 (filename), g_strerror (errno));
+          g_free (tmpname);
+          return NULL;
+        }
     }
   else
     {
-      output = G_OUTPUT_STREAM (g_file_replace (file,
-                                                NULL, FALSE,
-                                                G_FILE_CREATE_REPLACE_DESTINATION,
-                                                NULL, error));
-    }
+      fd = g_creat (filename, 0644);
 
-  if (! output)
-    return NULL;
+      if (fd == -1)
+        {
+          g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                       _("Could not open '%s' for writing: %s"),
+                       gimp_filename_to_utf8 (filename), g_strerror (errno));
+          return NULL;
+        }
+    }
 
   writer = g_slice_new0 (GimpConfigWriter);
 
-  writer->output = output;
-  writer->file   = g_object_ref (file);
-  writer->buffer = g_string_new (NULL);
-
-  if (header)
-    {
-      gimp_config_writer_comment (writer, header);
-      gimp_config_writer_linefeed (writer);
-    }
-
-  return writer;
-}
-
-/**
- * gimp_config_writer_new_stream:
- * @output: a #GOutputStream
- * @header: text to include as comment at the top of the file
- * @error: return location for errors
- *
- * Creates a new #GimpConfigWriter and sets it up to write to
- * @output.
- *
- * Return value: a new #GimpConfigWriter or %NULL in case of an error
- *
- * Since: 2.10
- **/
-GimpConfigWriter *
-gimp_config_writer_new_stream (GOutputStream  *output,
-                               const gchar    *header,
-                               GError        **error)
-{
-  GimpConfigWriter *writer;
-
-  g_return_val_if_fail (G_IS_OUTPUT_STREAM (output), NULL);
-  g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-  writer = g_slice_new0 (GimpConfigWriter);
-
-  writer->output = g_object_ref (output);
-  writer->buffer = g_string_new (NULL);
+  writer->fd       = fd;
+  writer->filename = g_strdup (filename);
+  writer->tmpname  = tmpname;
+  writer->buffer   = g_string_new (NULL);
 
   if (header)
     {
@@ -253,7 +183,7 @@ gimp_config_writer_new_stream (GOutputStream  *output,
  *
  * Return value: a new #GimpConfigWriter or %NULL in case of an error
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpConfigWriter *
 gimp_config_writer_new_fd (gint fd)
@@ -264,12 +194,7 @@ gimp_config_writer_new_fd (gint fd)
 
   writer = g_slice_new0 (GimpConfigWriter);
 
-#ifdef G_OS_WIN32
-  writer->output = g_win32_output_stream_new ((gpointer) fd, FALSE);
-#else
-  writer->output = g_unix_output_stream_new (fd, FALSE);
-#endif
-
+  writer->fd     = fd;
   writer->buffer = g_string_new (NULL);
 
   return writer;
@@ -281,7 +206,7 @@ gimp_config_writer_new_fd (gint fd)
  *
  * Return value: a new #GimpConfigWriter or %NULL in case of an error
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpConfigWriter *
 gimp_config_writer_new_string (GString *string)
@@ -307,9 +232,9 @@ gimp_config_writer_new_string (GString *string)
  * system-wide installed gimprc that documents the default settings.
  *
  * Since comments have to start at the beginning of a line, this
- * function will insert a newline if necessary.
+ * funtion will insert a newline if necessary.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_comment_mode (GimpConfigWriter *writer,
@@ -346,7 +271,7 @@ gimp_config_writer_comment_mode (GimpConfigWriter *writer,
  * It also increases the indentation level and sets a mark that
  * can be used by gimp_config_writer_revert().
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_open (GimpConfigWriter *writer,
@@ -378,7 +303,7 @@ gimp_config_writer_open (GimpConfigWriter *writer,
  * Appends a space followed by @string to the @writer. Note that string
  * must not contain any special characters that might need to be escaped.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_print (GimpConfigWriter  *writer,
@@ -409,7 +334,7 @@ gimp_config_writer_print (GimpConfigWriter  *writer,
  *
  * A printf-like function for #GimpConfigWriter.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_printf (GimpConfigWriter *writer,
@@ -443,7 +368,7 @@ gimp_config_writer_printf (GimpConfigWriter *writer,
  * Writes a string value to @writer. The @string is quoted and special
  * characters are escaped.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_string (GimpConfigWriter *writer,
@@ -466,7 +391,7 @@ gimp_config_writer_string (GimpConfigWriter *writer,
  * Writes an identifier to @writer. The @string is *not* quoted and special
  * characters are *not* escaped.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_identifier (GimpConfigWriter *writer,
@@ -488,7 +413,7 @@ gimp_config_writer_identifier (GimpConfigWriter *writer,
  * @length:
  * @data:
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_data (GimpConfigWriter *writer,
@@ -525,7 +450,7 @@ gimp_config_writer_data (GimpConfigWriter *writer,
  * to gimp_config_writer_open(). This can only work if you didn't call
  * gimp_config_writer_close() yet.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_revert (GimpConfigWriter *writer)
@@ -550,7 +475,7 @@ gimp_config_writer_revert (GimpConfigWriter *writer)
  *
  * Closes an element opened with gimp_config_writer_open().
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_close (GimpConfigWriter *writer)
@@ -568,7 +493,8 @@ gimp_config_writer_close (GimpConfigWriter *writer)
     {
       g_string_append_c (writer->buffer, '\n');
 
-      gimp_config_writer_flush (writer);
+      if (writer->fd)
+        gimp_config_writer_flush (writer);
     }
 }
 
@@ -586,7 +512,7 @@ gimp_config_writer_close (GimpConfigWriter *writer)
  * Return value: %TRUE if everything could be successfully written,
  *               %FALSE otherwise
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_writer_finish (GimpConfigWriter  *writer,
@@ -614,23 +540,23 @@ gimp_config_writer_finish (GimpConfigWriter  *writer,
       gimp_config_writer_comment (writer, footer);
     }
 
-  if (writer->output)
+  if (writer->fd)
     {
-      success = gimp_config_writer_close_output (writer, error);
+      success = gimp_config_writer_close_file (writer, error);
 
-      if (writer->file)
-        g_object_unref (writer->file);
+      g_free (writer->filename);
+      g_free (writer->tmpname);
 
       g_string_free (writer->buffer, TRUE);
+    }
+  else
+    {
+      success = TRUE;
     }
 
   if (writer->error)
     {
-      if (error && *error == NULL)
-        g_propagate_error (error, writer->error);
-      else
-        g_clear_error (&writer->error);
-
+      g_propagate_error (error, writer->error);
       success = FALSE;
     }
 
@@ -647,20 +573,12 @@ gimp_config_writer_linefeed (GimpConfigWriter *writer)
   if (writer->error)
     return;
 
-  if (writer->output && writer->buffer->len == 0 && !writer->comment)
+  if (writer->buffer->len == 0 && !writer->comment)
     {
-      GError *error = NULL;
-
-      if (! g_output_stream_write_all (writer->output, "\n", 1,
-                                       NULL, NULL, &error))
-        {
-          g_set_error (&writer->error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
-                       _("Error writing to '%s': %s"),
-                       writer->file ?
-                       gimp_file_get_utf8_name (writer->file) : "output stream",
-                       error->message);
-          g_clear_error (&error);
-        }
+      if (write (writer->fd, "\n", 1) < 0)
+        g_set_error_literal (&writer->error,
+			     GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+			     g_strerror (errno));
     }
   else
     {
@@ -677,7 +595,7 @@ gimp_config_writer_linefeed (GimpConfigWriter *writer)
  * format it as a comment. Note that this function does not handle non-ASCII
  * characters.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_writer_comment (GimpConfigWriter *writer,
@@ -738,40 +656,96 @@ gimp_config_writer_comment (GimpConfigWriter *writer,
 }
 
 static gboolean
-gimp_config_writer_close_output (GimpConfigWriter  *writer,
-                                 GError           **error)
+gimp_config_writer_close_file (GimpConfigWriter  *writer,
+                               GError           **error)
 {
-  g_return_val_if_fail (writer->output != NULL, FALSE);
+  g_return_val_if_fail (writer->fd != 0, FALSE);
+
+  if (! writer->filename)
+    return TRUE;
 
   if (writer->error)
     {
-      g_object_unref (writer->output);
-      writer->output = NULL;
+      close (writer->fd);
+
+      if (writer->tmpname)
+        g_unlink (writer->tmpname);
 
       return FALSE;
     }
 
-  if (writer->file)
+#ifdef HAVE_FSYNC
+  /* If the final destination exists, we want to sync the newly written
+   * file to ensure the data is on disk when we rename over the destination.
+   * otherwise if we get a system crash we can lose both the new and the
+   * old file on some filesystems. (I.E. those that don't guarantee the
+   * data is written to the disk before the metadata.)
+   */
+  if (writer->tmpname && g_file_test (writer->filename, G_FILE_TEST_EXISTS))
     {
-      GError *my_error = NULL;
-
-      if (! g_output_stream_close (writer->output, NULL, &my_error))
+      if (fsync (writer->fd) != 0)
         {
           g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
-                       _("Error writing '%s': %s"),
-                       gimp_file_get_utf8_name (writer->file),
-                       my_error->message);
-          g_clear_error (&my_error);
+                       _("Error writing to temporary file for '%s': %s\n"
+                         "The original file has not been touched."),
+                       gimp_filename_to_utf8 (writer->filename),
+                       g_strerror (errno));
 
-          g_object_unref (writer->output);
-          writer->output = NULL;
+          close (writer->fd);
+          g_unlink (writer->tmpname);
 
           return FALSE;
         }
     }
+#endif
 
-  g_object_unref (writer->output);
-  writer->output = NULL;
+  if (close (writer->fd) != 0)
+    {
+      if (writer->tmpname)
+        {
+          if (g_file_test (writer->filename, G_FILE_TEST_EXISTS))
+            {
+              g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                           _("Error writing to temporary file for '%s': %s\n"
+                             "The original file has not been touched."),
+                           gimp_filename_to_utf8 (writer->filename),
+                           g_strerror (errno));
+            }
+          else
+            {
+              g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                           _("Error writing to temporary file for '%s': %s\n"
+                             "No file has been created."),
+                           gimp_filename_to_utf8 (writer->filename),
+                           g_strerror (errno));
+            }
+
+          g_unlink (writer->tmpname);
+        }
+      else
+        {
+          g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                       _("Error writing to '%s': %s"),
+                       gimp_filename_to_utf8 (writer->filename),
+                       g_strerror (errno));
+        }
+
+      return FALSE;
+    }
+
+  if (writer->tmpname)
+    {
+      if (g_rename (writer->tmpname, writer->filename) == -1)
+        {
+          g_set_error (error, GIMP_CONFIG_ERROR, GIMP_CONFIG_ERROR_WRITE,
+                       _("Could not create '%s': %s"),
+                       gimp_filename_to_utf8 (writer->filename),
+                       g_strerror (errno));
+
+          g_unlink (writer->tmpname);
+          return FALSE;
+        }
+    }
 
   return TRUE;
 }

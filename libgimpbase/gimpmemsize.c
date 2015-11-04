@@ -22,8 +22,7 @@
 
 #include <glib-object.h>
 
-#include "gimpbasetypes.h"
-
+#undef GIMP_DISABLE_DEPRECATED
 #include "gimpmemsize.h"
 
 #include "libgimp/libgimp-intl.h"
@@ -76,7 +75,7 @@ gimp_memsize_get_type (void)
  *
  * Return value: A newly allocated string representation of @memsize.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gchar *
 gimp_memsize_serialize (guint64 memsize)
@@ -102,7 +101,7 @@ gimp_memsize_serialize (guint64 memsize)
  * Return value: %TRUE if the @string was successfully parsed and
  *               @memsize has been set, %FALSE otherwise.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_memsize_deserialize (const gchar *string,
@@ -215,7 +214,7 @@ static void  gimp_param_memsize_class_init (GParamSpecClass *class);
  *
  * Returns: the #GType for a memsize object
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_param_memsize_get_type (void)
@@ -263,7 +262,7 @@ gimp_param_memsize_class_init (GParamSpecClass *class)
  *
  * Returns: a newly allocated #GParamSpec instance
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GParamSpec *
 gimp_param_spec_memsize (const gchar *name,

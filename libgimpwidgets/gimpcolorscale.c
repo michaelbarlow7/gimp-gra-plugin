@@ -24,7 +24,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpcolor/gimpcolor.h"
@@ -104,7 +103,7 @@ gimp_color_scale_class_init (GimpColorScaleClass *klass)
    *
    * The channel which is edited by the color scale.
    *
-   * Since: 2.8
+   * Since: GIMP 2.8
    */
   g_object_class_install_property (object_class, PROP_CHANNEL,
                                    g_param_spec_enum ("channel", NULL, NULL,

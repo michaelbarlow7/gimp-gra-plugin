@@ -1,7 +1,7 @@
 /* LIBGIMP - The GIMP Library
  * Copyright (C) 1995-2003 Peter Mattis and Spencer Kimball
  *
- * gimpimagegrid_pdb.c
+ * gimpgrid_pdb.c
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,8 +26,8 @@
 
 
 /**
- * SECTION: gimpimagegrid
- * @title: gimpimagegrid
+ * SECTION: gimpgrid
+ * @title: gimpgrid
  * @short_description: Functions manuipulating an image's grid.
  *
  * Functions manuipulating an image's grid.
@@ -47,7 +47,7 @@
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_get_spacing (gint32   image_ID,
@@ -92,7 +92,7 @@ gimp_image_grid_get_spacing (gint32   image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_set_spacing (gint32  image_ID,
@@ -130,7 +130,7 @@ gimp_image_grid_set_spacing (gint32  image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_get_offset (gint32   image_ID,
@@ -175,7 +175,7 @@ gimp_image_grid_get_offset (gint32   image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_set_offset (gint32  image_ID,
@@ -211,7 +211,7 @@ gimp_image_grid_set_offset (gint32  image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_get_foreground_color (gint32   image_ID,
@@ -247,7 +247,7 @@ gimp_image_grid_get_foreground_color (gint32   image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_set_foreground_color (gint32         image_ID,
@@ -281,7 +281,7 @@ gimp_image_grid_set_foreground_color (gint32         image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_get_background_color (gint32   image_ID,
@@ -317,7 +317,7 @@ gimp_image_grid_get_background_color (gint32   image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_set_background_color (gint32         image_ID,
@@ -350,7 +350,7 @@ gimp_image_grid_set_background_color (gint32         image_ID,
  *
  * Returns: The image's grid style.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpGridStyle
 gimp_image_grid_get_style (gint32 image_ID)
@@ -384,7 +384,7 @@ gimp_image_grid_get_style (gint32 image_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_image_grid_set_style (gint32        image_ID,

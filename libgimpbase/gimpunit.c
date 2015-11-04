@@ -345,12 +345,6 @@ gimp_unit_get_plural (GimpUnit unit)
   return _gimp_unit_vtable.unit_get_plural (unit);
 }
 
-static gint print (gchar       *buf,
-                   gint         len,
-                   gint         start,
-                   const gchar *fmt,
-                   ...) G_GNUC_PRINTF (4, 5);
-
 static gint
 print (gchar       *buf,
        gint         len,
@@ -414,7 +408,7 @@ print (gchar       *buf,
  * Returns: A newly allocated string with above percent expressions
  *          replaced with the resp. strings for @unit.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gchar *
 gimp_unit_format_string (const gchar *format,
@@ -516,7 +510,7 @@ static gboolean  gimp_param_unit_value_validate (GParamSpec      *pspec,
  *
  * Returns: the #GType for a unit param object
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_param_unit_get_type (void)
@@ -558,7 +552,11 @@ gimp_param_unit_value_validate (GParamSpec *pspec,
   GimpParamSpecUnit *uspec = GIMP_PARAM_SPEC_UNIT (pspec);
   gint               oval  = value->data[0].v_int;
 
-  if (!(uspec->allow_percent && value->data[0].v_int == GIMP_UNIT_PERCENT))
+  if (uspec->allow_percent && value->data[0].v_int == GIMP_UNIT_PERCENT)
+    {
+      value->data[0].v_int = value->data[0].v_int;
+    }
+  else
     {
       value->data[0].v_int = CLAMP (value->data[0].v_int,
                                     ispec->minimum,
@@ -583,7 +581,7 @@ gimp_param_unit_value_validate (GParamSpec *pspec,
  *
  * Returns: a newly allocated #GParamSpec instance
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GParamSpec *
 gimp_param_spec_unit (const gchar *name,
@@ -621,7 +619,7 @@ gimp_param_spec_unit (const gchar *name,
  *
  * Returns: @pixels converted to units.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gdouble
 gimp_pixels_to_units (gdouble  pixels,
@@ -644,7 +642,7 @@ gimp_pixels_to_units (gdouble  pixels,
  *
  * Returns: @value converted to pixels.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gdouble
 gimp_units_to_pixels (gdouble  value,
@@ -667,7 +665,7 @@ gimp_units_to_pixels (gdouble  value,
  *
  * Returns: @value converted to points.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gdouble
 gimp_units_to_points (gdouble  value,
@@ -682,37 +680,4 @@ gimp_units_to_points (gdouble  value,
 
   return (value *
           gimp_unit_get_factor (GIMP_UNIT_POINT) / gimp_unit_get_factor (unit));
-}
-
-/**
- * gimp_unit_is_metric:
- * @unit: The unit
- *
- * Checks if the given @unit is metric. A simplistic test is used
- * that looks at the unit's factor and checks if it is 2.54 multiplied
- * by some common powers of 10. Currently it checks for mm, cm, dm, m.
- *
- * See also: gimp_unit_get_factor()
- *
- * Returns: %TRUE if the @unit is metric.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_unit_is_metric (GimpUnit unit)
-{
-  gdouble factor;
-
-  if (unit == GIMP_UNIT_MM)
-    return TRUE;
-
-  factor = gimp_unit_get_factor (unit);
-
-  if (factor == 0.0)
-    return FALSE;
-
-  return ((ABS (factor -  0.0254) < 1e-7) || /* m  */
-          (ABS (factor -  0.254)  < 1e-6) || /* dm */
-          (ABS (factor -  2.54)   < 1e-5) || /* cm */
-          (ABS (factor - 25.4)    < 1e-4));  /* mm */
 }

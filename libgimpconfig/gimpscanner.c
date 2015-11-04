@@ -26,8 +26,7 @@
 #include <errno.h>
 
 #include <cairo.h>
-#include <gegl.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 #include "libgimpcolor/gimpcolor.h"
@@ -51,8 +50,7 @@
 typedef struct
 {
   gchar        *name;
-  GMappedFile  *mapped;
-  gchar        *text;
+  GMappedFile  *file;
   GError      **error;
 } GimpScannerData;
 
@@ -60,8 +58,7 @@ typedef struct
 /*  local function prototypes  */
 
 static GScanner * gimp_scanner_new     (const gchar  *name,
-                                        GMappedFile  *mapped,
-                                        gchar        *text,
+                                        GMappedFile  *file,
                                         GError      **error);
 static void       gimp_scanner_message (GScanner     *scanner,
                                         gchar        *message,
@@ -77,171 +74,39 @@ static void       gimp_scanner_message (GScanner     *scanner,
  *
  * Return value:
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GScanner *
 gimp_scanner_new_file (const gchar  *filename,
                        GError      **error)
 {
-  GScanner *scanner;
-  GFile    *file;
+  GScanner    *scanner;
+  GMappedFile *file;
 
   g_return_val_if_fail (filename != NULL, NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-  file = g_file_new_for_path (filename);
-  scanner = gimp_scanner_new_gfile (file, error);
-  g_object_unref (file);
+  file = g_mapped_file_new (filename, FALSE, error);
 
-  return scanner;
-}
-
-/**
- * gimp_scanner_new_gfile:
- * @file: a #GFile
- * @error: return location for #GError, or %NULL
- *
- * Return value: The new #GScanner.
- *
- * Since: 2.10
- **/
-GScanner *
-gimp_scanner_new_gfile (GFile   *file,
-                        GError **error)
-{
-  GScanner *scanner;
-  gchar    *path;
-
-  g_return_val_if_fail (G_IS_FILE (file), NULL);
-  g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-  path = g_file_get_path (file);
-
-  if (path)
+  if (! file)
     {
-      GMappedFile *mapped;
-
-      mapped = g_mapped_file_new (path, FALSE, error);
-      g_free (path);
-
-      if (! mapped)
+      if (error)
         {
-          if (error)
-            {
-              (*error)->domain = GIMP_CONFIG_ERROR;
-              (*error)->code   = ((*error)->code == G_FILE_ERROR_NOENT ?
-                                  GIMP_CONFIG_ERROR_OPEN_ENOENT :
-                                  GIMP_CONFIG_ERROR_OPEN);
-            }
-
-          return NULL;
+          (*error)->domain = GIMP_CONFIG_ERROR;
+          (*error)->code   = ((*error)->code == G_FILE_ERROR_NOENT ?
+                              GIMP_CONFIG_ERROR_OPEN_ENOENT :
+                              GIMP_CONFIG_ERROR_OPEN);
         }
 
-      /*  gimp_scanner_new() takes a "name" for the scanner, not a filename  */
-      scanner = gimp_scanner_new (gimp_file_get_utf8_name (file),
-                                  mapped, NULL, error);
-
-      g_scanner_input_text (scanner,
-                            g_mapped_file_get_contents (mapped),
-                            g_mapped_file_get_length (mapped));
+      return NULL;
     }
-  else
-    {
-      GInputStream *input;
-
-      input = G_INPUT_STREAM (g_file_read (file, NULL, error));
-
-      if (! input)
-        {
-          if (error)
-            {
-              (*error)->domain = GIMP_CONFIG_ERROR;
-              (*error)->code   = ((*error)->code == G_IO_ERROR_NOT_FOUND ?
-                                  GIMP_CONFIG_ERROR_OPEN_ENOENT :
-                                  GIMP_CONFIG_ERROR_OPEN);
-            }
-
-          return NULL;
-        }
-
-      g_object_set_data (G_OBJECT (input), "gimp-data", file);
-
-      scanner = gimp_scanner_new_stream (input, error);
-
-      g_object_unref (input);
-    }
-
-  return scanner;
-}
-
-/**
- * gimp_scanner_new_stream:
- * @input: a #GInputStream
- * @error: return location for #GError, or %NULL
- *
- * Return value: The new #GScanner.
- *
- * Since: 2.10
- **/
-GScanner *
-gimp_scanner_new_stream (GInputStream  *input,
-                         GError       **error)
-{
-  GScanner    *scanner;
-  GFile       *file;
-  const gchar *path;
-  GString     *string;
-  gchar        buffer[4096];
-  gsize        bytes_read;
-
-  g_return_val_if_fail (G_IS_INPUT_STREAM (input), NULL);
-  g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-  file = g_object_get_data (G_OBJECT (input), "gimp-file");
-  if (file)
-    path = gimp_file_get_utf8_name (file);
-  else
-    path = "stream";
-
-  string = g_string_new (NULL);
-
-  do
-    {
-      GError   *my_error = NULL;
-      gboolean  success;
-
-      success = g_input_stream_read_all (input, buffer, sizeof (buffer),
-                                         &bytes_read, NULL, &my_error);
-
-      if (bytes_read > 0)
-        g_string_append_len (string, buffer, bytes_read);
-
-      if (! success)
-        {
-          if (string->len > 0)
-            {
-              g_printerr ("%s: read error in '%s', trying to scan "
-                          "partial content: %s",
-                          G_STRFUNC, path, my_error->message);
-              g_clear_error (&my_error);
-              break;
-            }
-
-          g_string_free (string, TRUE);
-
-          g_propagate_error (error, my_error);
-
-          return NULL;
-        }
-    }
-  while (bytes_read == sizeof (buffer));
 
   /*  gimp_scanner_new() takes a "name" for the scanner, not a filename  */
-  scanner = gimp_scanner_new (path, NULL, string->str, error);
+  scanner = gimp_scanner_new (gimp_filename_to_utf8 (filename), file, error);
 
-  bytes_read = string->len;
-
-  g_scanner_input_text (scanner, g_string_free (string, FALSE), bytes_read);
+  g_scanner_input_text (scanner,
+                        g_mapped_file_get_contents (file),
+                        g_mapped_file_get_length (file));
 
   return scanner;
 }
@@ -254,7 +119,7 @@ gimp_scanner_new_stream (GInputStream  *input,
  *
  * Return value:
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GScanner *
 gimp_scanner_new_string (const gchar  *text,
@@ -269,7 +134,7 @@ gimp_scanner_new_string (const gchar  *text,
   if (text_len < 0)
     text_len = strlen (text);
 
-  scanner = gimp_scanner_new (NULL, NULL, NULL, error);
+  scanner = gimp_scanner_new (NULL, NULL, error);
 
   g_scanner_input_text (scanner, text, text_len);
 
@@ -278,8 +143,7 @@ gimp_scanner_new_string (const gchar  *text,
 
 static GScanner *
 gimp_scanner_new (const gchar  *name,
-                  GMappedFile  *mapped,
-                  gchar        *text,
+                  GMappedFile  *file,
                   GError      **error)
 {
   GScanner        *scanner;
@@ -289,10 +153,9 @@ gimp_scanner_new (const gchar  *name,
 
   data = g_slice_new0 (GimpScannerData);
 
-  data->name   = g_strdup (name);
-  data->mapped = mapped;
-  data->text   = text;
-  data->error  = error;
+  data->name  = g_strdup (name);
+  data->file  = file;
+  data->error = error;
 
   scanner->user_data   = data;
   scanner->msg_handler = gimp_scanner_message;
@@ -312,7 +175,7 @@ gimp_scanner_new (const gchar  *name,
  * @scanner: A #GScanner created by gimp_scanner_new_file() or
  *           gimp_scanner_new_string()
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_scanner_destroy (GScanner *scanner)
@@ -323,11 +186,8 @@ gimp_scanner_destroy (GScanner *scanner)
 
   data = scanner->user_data;
 
-  if (data->mapped)
-    g_mapped_file_unref (data->mapped);
-
-  if (data->text)
-    g_free (data->text);
+  if (data->file)
+    g_mapped_file_unref (data->file);
 
   g_free (data->name);
   g_slice_free (GimpScannerData, data);
@@ -343,7 +203,7 @@ gimp_scanner_destroy (GScanner *scanner)
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_token (GScanner   *scanner,
@@ -365,7 +225,7 @@ gimp_scanner_parse_token (GScanner   *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_identifier (GScanner    *scanner,
@@ -390,7 +250,7 @@ gimp_scanner_parse_identifier (GScanner    *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_string (GScanner  *scanner,
@@ -427,7 +287,7 @@ gimp_scanner_parse_string (GScanner  *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_string_no_validate (GScanner  *scanner,
@@ -455,7 +315,7 @@ gimp_scanner_parse_string_no_validate (GScanner  *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_data (GScanner  *scanner,
@@ -483,46 +343,11 @@ gimp_scanner_parse_data (GScanner  *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_int (GScanner *scanner,
                         gint     *dest)
-{
-  gboolean negate = FALSE;
-
-  if (g_scanner_peek_next_token (scanner) == '-')
-    {
-      negate = TRUE;
-      g_scanner_get_next_token (scanner);
-    }
-
-  if (g_scanner_peek_next_token (scanner) != G_TOKEN_INT)
-    return FALSE;
-
-  g_scanner_get_next_token (scanner);
-
-  if (negate)
-    *dest = -scanner->value.v_int64;
-  else
-    *dest = scanner->value.v_int64;
-
-  return TRUE;
-}
-
-/**
- * gimp_scanner_parse_int64:
- * @scanner: A #GScanner created by gimp_scanner_new_file() or
- *           gimp_scanner_new_string()
- * @dest: Return location for the parsed integer
- *
- * Return value: %TRUE on success
- *
- * Since: 2.8
- **/
-gboolean
-gimp_scanner_parse_int64 (GScanner *scanner,
-                          gint64   *dest)
 {
   gboolean negate = FALSE;
 
@@ -553,7 +378,7 @@ gimp_scanner_parse_int64 (GScanner *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_float (GScanner *scanner,
@@ -577,7 +402,7 @@ gimp_scanner_parse_float (GScanner *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_boolean (GScanner *scanner,
@@ -628,7 +453,7 @@ enum
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_color (GScanner *scanner,
@@ -751,7 +576,7 @@ gimp_scanner_parse_color (GScanner *scanner,
  *
  * Return value: %TRUE on success
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_scanner_parse_matrix2 (GScanner    *scanner,

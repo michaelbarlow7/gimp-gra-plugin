@@ -23,6 +23,9 @@
 #include "config.h"
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_SELECTION_TOOLS_PDB_H__
+#include "gimpselectiontools_pdb.h"
 
 
 /**
@@ -100,7 +103,7 @@ gimp_by_color_select (gint32          drawable_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_by_color_select_full (gint32               drawable_ID,
@@ -307,7 +310,7 @@ gimp_fuzzy_select (gint32         drawable_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_fuzzy_select_full (gint32              drawable_ID,
@@ -417,7 +420,7 @@ gimp_rect_select (gint32         image_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_round_rect_select (gint32         image_ID,

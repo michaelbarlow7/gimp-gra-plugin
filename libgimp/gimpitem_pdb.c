@@ -47,7 +47,7 @@
  *
  * Returns: Whether the item ID is valid.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_valid (gint32 item_ID)
@@ -79,7 +79,7 @@ gimp_item_is_valid (gint32 item_ID)
  *
  * Returns: The item's image.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_get_image (gint32 item_ID)
@@ -115,7 +115,7 @@ gimp_item_get_image (gint32 item_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_delete (gint32 item_ID)
@@ -146,7 +146,7 @@ gimp_item_delete (gint32 item_ID)
  *
  * Returns: TRUE if the item is a drawable, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_drawable (gint32 item_ID)
@@ -178,7 +178,7 @@ gimp_item_is_drawable (gint32 item_ID)
  *
  * Returns: TRUE if the item is a layer, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_layer (gint32 item_ID)
@@ -210,7 +210,7 @@ gimp_item_is_layer (gint32 item_ID)
  *
  * Returns: TRUE if the item is a text layer, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_text_layer (gint32 item_ID)
@@ -242,7 +242,7 @@ gimp_item_is_text_layer (gint32 item_ID)
  *
  * Returns: TRUE if the item is a channel, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_channel (gint32 item_ID)
@@ -274,7 +274,7 @@ gimp_item_is_channel (gint32 item_ID)
  *
  * Returns: TRUE if the item is a layer mask, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_layer_mask (gint32 item_ID)
@@ -306,7 +306,7 @@ gimp_item_is_layer_mask (gint32 item_ID)
  *
  * Returns: TRUE if the item is a selection, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_selection (gint32 item_ID)
@@ -338,7 +338,7 @@ gimp_item_is_selection (gint32 item_ID)
  *
  * Returns: TRUE if the item is a vectors, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_vectors (gint32 item_ID)
@@ -371,7 +371,7 @@ gimp_item_is_vectors (gint32 item_ID)
  *
  * Returns: TRUE if the item is a group, FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_is_group (gint32 item_ID)
@@ -403,7 +403,7 @@ gimp_item_is_group (gint32 item_ID)
  *
  * Returns: The item's parent item.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint32
 gimp_item_get_parent (gint32 item_ID)
@@ -437,7 +437,7 @@ gimp_item_get_parent (gint32 item_ID)
  *
  * Returns: The item's list of children.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint *
 gimp_item_get_children (gint32  item_ID,
@@ -478,7 +478,7 @@ gimp_item_get_children (gint32  item_ID,
  *
  * Returns: The item name.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gchar *
 gimp_item_get_name (gint32 item_ID)
@@ -511,7 +511,7 @@ gimp_item_get_name (gint32 item_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_set_name (gint32       item_ID,
@@ -544,7 +544,7 @@ gimp_item_set_name (gint32       item_ID,
  *
  * Returns: The item visibility.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_get_visible (gint32 item_ID)
@@ -577,7 +577,7 @@ gimp_item_get_visible (gint32 item_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_set_visible (gint32   item_ID,
@@ -610,7 +610,7 @@ gimp_item_set_visible (gint32   item_ID,
  *
  * Returns: The item linked state (for moves).
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_get_linked (gint32 item_ID)
@@ -643,7 +643,7 @@ gimp_item_get_linked (gint32 item_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_set_linked (gint32   item_ID,
@@ -676,7 +676,7 @@ gimp_item_set_linked (gint32   item_ID,
  *
  * Returns: Whether the item's contents are locked.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_get_lock_content (gint32 item_ID)
@@ -709,7 +709,7 @@ gimp_item_get_lock_content (gint32 item_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_set_lock_content (gint32   item_ID,
@@ -733,72 +733,6 @@ gimp_item_set_lock_content (gint32   item_ID,
 }
 
 /**
- * gimp_item_get_lock_position:
- * @item_ID: The item.
- *
- * Get the 'lock position' state of the specified item.
- *
- * This procedure returns the specified item's lock position state.
- *
- * Returns: Whether the item's position is locked.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_item_get_lock_position (gint32 item_ID)
-{
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  gboolean lock_position = FALSE;
-
-  return_vals = gimp_run_procedure ("gimp-item-get-lock-position",
-                                    &nreturn_vals,
-                                    GIMP_PDB_ITEM, item_ID,
-                                    GIMP_PDB_END);
-
-  if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-    lock_position = return_vals[1].data.d_int32;
-
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return lock_position;
-}
-
-/**
- * gimp_item_set_lock_position:
- * @item_ID: The item.
- * @lock_position: The new item 'lock position' state.
- *
- * Set the 'lock position' state of the specified item.
- *
- * This procedure sets the specified item's lock position state.
- *
- * Returns: TRUE on success.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_item_set_lock_position (gint32   item_ID,
-                             gboolean lock_position)
-{
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  gboolean success = TRUE;
-
-  return_vals = gimp_run_procedure ("gimp-item-set-lock-position",
-                                    &nreturn_vals,
-                                    GIMP_PDB_ITEM, item_ID,
-                                    GIMP_PDB_INT32, lock_position,
-                                    GIMP_PDB_END);
-
-  success = return_vals[0].data.d_status == GIMP_PDB_SUCCESS;
-
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return success;
-}
-
-/**
  * gimp_item_get_tattoo:
  * @item_ID: The item.
  *
@@ -810,7 +744,7 @@ gimp_item_set_lock_position (gint32   item_ID,
  *
  * Returns: The item tattoo.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gint
 gimp_item_get_tattoo (gint32 item_ID)
@@ -845,7 +779,7 @@ gimp_item_get_tattoo (gint32 item_ID)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_set_tattoo (gint32 item_ID,
@@ -880,7 +814,7 @@ gimp_item_set_tattoo (gint32 item_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_attach_parasite (gint32              item_ID,
@@ -915,7 +849,7 @@ gimp_item_attach_parasite (gint32              item_ID,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_item_detach_parasite (gint32       item_ID,
@@ -949,7 +883,7 @@ gimp_item_detach_parasite (gint32       item_ID,
  *
  * Returns: The found parasite.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GimpParasite *
 gimp_item_get_parasite (gint32       item_ID,
@@ -982,10 +916,9 @@ gimp_item_get_parasite (gint32       item_ID,
  *
  * Returns a list of all parasites currently attached the an item.
  *
- * Returns: The names of currently attached parasites. The returned
- * value must be freed with g_strfreev().
+ * Returns: The names of currently attached parasites.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gchar **
 gimp_item_get_parasite_list (gint32  item_ID,
@@ -1006,12 +939,9 @@ gimp_item_get_parasite_list (gint32  item_ID,
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
     {
       *num_parasites = return_vals[1].data.d_int32;
-      if (*num_parasites > 0)
-        {
-          parasites = g_new0 (gchar *, *num_parasites + 1);
-          for (i = 0; i < *num_parasites; i++)
-            parasites[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
-        }
+      parasites = g_new (gchar *, *num_parasites);
+      for (i = 0; i < *num_parasites; i++)
+        parasites[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
     }
 
   gimp_destroy_params (return_vals, nreturn_vals);

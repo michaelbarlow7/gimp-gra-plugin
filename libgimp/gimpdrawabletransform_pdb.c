@@ -23,6 +23,9 @@
 #include "config.h"
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_DRAWABLE_TRANSFORM_PDB_H__
+#include "gimpdrawabletransform_pdb.h"
 
 
 /**
@@ -46,7 +49,7 @@
  *
  * Returns: The flipped drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_flip_simple (gint32              drawable_ID,
@@ -85,15 +88,15 @@ gimp_drawable_transform_flip_simple (gint32              drawable_ID,
  * @y1: vert. coord. of other end of axis.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: Whether to clip results.
  *
  * Deprecated: Use gimp_item_transform_flip() instead.
  *
  * Returns: The flipped drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_flip (gint32                 drawable_ID,
@@ -147,7 +150,7 @@ gimp_drawable_transform_flip (gint32                 drawable_ID,
  *
  * Returns: The flipped drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_flip_default (gint32   drawable_ID,
@@ -194,15 +197,15 @@ gimp_drawable_transform_flip_default (gint32   drawable_ID,
  * @y3: The new y coordinate of lower-right corner of original bounding box.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: How to clip results.
  *
  * Deprecated: Use gimp_item_transform_perspective() instead.
  *
  * Returns: The newly mapped drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_perspective (gint32                 drawable_ID,
@@ -268,7 +271,7 @@ gimp_drawable_transform_perspective (gint32                 drawable_ID,
  *
  * Returns: The newly mapped drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_perspective_default (gint32              drawable_ID,
@@ -323,7 +326,7 @@ gimp_drawable_transform_perspective_default (gint32              drawable_ID,
  *
  * Returns: The rotated drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_rotate_simple (gint32           drawable_ID,
@@ -364,15 +367,15 @@ gimp_drawable_transform_rotate_simple (gint32           drawable_ID,
  * @center_y: The vert. coordinate of the center of rotation.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: How to clip results.
  *
  * Deprecated: Use gimp_item_transform_rotate() instead.
  *
  * Returns: The rotated drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_rotate (gint32                 drawable_ID,
@@ -426,7 +429,7 @@ gimp_drawable_transform_rotate (gint32                 drawable_ID,
  *
  * Returns: The rotated drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_rotate_default (gint32              drawable_ID,
@@ -469,15 +472,15 @@ gimp_drawable_transform_rotate_default (gint32              drawable_ID,
  * @y1: The new y coordinate of the lower-right corner of the scaled region.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: How to clip results.
  *
  * Deprecated: Use gimp_item_transform_scale() instead.
  *
  * Returns: The scaled drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_scale (gint32                 drawable_ID,
@@ -531,7 +534,7 @@ gimp_drawable_transform_scale (gint32                 drawable_ID,
  *
  * Returns: The scaled drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_scale_default (gint32              drawable_ID,
@@ -572,15 +575,15 @@ gimp_drawable_transform_scale_default (gint32              drawable_ID,
  * @magnitude: The magnitude of the shear.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: How to clip results.
  *
  * Deprecated: Use gimp_item_transform_shear() instead.
  *
  * Returns: The sheared drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_shear (gint32                 drawable_ID,
@@ -628,7 +631,7 @@ gimp_drawable_transform_shear (gint32                 drawable_ID,
  *
  * Returns: The sheared drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_shear_default (gint32              drawable_ID,
@@ -670,15 +673,15 @@ gimp_drawable_transform_shear_default (gint32              drawable_ID,
  * @dest_y: Y coordinate of where the center goes.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: How to clip results.
  *
  * Deprecated: Use gimp_item_transform_2d() instead.
  *
  * Returns: The transformed drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_2d (gint32                 drawable_ID,
@@ -741,7 +744,7 @@ gimp_drawable_transform_2d (gint32                 drawable_ID,
  *
  * Returns: The transformed drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_2d_default (gint32              drawable_ID,
@@ -795,15 +798,15 @@ gimp_drawable_transform_2d_default (gint32              drawable_ID,
  * @coeff_2_2: coefficient (2,2) of the transformation matrix.
  * @transform_direction: Direction of transformation.
  * @interpolation: Type of interpolation.
- * @supersample: This parameter is ignored.
- * @recursion_level: This parameter is ignored.
+ * @supersample: This parameter is ignored, supersampling is performed based on the interpolation type.
+ * @recursion_level: Maximum recursion level used for supersampling (3 is a nice value).
  * @clip_result: How to clip results.
  *
  * Deprecated: Use gimp_item_transform_matrix() instead.
  *
  * Returns: The transformed drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_matrix (gint32                 drawable_ID,
@@ -872,7 +875,7 @@ gimp_drawable_transform_matrix (gint32                 drawable_ID,
  *
  * Returns: The transformed drawable.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint32
 gimp_drawable_transform_matrix_default (gint32              drawable_ID,

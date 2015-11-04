@@ -45,7 +45,7 @@
  *
  * Returns: Whether the display ID is valid.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_display_is_valid (gint32 display_ID)
@@ -77,8 +77,7 @@ gimp_display_is_valid (gint32 display_ID)
  * has a display, another is added. Multiple displays are handled
  * transparently by GIMP. The newly created display is returned and can
  * be subsequently destroyed with a call to gimp_display_delete(). This
- * procedure only makes sense for use with the GIMP UI, and will result
- * in an execution error if called when GIMP has no UI.
+ * procedure only makes sense for use with the GIMP UI.
  *
  * Returns: The new display.
  **/
@@ -149,7 +148,7 @@ gimp_display_delete (gint32 display_ID)
  *
  * Returns: The native window handle or 0.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint
 gimp_display_get_window_handle (gint32 display_ID)

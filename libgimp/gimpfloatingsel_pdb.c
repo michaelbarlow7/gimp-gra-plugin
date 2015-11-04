@@ -23,6 +23,9 @@
 #include "config.h"
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_FLOATING_SEL_PDB_H__
+#include "gimpfloatingsel_pdb.h"
 
 
 /**
@@ -110,7 +113,7 @@ gimp_floating_sel_anchor (gint32 floating_sel_ID)
  * The floating selection will become the active layer. This procedure
  * will not work if the floating selection has a different base type
  * from the underlying image. This might be the case if the floating
- * selection is above an auxiliary channel or a layer mask.
+ * selection is above an auxillary channel or a layer mask.
  *
  * Returns: TRUE on success.
  **/

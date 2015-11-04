@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpcolor/gimpcolor.h"
@@ -430,8 +429,6 @@ gimp_int_radio_group_set_active (GtkRadioButton *radio_button,
  * gtk_spin_button_set_numeric() so that non-numeric text cannot be
  * entered.
  *
- * Deprecated: 2.10: Use gtk_spin_button_new() instead.
- *
  * Returns: A #GtkSpinButton and its #GtkAdjustment.
  **/
 GtkWidget *
@@ -491,11 +488,11 @@ GtkWidget *
 gimp_random_seed_new (guint    *seed,
                       gboolean *random_seed)
 {
-  GtkWidget     *hbox;
-  GtkWidget     *toggle;
-  GtkWidget     *spinbutton;
-  GtkAdjustment *adj;
-  GtkWidget     *button;
+  GtkWidget *hbox;
+  GtkWidget *toggle;
+  GtkWidget *spinbutton;
+  GtkObject *adj;
+  GtkWidget *button;
 
   g_return_val_if_fail (seed != NULL, NULL);
   g_return_val_if_fail (random_seed != NULL, NULL);
@@ -506,10 +503,8 @@ gimp_random_seed_new (guint    *seed,
   if (*random_seed)
     *seed = g_random_int ();
 
-  adj = (GtkAdjustment *)
-    gtk_adjustment_new (*seed, 0, (guint32) -1, 1, 10, 0);
-  spinbutton = gtk_spin_button_new (adj, 1.0, 0);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbutton), TRUE);
+  spinbutton = gimp_spin_button_new (&adj, *seed,
+                                     0, (guint32) -1 , 1, 10, 0, 1, 0);
   gtk_box_pack_start (GTK_BOX (hbox), spinbutton, FALSE, FALSE, 0);
   gtk_widget_show (spinbutton);
 
@@ -735,14 +730,12 @@ gimp_coordinates_new (GimpUnit         unit,
                       gdouble          ysize_100  /* % */)
 {
   GimpCoordinatesData *data;
-  GtkAdjustment       *adjustment;
+  GtkObject           *adjustment;
   GtkWidget           *spinbutton;
   GtkWidget           *sizeentry;
   GtkWidget           *chainbutton;
 
-  adjustment = (GtkAdjustment *) gtk_adjustment_new (1, 0, 1, 1, 10, 0);
-  spinbutton = gtk_spin_button_new (adjustment, 1.0, 2);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbutton), TRUE);
+  spinbutton = gimp_spin_button_new (&adjustment, 1, 0, 1, 1, 10, 0, 1, 2);
 
   if (spinbutton_width > 0)
     {
@@ -994,4 +987,259 @@ gimp_double_adjustment_update (GtkAdjustment *adjustment,
   gdouble *val = (gdouble *) data;
 
   *val = gtk_adjustment_get_value (adjustment);
+}
+
+
+/*
+ *  Helper Functions
+ */
+
+static GtkWidget *
+find_mnemonic_widget (GtkWidget *widget,
+                      gint       level)
+{
+  gboolean can_focus;
+
+  g_object_get (widget, "can-focus", &can_focus, NULL);
+
+  if (GTK_WIDGET_GET_CLASS (widget)->activate_signal ||
+      can_focus                                      ||
+      GTK_WIDGET_GET_CLASS (widget)->mnemonic_activate !=
+      GTK_WIDGET_CLASS (g_type_class_peek (GTK_TYPE_WIDGET))->mnemonic_activate)
+    {
+      return widget;
+    }
+
+  if (GIMP_IS_SIZE_ENTRY (widget))
+    {
+      GimpSizeEntry *entry = GIMP_SIZE_ENTRY (widget);
+
+      return gimp_size_entry_get_help_widget (entry,
+                                              entry->number_of_fields - 1);
+    }
+  else if (GTK_IS_CONTAINER (widget))
+    {
+      GtkWidget *mnemonic_widget = NULL;
+      GList     *children;
+      GList     *list;
+
+      children = gtk_container_get_children (GTK_CONTAINER (widget));
+
+      for (list = children; list; list = g_list_next (list))
+        {
+          mnemonic_widget = find_mnemonic_widget (list->data, level + 1);
+
+          if (mnemonic_widget)
+            break;
+        }
+
+      g_list_free (children);
+
+      return mnemonic_widget;
+    }
+
+  return NULL;
+}
+
+/**
+ * gimp_table_attach_aligned:
+ * @table:      The #GtkTable the widgets will be attached to.
+ * @column:     The column to start with.
+ * @row:        The row to attach the widgets.
+ * @label_text: The text for the #GtkLabel which will be attached left of
+ *              the widget.
+ * @xalign:     The horizontal alignment of the #GtkLabel.
+ * @yalign:     The vertival alignment of the #GtkLabel.
+ * @widget:     The #GtkWidget to attach right of the label.
+ * @colspan:    The number of columns the widget will use.
+ * @left_align: %TRUE if the widget should be left-aligned.
+ *
+ * Note that the @label_text can be %NULL and that the widget will be
+ * attached starting at (@column + 1) in this case, too.
+ *
+ * Returns: The created #GtkLabel.
+ **/
+GtkWidget *
+gimp_table_attach_aligned (GtkTable    *table,
+                           gint         column,
+                           gint         row,
+                           const gchar *label_text,
+                           gfloat       xalign,
+                           gfloat       yalign,
+                           GtkWidget   *widget,
+                           gint         colspan,
+                           gboolean     left_align)
+{
+  GtkWidget *label = NULL;
+
+  if (label_text)
+    {
+      GtkWidget *mnemonic_widget;
+
+      label = gtk_label_new_with_mnemonic (label_text);
+      gtk_misc_set_alignment (GTK_MISC (label), xalign, yalign);
+      gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+      gtk_table_attach (table, label,
+                        column, column + 1,
+                        row, row + 1,
+                        GTK_FILL, GTK_FILL, 0, 0);
+      gtk_widget_show (label);
+
+      mnemonic_widget = find_mnemonic_widget (widget, 0);
+
+      if (mnemonic_widget)
+        gtk_label_set_mnemonic_widget (GTK_LABEL (label), mnemonic_widget);
+    }
+
+  if (left_align)
+    {
+      GtkWidget *hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+
+      gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+      gtk_widget_show (widget);
+
+      widget = hbox;
+    }
+
+  gtk_table_attach (table, widget,
+                    column + 1, column + 1 + colspan,
+                    row, row + 1,
+                    GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+  gtk_widget_show (widget);
+
+  return label;
+}
+
+/**
+ * gimp_label_set_attributes:
+ * @label: a #GtkLabel
+ * @...:   a list of PangoAttrType and value pairs terminated by -1.
+ *
+ * Sets Pango attributes on a #GtkLabel in a more convenient way than
+ * gtk_label_set_attributes().
+ *
+ * This function is useful if you want to change the font attributes
+ * of a #GtkLabel. This is an alternative to using PangoMarkup which
+ * is slow to parse and akward to handle in an i18n-friendly way.
+ *
+ * The attributes are set on the complete label, from start to end. If
+ * you need to set attributes on part of the label, you will have to
+ * use the PangoAttributes API directly.
+ *
+ * Since: GIMP 2.2
+ **/
+void
+gimp_label_set_attributes (GtkLabel *label,
+                           ...)
+{
+  PangoAttribute *attr  = NULL;
+  PangoAttrList  *attrs;
+  va_list         args;
+
+  g_return_if_fail (GTK_IS_LABEL (label));
+
+  attrs = pango_attr_list_new ();
+
+  va_start (args, label);
+
+  do
+    {
+      PangoAttrType attr_type = va_arg (args, PangoAttrType);
+
+      if (attr_type == -1)
+        attr_type = PANGO_ATTR_INVALID;
+
+      switch (attr_type)
+        {
+        case PANGO_ATTR_LANGUAGE:
+          attr = pango_attr_language_new (va_arg (args, PangoLanguage *));
+          break;
+
+        case PANGO_ATTR_FAMILY:
+          attr = pango_attr_family_new (va_arg (args, const gchar *));
+          break;
+
+        case PANGO_ATTR_STYLE:
+          attr = pango_attr_style_new (va_arg (args, PangoStyle));
+          break;
+
+        case PANGO_ATTR_WEIGHT:
+          attr = pango_attr_weight_new (va_arg (args, PangoWeight));
+          break;
+
+        case PANGO_ATTR_VARIANT:
+          attr = pango_attr_variant_new (va_arg (args, PangoVariant));
+          break;
+
+        case PANGO_ATTR_STRETCH:
+          attr = pango_attr_stretch_new (va_arg (args, PangoStretch));
+          break;
+
+        case PANGO_ATTR_SIZE:
+          attr = pango_attr_size_new (va_arg (args, gint));
+          break;
+
+        case PANGO_ATTR_FONT_DESC:
+          attr = pango_attr_font_desc_new (va_arg (args,
+                                                   const PangoFontDescription *));
+          break;
+
+        case PANGO_ATTR_FOREGROUND:
+          {
+            const PangoColor *color = va_arg (args, const PangoColor *);
+
+            attr = pango_attr_foreground_new (color->red,
+                                              color->green,
+                                              color->blue);
+          }
+          break;
+
+        case PANGO_ATTR_BACKGROUND:
+          {
+            const PangoColor *color = va_arg (args, const PangoColor *);
+
+            attr = pango_attr_background_new (color->red,
+                                              color->green,
+                                              color->blue);
+          }
+          break;
+
+        case PANGO_ATTR_UNDERLINE:
+          attr = pango_attr_underline_new (va_arg (args, PangoUnderline));
+          break;
+
+        case PANGO_ATTR_STRIKETHROUGH:
+          attr = pango_attr_strikethrough_new (va_arg (args, gboolean));
+          break;
+
+        case PANGO_ATTR_RISE:
+          attr = pango_attr_rise_new (va_arg (args, gint));
+          break;
+
+        case PANGO_ATTR_SCALE:
+          attr = pango_attr_scale_new (va_arg (args, gdouble));
+          break;
+
+        default:
+          g_warning ("%s: invalid PangoAttribute type %d",
+                     G_STRFUNC, attr_type);
+        case PANGO_ATTR_INVALID:
+          attr = NULL;
+          break;
+        }
+
+      if (attr)
+        {
+          attr->start_index = 0;
+          attr->end_index   = -1;
+          pango_attr_list_insert (attrs, attr);
+        }
+    }
+  while (attr);
+
+  va_end (args);
+
+  gtk_label_set_attributes (label, attrs);
+  pango_attr_list_unref (attrs);
 }

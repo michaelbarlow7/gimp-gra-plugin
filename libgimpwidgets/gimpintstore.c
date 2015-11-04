@@ -100,13 +100,13 @@ gimp_int_store_class_init (GimpIntStoreClass *klass)
   /**
    * GimpIntStore:user-data-type:
    *
-   * Sets the #GType for the GIMP_INT_STORE_USER_DATA column.
+   * Allows to set the #GType for the GIMP_INT_STORE_USER_DATA column.
    *
    * You need to set this property when constructing the store if you want
    * to use the GIMP_INT_STORE_USER_DATA column and want to have the store
    * handle ref-counting of your user data.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   g_object_class_install_property (object_class,
                                    PROP_USER_DATA_TYPE,
@@ -141,11 +141,12 @@ gimp_int_store_constructed (GObject *object)
   GimpIntStorePrivate *priv  = GIMP_INT_STORE_GET_PRIVATE (store);
   GType                types[GIMP_INT_STORE_NUM_COLUMNS];
 
-  G_OBJECT_CLASS (parent_class)->constructed (object);
+  if (G_OBJECT_CLASS (parent_class)->constructed)
+    G_OBJECT_CLASS (parent_class)->constructed (object);
 
   types[GIMP_INT_STORE_VALUE]     = G_TYPE_INT;
   types[GIMP_INT_STORE_LABEL]     = G_TYPE_STRING;
-  types[GIMP_INT_STORE_ICON_NAME] = G_TYPE_STRING;
+  types[GIMP_INT_STORE_STOCK_ID]  = G_TYPE_STRING;
   types[GIMP_INT_STORE_PIXBUF]    = GDK_TYPE_PIXBUF;
   types[GIMP_INT_STORE_USER_DATA] = (priv->user_data_type != G_TYPE_NONE ?
                                      priv->user_data_type : G_TYPE_POINTER);
@@ -222,8 +223,6 @@ gimp_int_store_row_inserted (GtkTreeModel *model,
       memcmp (iter, store->empty_iter, sizeof (GtkTreeIter)))
     {
       gtk_list_store_remove (GTK_LIST_STORE (store), store->empty_iter);
-      gtk_tree_iter_free (store->empty_iter);
-      store->empty_iter = NULL;
     }
 }
 
@@ -231,8 +230,17 @@ static void
 gimp_int_store_row_deleted (GtkTreeModel *model,
                             GtkTreePath  *path)
 {
+  GimpIntStore *store = GIMP_INT_STORE (model);
+
   if (parent_iface->row_deleted)
     parent_iface->row_deleted (model, path);
+
+  if (store->empty_iter)
+    {
+      /* freeing here crashes, no clue why. will be freed in finalize() */
+      /* gtk_tree_iter_free (store->empty_iter); */
+      store->empty_iter = NULL;
+    }
 }
 
 static void
@@ -263,7 +271,7 @@ gimp_int_store_add_empty (GimpIntStore *store)
  *
  * Return value: a new #GimpIntStore.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GtkListStore *
 gimp_int_store_new (void)
@@ -282,7 +290,7 @@ gimp_int_store_new (void)
  * Return value: %TRUE if the value has been located and @iter is
  *               valid, %FALSE otherwise.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_int_store_lookup_by_value (GtkTreeModel *model,

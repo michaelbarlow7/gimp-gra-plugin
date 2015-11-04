@@ -23,7 +23,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpbase/gimpbase.h"
@@ -53,7 +52,7 @@
  * Return value: %TRUE if the widget style has a focus line pattern,
  *               %FALSE otherwise
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 gboolean
 gimp_cairo_set_focus_line_pattern (cairo_t   *cr,
@@ -107,7 +106,7 @@ gimp_cairo_set_focus_line_pattern (cairo_t   *cr,
  *
  * Returns: a #cairo_surface_t.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 cairo_surface_t *
 gimp_cairo_surface_create_from_pixbuf (GdkPixbuf *pixbuf)

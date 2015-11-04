@@ -7,6 +7,7 @@ EXPORTS
 	gimp_brush_application_mode_get_type
 	gimp_brush_delete
 	gimp_brush_duplicate
+	gimp_brush_generated_shape_get_type
 	gimp_brush_get_angle
 	gimp_brush_get_aspect_ratio
 	gimp_brush_get_hardness
@@ -73,10 +74,7 @@ EXPORTS
 	gimp_context_get_brush
 	gimp_context_get_brush_angle
 	gimp_context_get_brush_aspect_ratio
-	gimp_context_get_brush_force
-	gimp_context_get_brush_hardness
 	gimp_context_get_brush_size
-	gimp_context_get_brush_spacing
 	gimp_context_get_dynamics
 	gimp_context_get_feather
 	gimp_context_get_feather_radius
@@ -113,13 +111,8 @@ EXPORTS
 	gimp_context_set_brush
 	gimp_context_set_brush_angle
 	gimp_context_set_brush_aspect_ratio
-	gimp_context_set_brush_default_hardness
 	gimp_context_set_brush_default_size
-	gimp_context_set_brush_default_spacing
-	gimp_context_set_brush_force
-	gimp_context_set_brush_hardness
 	gimp_context_set_brush_size
-	gimp_context_set_brush_spacing
 	gimp_context_set_default_colors
 	gimp_context_set_defaults
 	gimp_context_set_dynamics
@@ -152,8 +145,11 @@ EXPORTS
 	gimp_context_set_transform_resize
 	gimp_context_swap_colors
 	gimp_convert_dither_type_get_type
+	gimp_convert_palette_type_get_type
+	gimp_convolution_type_get_type
 	gimp_convolve
 	gimp_convolve_default
+	gimp_convolve_type_get_type
 	gimp_curves_explicit
 	gimp_curves_spline
 	gimp_default_display
@@ -173,28 +169,18 @@ EXPORTS
 	gimp_dodgeburn_default
 	gimp_drawable_attach_new_parasite
 	gimp_drawable_bpp
-	gimp_drawable_brightness_contrast
-	gimp_drawable_color_balance
-	gimp_drawable_colorize_hsl
-	gimp_drawable_curves_explicit
-	gimp_drawable_curves_spline
 	gimp_drawable_delete
-	gimp_drawable_desaturate
 	gimp_drawable_detach
-	gimp_drawable_equalize
 	gimp_drawable_fill
 	gimp_drawable_flush
 	gimp_drawable_foreground_extract
 	gimp_drawable_free_shadow
 	gimp_drawable_get
-	gimp_drawable_get_buffer
 	gimp_drawable_get_color_uchar
-	gimp_drawable_get_format
 	gimp_drawable_get_image
 	gimp_drawable_get_linked
 	gimp_drawable_get_name
 	gimp_drawable_get_pixel
-	gimp_drawable_get_shadow_buffer
 	gimp_drawable_get_sub_thumbnail
 	gimp_drawable_get_sub_thumbnail_data
 	gimp_drawable_get_tattoo
@@ -205,9 +191,6 @@ EXPORTS
 	gimp_drawable_get_visible
 	gimp_drawable_has_alpha
 	gimp_drawable_height
-	gimp_drawable_histogram
-	gimp_drawable_hue_saturation
-	gimp_drawable_invert
 	gimp_drawable_is_channel
 	gimp_drawable_is_gray
 	gimp_drawable_is_indexed
@@ -216,8 +199,6 @@ EXPORTS
 	gimp_drawable_is_rgb
 	gimp_drawable_is_text_layer
 	gimp_drawable_is_valid
-	gimp_drawable_levels
-	gimp_drawable_levels_stretch
 	gimp_drawable_mask_bounds
 	gimp_drawable_mask_intersect
 	gimp_drawable_merge_shadow
@@ -227,14 +208,12 @@ EXPORTS
 	gimp_drawable_parasite_detach
 	gimp_drawable_parasite_find
 	gimp_drawable_parasite_list
-	gimp_drawable_posterize
 	gimp_drawable_set_image
 	gimp_drawable_set_linked
 	gimp_drawable_set_name
 	gimp_drawable_set_pixel
 	gimp_drawable_set_tattoo
 	gimp_drawable_set_visible
-	gimp_drawable_threshold
 	gimp_drawable_transform_2d
 	gimp_drawable_transform_2d_default
 	gimp_drawable_transform_flip
@@ -288,6 +267,7 @@ EXPORTS
 	gimp_file_load_layers
 	gimp_file_save
 	gimp_file_save_thumbnail
+	gimp_fill_type_get_type
 	gimp_flip
 	gimp_floating_sel_anchor
 	gimp_floating_sel_attach
@@ -328,6 +308,7 @@ EXPORTS
 	gimp_gradient_is_editable
 	gimp_gradient_new
 	gimp_gradient_rename
+	gimp_gradient_segment_color_get_type
 	gimp_gradient_segment_get_blending_function
 	gimp_gradient_segment_get_coloring_type
 	gimp_gradient_segment_get_left_color
@@ -351,6 +332,7 @@ EXPORTS
 	gimp_gradient_segment_set_middle_pos
 	gimp_gradient_segment_set_right_color
 	gimp_gradient_segment_set_right_pos
+	gimp_gradient_segment_type_get_type
 	gimp_gradient_select_destroy
 	gimp_gradient_select_new
 	gimp_gradients_close_popup
@@ -368,6 +350,7 @@ EXPORTS
 	gimp_help
 	gimp_histogram
 	gimp_histogram_channel_get_type
+	gimp_hue_range_get_type
 	gimp_hue_saturation
 	gimp_image_add_channel
 	gimp_image_add_hguide
@@ -378,11 +361,8 @@ EXPORTS
 	gimp_image_attach_parasite
 	gimp_image_base_type
 	gimp_image_clean_all
-	gimp_image_convert_color_profile
-	gimp_image_convert_color_profile_from_file
 	gimp_image_convert_grayscale
 	gimp_image_convert_indexed
-	gimp_image_convert_precision
 	gimp_image_convert_rgb
 	gimp_image_convert_set_dither_matrix
 	gimp_image_crop
@@ -404,11 +384,9 @@ EXPORTS
 	gimp_image_get_channel_position
 	gimp_image_get_channels
 	gimp_image_get_cmap
-	gimp_image_get_color_profile
 	gimp_image_get_colormap
 	gimp_image_get_component_active
 	gimp_image_get_component_visible
-	gimp_image_get_effective_color_profile
 	gimp_image_get_exported_uri
 	gimp_image_get_filename
 	gimp_image_get_floating_sel
@@ -420,11 +398,9 @@ EXPORTS
 	gimp_image_get_layer_by_tattoo
 	gimp_image_get_layer_position
 	gimp_image_get_layers
-	gimp_image_get_metadata
 	gimp_image_get_name
 	gimp_image_get_parasite
 	gimp_image_get_parasite_list
-	gimp_image_get_precision
 	gimp_image_get_resolution
 	gimp_image_get_selection
 	gimp_image_get_tattoo_state
@@ -464,7 +440,6 @@ EXPORTS
 	gimp_image_merge_down
 	gimp_image_merge_visible_layers
 	gimp_image_new
-	gimp_image_new_with_precision
 	gimp_image_parasite_attach
 	gimp_image_parasite_detach
 	gimp_image_parasite_find
@@ -498,13 +473,10 @@ EXPORTS
 	gimp_image_set_active_layer
 	gimp_image_set_active_vectors
 	gimp_image_set_cmap
-	gimp_image_set_color_profile
-	gimp_image_set_color_profile_from_file
 	gimp_image_set_colormap
 	gimp_image_set_component_active
 	gimp_image_set_component_visible
 	gimp_image_set_filename
-	gimp_image_set_metadata
 	gimp_image_set_resolution
 	gimp_image_set_tattoo_state
 	gimp_image_set_unit
@@ -517,6 +489,7 @@ EXPORTS
 	gimp_image_undo_thaw
 	gimp_image_unset_active_channel
 	gimp_image_width
+	gimp_ink_blob_type_get_type
 	gimp_install_cmap
 	gimp_install_procedure
 	gimp_install_temp_proc
@@ -528,7 +501,6 @@ EXPORTS
 	gimp_item_get_image
 	gimp_item_get_linked
 	gimp_item_get_lock_content
-	gimp_item_get_lock_position
 	gimp_item_get_name
 	gimp_item_get_parasite
 	gimp_item_get_parasite_list
@@ -546,7 +518,6 @@ EXPORTS
 	gimp_item_is_vectors
 	gimp_item_set_linked
 	gimp_item_set_lock_content
-	gimp_item_set_lock_position
 	gimp_item_set_name
 	gimp_item_set_tattoo
 	gimp_item_set_visible
@@ -599,11 +570,15 @@ EXPORTS
 	gimp_levels_auto
 	gimp_levels_stretch
 	gimp_main
+	gimp_mask_apply_mode_get_type
+	gimp_merge_type_get_type
 	gimp_message
 	gimp_message_get_handler
 	gimp_message_set_handler
 	gimp_min_colors
 	gimp_monitor_number
+	gimp_offset_type_get_type
+	gimp_orientation_type_get_type
 	gimp_paintbrush
 	gimp_paintbrush_default
 	gimp_palette_add_entry
@@ -689,13 +664,11 @@ EXPORTS
 	gimp_pixel_rgns_register
 	gimp_pixel_rgns_register2
 	gimp_plugin_domain_register
-	gimp_plugin_enable_precision
 	gimp_plugin_get_pdb_error_handler
 	gimp_plugin_help_register
 	gimp_plugin_icon_register
 	gimp_plugin_menu_branch_register
 	gimp_plugin_menu_register
-	gimp_plugin_precision_enabled
 	gimp_plugin_set_pdb_error_handler
 	gimp_posterize
 	gimp_procedural_db_dump
@@ -724,7 +697,6 @@ EXPORTS
 	gimp_read_expect_msg
 	gimp_rect_select
 	gimp_register_file_handler_mime
-	gimp_register_file_handler_uri
 	gimp_register_load_handler
 	gimp_register_magic_load_handler
 	gimp_register_save_handler
@@ -737,10 +709,12 @@ EXPORTS
 	gimp_rgn_iterator_src
 	gimp_rgn_iterator_src_dest
 	gimp_rotate
+	gimp_rotation_type_get_type
 	gimp_round_rect_select
 	gimp_run_procedure
 	gimp_run_procedure2
 	gimp_scale
+	gimp_select_criterion_get_type
 	gimp_selection_all
 	gimp_selection_border
 	gimp_selection_bounds

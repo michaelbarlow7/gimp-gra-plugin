@@ -25,14 +25,12 @@
 
 #include <libgimpcolor/gimpadaptivesupersample.h>
 #include <libgimpcolor/gimpbilinear.h>
-#include <libgimpcolor/gimpcairo.h>
+#include <libgimpcolor/gimpcairocolor.h>
 #include <libgimpcolor/gimpcolormanaged.h>
-#include <libgimpcolor/gimpcolorprofile.h>
 #include <libgimpcolor/gimpcolorspace.h>
 #include <libgimpcolor/gimpcmyk.h>
 #include <libgimpcolor/gimphsl.h>
 #include <libgimpcolor/gimphsv.h>
-#include <libgimpcolor/gimppixbuf.h>
 #include <libgimpcolor/gimprgb.h>
 
 #undef __GIMP_COLOR_H_INSIDE__

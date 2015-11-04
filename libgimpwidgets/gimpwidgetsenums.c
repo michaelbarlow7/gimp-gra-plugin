@@ -2,7 +2,7 @@
 /* Generated data (by gimp-mkenums) */
 
 #include "config.h"
-#include <gio/gio.h>
+#include <glib-object.h>
 #include "libgimpbase/gimpbase.h"
 #include "gimpwidgetsenums.h"
 #include "libgimp/libgimp-intl.h"

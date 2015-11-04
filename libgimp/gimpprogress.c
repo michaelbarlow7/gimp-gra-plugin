@@ -20,9 +20,7 @@
 
 #include "config.h"
 
-#include <gio/gio.h>
-
-#include "libgimpbase/gimpbase.h"
+#include <glib-object.h>
 
 #undef GIMP_DISABLE_DEPRECATED
 #include "gimpprogress.h"
@@ -74,7 +72,7 @@ static const gdouble   gimp_progress_step    = (1.0 / 256.0);
  *
  * Return value: the name of the temporary procedure that's been installed
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 const gchar *
 gimp_progress_install (GimpProgressStartCallback start_callback,
@@ -105,7 +103,7 @@ gimp_progress_install (GimpProgressStartCallback start_callback,
  *
  * Return value: the name of the temporary procedure that's been installed
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 const gchar *
 gimp_progress_install_vtable (const GimpProgressVtable *vtable,
@@ -192,7 +190,7 @@ gimp_progress_install_vtable (const GimpProgressVtable *vtable,
  *
  * Return value: the @user_data that was passed to gimp_progress_install().
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gpointer
 gimp_progress_uninstall (const gchar *progress_callback)
@@ -253,7 +251,7 @@ gimp_progress_init (const gchar  *message)
  *
  * Returns: %TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_progress_init_printf (const gchar *format,
@@ -283,13 +281,13 @@ gimp_progress_init_printf (const gchar *format,
  *
  * Changes the text in the progress bar for the current plug-in.
  *
- * This function changes the text in the progress bar for the current
- * plug-in. Unlike gimp_progress_init() it does not change the
+ * This function allows to change the text in the progress bar for the
+ * current plug-in. Unlike gimp_progress_init() it does not change the
  * displayed value.
  *
  * Returns: %TRUE on success.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_progress_set_text_printf (const gchar *format,

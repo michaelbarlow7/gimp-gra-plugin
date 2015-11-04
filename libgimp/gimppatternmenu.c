@@ -26,8 +26,10 @@
 #include "gimp.h"
 
 #include "gimpuitypes.h"
-#include "gimppatternmenu.h"
 #include "gimppatternselectbutton.h"
+
+#undef GIMP_DISABLE_DEPRECATED
+#include "gimppatternmenu.h"
 
 
 /**
@@ -62,7 +64,7 @@ static void compat_callback_data_free (CompatCallbackData      *data);
  * @title:        Title of the dialog to use or %NULL to use the default title.
  * @pattern_name: Initial pattern name or %NULL to use current selection.
  * @callback:     A function to call when the selected pattern changes.
- * @data:         A pointer to arbitrary data to be used in the call to @callback.
+ * @data:         A pointer to arbitary data to be used in the call to @callback.
  *
  * Creates a new #GtkWidget that completely controls the selection of
  * a pattern. This widget is suitable for placement in a table in a

@@ -18,7 +18,6 @@
 
 #include "config.h"
 
-#include <babl/babl.h>
 #include <glib-object.h>
 
 #include "libgimpmath/gimpmath.h"

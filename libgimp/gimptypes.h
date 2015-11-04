@@ -37,6 +37,7 @@ typedef struct _GimpParamRegion GimpParamRegion;
 typedef union  _GimpParamData   GimpParamData;
 typedef struct _GimpParam       GimpParam;
 
+
 G_END_DECLS
 
 #endif /* __GIMP_TYPES_H__ */

@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -240,11 +239,11 @@ gimp_help_set_help_data (GtkWidget   *widget,
  * @tooltip: The markup for this widget's tooltip (or %NULL).
  * @help_id: The @help_id for the #GtkTipsQuery tooltips inspector.
  *
- * Just like gimp_help_set_help_data(), but supports to pass text
- * which is marked up with <link linkend="PangoMarkupFormat">Pango
- * text markup language</link>.
+ * Just like gimp_help_set_help_data(), but it allows to pass text which
+ * is marked up with
+ * <link linkend="PangoMarkupFormat">Pango text markup language</link>.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 void
 gimp_help_set_help_data_with_markup (GtkWidget   *widget,
@@ -295,7 +294,7 @@ gimp_context_help (GtkWidget *widget)
  *
  * Return value: The #GQuark.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 GQuark
 gimp_help_id_quark (void)

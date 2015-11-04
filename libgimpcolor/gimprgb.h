@@ -80,13 +80,6 @@ void      gimp_rgb_set             (GimpRGB       *rgb,
 void      gimp_rgb_set_alpha       (GimpRGB       *rgb,
                                     gdouble        alpha);
 
-void      gimp_rgb_set_pixel       (GimpRGB       *rgb,
-                                    const Babl    *format,
-                                    gconstpointer  pixel);
-void      gimp_rgb_get_pixel       (const GimpRGB *rgb,
-                                    const Babl    *format,
-                                    gpointer       pixel);
-
 void      gimp_rgb_set_uchar       (GimpRGB       *rgb,
                                     guchar         red,
                                     guchar         green,
@@ -125,10 +118,10 @@ void      gimp_rgb_gamma           (GimpRGB       *rgb,
 gdouble   gimp_rgb_luminance       (const GimpRGB *rgb);
 guchar    gimp_rgb_luminance_uchar (const GimpRGB *rgb);
 
-GIMP_DEPRECATED_FOR(gimp_rgb_luminance)
+#ifndef GIMP_DISABLE_DEPRECATED
 gdouble   gimp_rgb_intensity       (const GimpRGB *rgb);
-GIMP_DEPRECATED_FOR(gimp_rgb_luminance_uchar)
 guchar    gimp_rgb_intensity_uchar (const GimpRGB *rgb);
+#endif
 
 void      gimp_rgb_composite       (GimpRGB              *color1,
                                     const GimpRGB        *color2,
@@ -144,13 +137,6 @@ void      gimp_rgba_set            (GimpRGB       *rgba,
                                     gdouble        green,
                                     gdouble        blue,
                                     gdouble        alpha);
-
-void      gimp_rgba_set_pixel      (GimpRGB       *rgba,
-                                    const Babl    *format,
-                                    gconstpointer  pixel);
-void      gimp_rgba_get_pixel      (const GimpRGB *rgba,
-                                    const Babl    *format,
-                                    gpointer       pixel);
 
 void      gimp_rgba_set_uchar      (GimpRGB       *rgba,
                                     guchar         red,
@@ -179,19 +165,19 @@ gdouble   gimp_rgba_distance       (const GimpRGB *rgba1,
 
 
 
-/*  Map D50-adapted sRGB to luminance  */
+/*  Map RGB to intensity  */
 
 /*
  * The weights to compute true CIE luminance from linear red, green
- * and blue as defined by the sRGB color space specs in an ICC profile
- * color managed application. The weights below have been chromatically
- * adapted from D65 (as specified by the sRGB color space specs)
- * to D50 (as specified by D50 illuminant values in the ICC V4 specs).
+ * and blue, as defined by the ITU-R Recommendation BT.709, "Basic
+ * Parameter Values for the HDTV Standard for the Studio and for
+ * International Programme Exchange" (1990). Also suggested in the
+ * sRGB colorspace specification by the W3C.
  */
 
-#define GIMP_RGB_LUMINANCE_RED    (0.22248840)
-#define GIMP_RGB_LUMINANCE_GREEN  (0.71690369)
-#define GIMP_RGB_LUMINANCE_BLUE   (0.06060791)
+#define GIMP_RGB_LUMINANCE_RED    (0.2126)
+#define GIMP_RGB_LUMINANCE_GREEN  (0.7152)
+#define GIMP_RGB_LUMINANCE_BLUE   (0.0722)
 
 #define GIMP_RGB_LUMINANCE(r,g,b) ((r) * GIMP_RGB_LUMINANCE_RED   + \
                                    (g) * GIMP_RGB_LUMINANCE_GREEN + \

@@ -41,8 +41,11 @@ gchar    * gimp_memsize_serialize        (guint64      memsize) G_GNUC_MALLOC;
 gboolean   gimp_memsize_deserialize      (const gchar *string,
                                           guint64     *memsize);
 
-GIMP_DEPRECATED_FOR(g_format_size)
+#ifndef GIMP_DISABLE_DEPRECATED
+
 gchar    * gimp_memsize_to_string        (guint64      memsize) G_GNUC_MALLOC;
+
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 
 /*

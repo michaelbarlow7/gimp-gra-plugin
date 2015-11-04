@@ -3,7 +3,6 @@ EXPORTS
 	gimp_any_to_utf8
 	gimp_base_init
 	gimp_blend_mode_get_type
-	gimp_brush_generated_shape_get_type
 	gimp_bucket_fill_mode_get_type
 	gimp_canonicalize_identifier
 	gimp_channel_ops_get_type
@@ -12,18 +11,13 @@ EXPORTS
 	gimp_check_type_get_type
 	gimp_checks_get_shades
 	gimp_clone_type_get_type
-	gimp_component_type_get_type
-	gimp_convert_palette_type_get_type
-	gimp_convolve_type_get_type
 	gimp_cpu_accel_get_support
 	gimp_cpu_accel_set_use
 	gimp_data_directory
-	gimp_data_directory_file
 	gimp_datafiles_check_extension
 	gimp_datafiles_read_directories
 	gimp_desaturate_mode_get_type
 	gimp_directory
-	gimp_directory_file
 	gimp_dodge_burn_type_get_type
 	gimp_enum_get_desc
 	gimp_enum_get_value
@@ -33,11 +27,7 @@ EXPORTS
 	gimp_enum_value_get_help
 	gimp_env_init
 	gimp_escape_uline
-	gimp_file_get_utf8_name
-	gimp_file_has_extension
-	gimp_file_show_in_file_manager
 	gimp_filename_to_utf8
-	gimp_fill_type_get_type
 	gimp_flags_get_first_desc
 	gimp_flags_get_first_value
 	gimp_flags_get_value_descriptions
@@ -45,56 +35,30 @@ EXPORTS
 	gimp_flags_value_get_desc
 	gimp_flags_value_get_help
 	gimp_foreground_extract_mode_get_type
-	gimp_gradient_segment_color_get_type
-	gimp_gradient_segment_type_get_type
 	gimp_gradient_type_get_type
 	gimp_grid_style_get_type
 	gimp_gtkrc
-	gimp_hue_range_get_type
 	gimp_icon_type_get_type
 	gimp_image_base_type_get_type
 	gimp_image_type_get_type
-	gimp_ink_blob_type_get_type
 	gimp_installation_directory
 	gimp_interpolation_type_get_type
 	gimp_locale_directory
-	gimp_locale_directory_file
 	gimp_major_version
-	gimp_mask_apply_mode_get_type
 	gimp_memsize_deserialize
 	gimp_memsize_get_type
 	gimp_memsize_serialize
 	gimp_memsize_to_string
-	gimp_merge_type_get_type
 	gimp_message_handler_type_get_type
-	gimp_metadata_deserialize
-	gimp_metadata_duplicate
-	gimp_metadata_get_colorspace
-	gimp_metadata_get_resolution
-	gimp_metadata_is_tag_supported
-	gimp_metadata_load_from_file
-	gimp_metadata_new
-	gimp_metadata_save_to_file
-	gimp_metadata_serialize
-	gimp_metadata_set_bits_per_sample
-	gimp_metadata_set_colorspace
-	gimp_metadata_set_from_exif
-	gimp_metadata_set_from_xmp
-	gimp_metadata_set_pixel_size
-	gimp_metadata_set_resolution
 	gimp_micro_version
 	gimp_minor_version
-	gimp_offset_type_get_type
-	gimp_orientation_type_get_type
 	gimp_paint_application_mode_get_type
 	gimp_param_memsize_get_type
 	gimp_param_parasite_get_type
 	gimp_param_spec_memsize
 	gimp_param_spec_parasite
 	gimp_param_spec_unit
-	gimp_param_spec_value_array
 	gimp_param_unit_get_type
-	gimp_param_value_array_get_type
 	gimp_parasite_compare
 	gimp_parasite_copy
 	gimp_parasite_data
@@ -122,24 +86,19 @@ EXPORTS
 	gimp_pixpipe_params_init
 	gimp_pixpipe_params_parse
 	gimp_plug_in_directory
-	gimp_plug_in_directory_file
-	gimp_precision_get_type
 	gimp_progress_command_get_type
 	gimp_rectangle_intersect
 	gimp_rectangle_union
 	gimp_repeat_mode_get_type
-	gimp_rotation_type_get_type
 	gimp_run_mode_get_type
-	gimp_select_criterion_get_type
 	gimp_signal_private
 	gimp_size_type_get_type
 	gimp_stack_trace_mode_get_type
 	gimp_strip_uline
 	gimp_sysconf_directory
-	gimp_sysconf_directory_file
 	gimp_text_direction_get_type
 	gimp_text_hint_style_get_type
-	gimp_text_justification_get_type
+	gimp_text_justification_get_type 
 	gimp_transfer_mode_get_type
 	gimp_transform_direction_get_type
 	gimp_transform_resize_get_type
@@ -159,7 +118,6 @@ EXPORTS
 	gimp_unit_get_singular
 	gimp_unit_get_symbol
 	gimp_unit_get_type
-	gimp_unit_is_metric
 	gimp_unit_new
 	gimp_unit_set_deletion_flag
 	gimp_units_to_pixels
@@ -167,17 +125,6 @@ EXPORTS
 	gimp_user_directory
 	gimp_user_directory_get_type
 	gimp_utf8_strtrim
-	gimp_value_array_append
-	gimp_value_array_get_type
-	gimp_value_array_index
-	gimp_value_array_insert
-	gimp_value_array_length
-	gimp_value_array_new
-	gimp_value_array_prepend
-	gimp_value_array_ref
-	gimp_value_array_remove
-	gimp_value_array_truncate
-	gimp_value_array_unref
 	gimp_vectors_stroke_type_get_type
 	gimp_wire_clear_error
 	gimp_wire_destroy

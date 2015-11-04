@@ -29,7 +29,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpwidgets/gimpwidgets.h"
@@ -81,7 +80,7 @@ static GtkWidget * gimp_proc_view_create_params (const GimpParamDef *params,
  *
  * Return value: a new widget providing a view on a GIMP procedure
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkWidget *
 gimp_proc_view_new (const gchar        *name,

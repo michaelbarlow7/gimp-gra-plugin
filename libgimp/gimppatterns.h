@@ -29,8 +29,11 @@ G_BEGIN_DECLS
 
 /* For information look into the C source or the html documentation */
 
-GIMP_DEPRECATED_FOR(gimp_context_set_pattern)
+#ifndef GIMP_DISABLE_DEPRECATED
+
 gboolean gimp_patterns_set_pattern (const gchar  *name);
+
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

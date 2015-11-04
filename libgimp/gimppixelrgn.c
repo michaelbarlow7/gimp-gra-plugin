@@ -23,8 +23,6 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define GIMP_DISABLE_DEPRECATION_WARNINGS
-
 #include "gimp.h"
 
 

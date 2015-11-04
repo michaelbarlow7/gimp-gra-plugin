@@ -26,8 +26,10 @@
 #include "gimp.h"
 
 #include "gimpuitypes.h"
-#include "gimpbrushmenu.h"
 #include "gimpbrushselectbutton.h"
+
+#undef GIMP_DISABLE_DEPRECATED
+#include "gimpbrushmenu.h"
 
 
 /**
@@ -67,7 +69,7 @@ static void compat_callback_data_free (CompatCallbackData    *data);
  * @spacing:    Initial spacing. -1 means to use current spacing.
  * @paint_mode: Initial paint mode.  -1 means to use current paint mode.
  * @callback:   A function to call when the selected brush changes.
- * @data:       A pointer to arbitrary data to be used in the call to @callback.
+ * @data:       A pointer to arbitary data to be used in the call to @callback.
  *
  * Creates a new #GtkWidget that completely controls the selection of
  * a #GimpBrush. This widget is suitable for placement in a table in

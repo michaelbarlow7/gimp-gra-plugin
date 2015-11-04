@@ -28,7 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <babl/babl.h>
 #include <glib-object.h>
 
 #include "gimpcolortypes.h"
@@ -225,7 +224,7 @@ static const ColorEntry named_colors[] =
  * Return value: %TRUE if @name was parsed successfully and @rgb has
  *               been set, %FALSE otherwise
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_rgb_parse_name (GimpRGB     *rgb,
@@ -261,7 +260,7 @@ gimp_rgb_parse_name (GimpRGB     *rgb,
  * Return value: %TRUE if @hex was parsed successfully and @rgb has
  *               been set, %FALSE otherwise
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_rgb_parse_hex (GimpRGB     *rgb,
@@ -301,7 +300,7 @@ gimp_rgb_parse_hex (GimpRGB     *rgb,
  * Return value: %TRUE if @css was parsed successfully and @rgb has been
  *               set, %FALSE otherwise
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_rgb_parse_css (GimpRGB     *rgb,
@@ -339,7 +338,7 @@ gimp_rgb_parse_css (GimpRGB     *rgb,
  * Return value: %TRUE if @css was parsed successfully and @rgb has been
  *               set, %FALSE otherwise
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_rgba_parse_css (GimpRGB     *rgba,
@@ -378,7 +377,7 @@ gimp_rgba_parse_css (GimpRGB     *rgba,
  * @names:  return location for an array of color names
  * @colors: return location for an array of GimpRGB structs
  *
- * Returns the list of <ulink
+ * Allows to retrieve the list of <ulink
  * url="http://www.w3.org/TR/SVG/types.html">SVG 1.0 color
  * keywords</ulink> that is used by gimp_rgb_parse_name().
  *
@@ -389,7 +388,7 @@ gimp_rgba_parse_css (GimpRGB     *rgba,
  * Return value: the number of named colors
  *               (i.e. the length of the returned arrays)
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gint
 gimp_rgb_list_names (const gchar ***names,

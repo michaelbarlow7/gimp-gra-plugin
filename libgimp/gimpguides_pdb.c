@@ -1,7 +1,7 @@
 /* LIBGIMP - The GIMP Library
  * Copyright (C) 1995-2003 Peter Mattis and Spencer Kimball
  *
- * gimpimageguides_pdb.c
+ * gimpguides_pdb.c
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,11 +26,11 @@
 
 
 /**
- * SECTION: gimpimageguides
- * @title: gimpimageguides
- * @short_description: Functions for manipulating an image's guides.
+ * SECTION: gimpguides
+ * @title: gimpguides
+ * @short_description: Functions for manipulating guides.
  *
- * Functions for manipulating an image's guides.
+ * Functions for manipulating guides.
  **/
 
 
@@ -226,7 +226,7 @@ gimp_image_get_guide_position (gint32 image_ID,
 {
   GimpParam *return_vals;
   gint nreturn_vals;
-  gint position = G_MININT /* GIMP_GUIDE_POSITION_UNDEFINED */;
+  gint position = -1;
 
   return_vals = gimp_run_procedure ("gimp-image-get-guide-position",
                                     &nreturn_vals,

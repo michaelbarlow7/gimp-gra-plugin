@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <gio/gio.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 
@@ -50,7 +50,7 @@
  *
  * Returns: the #GType for a GimpConfigPath string property
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_config_path_get_type (void)
@@ -93,7 +93,7 @@ static void  gimp_param_config_path_class_init (GParamSpecClass *class);
  *
  * Returns: the #GType for a directory path object
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_param_config_path_get_type (void)
@@ -141,7 +141,7 @@ gimp_param_config_path_class_init (GParamSpecClass *class)
  *
  * Returns: a newly allocated #GParamSpec instance
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GParamSpec *
 gimp_param_spec_config_path (const gchar        *name,
@@ -172,7 +172,7 @@ gimp_param_spec_config_path (const gchar        *name,
  *
  * Returns: a #GimpConfigPathType value
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpConfigPathType
 gimp_param_spec_config_path_type (GParamSpec *pspec)
@@ -207,7 +207,7 @@ static inline gchar * gimp_config_path_extract_token (const gchar **str);
  *
  * Returns: a newly allocated string
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_config_build_data_path (const gchar *name)
@@ -233,7 +233,7 @@ gimp_config_build_data_path (const gchar *name)
  *
  * Returns: a newly allocated string
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_config_build_plug_in_path (const gchar *name)
@@ -258,7 +258,7 @@ gimp_config_build_plug_in_path (const gchar *name)
  *
  * Returns: a newly allocated string
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_config_build_writable_path (const gchar *name)
@@ -283,7 +283,7 @@ gimp_config_build_writable_path (const gchar *name)
  *
  * Return value: a newly allocated NUL-terminated string
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_config_path_expand (const gchar  *path,
@@ -309,56 +309,6 @@ gimp_config_path_expand (const gchar  *path,
     }
 
   return gimp_config_path_expand_only (path, error);
-}
-
-/**
- * gimp_config_path_expand_to_files:
- * @path: a NUL-terminated string in UTF-8 encoding
- * @error: return location for errors
- *
- * Paths as stored in the gimprc have to be treated special. The
- * string may contain special identifiers such as for example
- * ${gimp_dir} that have to be substituted before use. Also the user's
- * filesystem may be in a different encoding than UTF-8 (which is what
- * is used for the gimprc).
- *
- * This function runs @path through gimp_config_path_expand() and
- * gimp_path_parse(), then turns the filenames returned by gimp_path_parse()
- * into GFile using g_file_new_for_path().
- *
- * Return value: a #GList of newly allocated #GFile objects.
- *
- * Since: 2.10
- **/
-GList *
-gimp_config_path_expand_to_files (const gchar  *path,
-                                  GError      **error)
-{
-  GList *files;
-  GList *list;
-  gchar *expanded;
-
-  g_return_val_if_fail (path != NULL, NULL);
-  g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-  expanded = gimp_config_path_expand (path, TRUE, error);
-
-  if (! expanded)
-    return NULL;
-
-  files = gimp_path_parse (expanded, 256, FALSE, NULL);
-
-  g_free (expanded);
-
-  for (list = files; list; list = g_list_next (list))
-    {
-      gchar *dir = list->data;
-
-      list->data = g_file_new_for_path (dir);
-      g_free (dir);
-    }
-
-  return files;
 }
 
 
@@ -525,7 +475,7 @@ gimp_config_path_extract_token (const gchar **str)
   while (*p && (*p != '}'))
     p = g_utf8_next_char (p);
 
-  if (! *p)
+  if (!p)
     return NULL;
 
   token = g_strndup (*str + 2, g_utf8_pointer_to_offset (*str + 2, p));

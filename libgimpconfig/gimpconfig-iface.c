@@ -23,7 +23,7 @@
 
 #include <string.h>
 
-#include <gio/gio.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 
@@ -272,7 +272,7 @@ gimp_config_iface_copy (GimpConfig  *src,
  *
  * Return value: %TRUE if serialization succeeded, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_serialize_to_file (GimpConfig   *config,
@@ -298,86 +298,6 @@ gimp_config_serialize_to_file (GimpConfig   *config,
 }
 
 /**
- * gimp_config_serialize_to_gfile:
- * @config: a #GObject that implements the #GimpConfigInterface.
- * @file:   the #GFile to write the configuration to.
- * @header: optional file header (must be ASCII only)
- * @footer: optional file footer (must be ASCII only)
- * @data: user data passed to the serialize implementation.
- * @error: return location for a possible error
- *
- * Serializes the object properties of @config to the file specified
- * by @file. If a file with that name already exists, it is
- * overwritten. Basically this function opens @file for you and calls
- * the serialize function of the @config's #GimpConfigInterface.
- *
- * Return value: %TRUE if serialization succeeded, %FALSE otherwise.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_config_serialize_to_gfile (GimpConfig   *config,
-                                GFile        *file,
-                                const gchar  *header,
-                                const gchar  *footer,
-                                gpointer      data,
-                                GError      **error)
-{
-  GimpConfigWriter *writer;
-
-  g_return_val_if_fail (GIMP_IS_CONFIG (config), FALSE);
-  g_return_val_if_fail (G_IS_FILE (file), FALSE);
-  g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-  writer = gimp_config_writer_new_gfile (file, TRUE, header, error);
-  if (!writer)
-    return FALSE;
-
-  GIMP_CONFIG_GET_INTERFACE (config)->serialize (config, writer, data);
-
-  return gimp_config_writer_finish (writer, footer, error);
-}
-
-/**
- * gimp_config_serialize_to_stream:
- * @config: a #GObject that implements the #GimpConfigInterface.
- * @output: the #GOutputStream to write the configuration to.
- * @header: optional file header (must be ASCII only)
- * @footer: optional file footer (must be ASCII only)
- * @data: user data passed to the serialize implementation.
- * @error: return location for a possible error
- *
- * Serializes the object properties of @config to the stream specified
- * by @output.
- *
- * Return value: %TRUE if serialization succeeded, %FALSE otherwise.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_config_serialize_to_stream (GimpConfig     *config,
-                                 GOutputStream  *output,
-                                 const gchar    *header,
-                                 const gchar    *footer,
-                                 gpointer        data,
-                                 GError        **error)
-{
-  GimpConfigWriter *writer;
-
-  g_return_val_if_fail (GIMP_IS_CONFIG (config), FALSE);
-  g_return_val_if_fail (G_IS_OUTPUT_STREAM (output), FALSE);
-  g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-  writer = gimp_config_writer_new_stream (output, header, error);
-  if (!writer)
-    return FALSE;
-
-  GIMP_CONFIG_GET_INTERFACE (config)->serialize (config, writer, data);
-
-  return gimp_config_writer_finish (writer, footer, error);
-}
-
-/**
  * gimp_config_serialize_to_fd:
  * @config: a #GObject that implements the #GimpConfigInterface.
  * @fd: a file descriptor, opened for writing
@@ -388,7 +308,7 @@ gimp_config_serialize_to_stream (GimpConfig     *config,
  *
  * Return value: %TRUE if serialization succeeded, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_serialize_to_fd (GimpConfig *config,
@@ -418,7 +338,7 @@ gimp_config_serialize_to_fd (GimpConfig *config,
  *
  * Return value: a newly allocated NUL-terminated string.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_config_serialize_to_string (GimpConfig *config,
@@ -453,7 +373,7 @@ gimp_config_serialize_to_string (GimpConfig *config,
  *
  * Return value: %TRUE if deserialization succeeded, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_deserialize_file (GimpConfig   *config,
@@ -488,102 +408,6 @@ gimp_config_deserialize_file (GimpConfig   *config,
 }
 
 /**
- * gimp_config_deserialize_gfile:
- * @config: a #GObject that implements the #GimpConfigInterface.
- * @file: the #GFile to read configuration from.
- * @data: user data passed to the deserialize implementation.
- * @error: return location for a possible error
- *
- * Opens the file specified by @file, reads configuration data from it
- * and configures @config accordingly. Basically this function creates
- * a properly configured #GScanner for you and calls the deserialize
- * function of the @config's #GimpConfigInterface.
- *
- * Return value: %TRUE if deserialization succeeded, %FALSE otherwise.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_config_deserialize_gfile (GimpConfig  *config,
-                               GFile       *file,
-                               gpointer     data,
-                               GError     **error)
-{
-  GScanner *scanner;
-  gboolean  success;
-
-  g_return_val_if_fail (GIMP_IS_CONFIG (config), FALSE);
-  g_return_val_if_fail (G_IS_FILE (file), FALSE);
-  g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-  scanner = gimp_scanner_new_gfile (file, error);
-  if (! scanner)
-    return FALSE;
-
-  g_object_freeze_notify (G_OBJECT (config));
-
-  success = GIMP_CONFIG_GET_INTERFACE (config)->deserialize (config,
-                                                             scanner, 0, data);
-
-  g_object_thaw_notify (G_OBJECT (config));
-
-  gimp_scanner_destroy (scanner);
-
-  if (! success)
-    g_assert (error == NULL || *error != NULL);
-
-  return success;
-}
-
-/**
- * gimp_config_deserialize_stream:
- * @config: a #GObject that implements the #GimpConfigInterface.
- * @input: the #GInputStream to read configuration from.
- * @data: user data passed to the deserialize implementation.
- * @error: return location for a possible error
- *
- * Reads configuration data from @input and configures @config
- * accordingly. Basically this function creates a properly configured
- * #GScanner for you and calls the deserialize function of the
- * @config's #GimpConfigInterface.
- *
- * Return value: %TRUE if deserialization succeeded, %FALSE otherwise.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_config_deserialize_stream (GimpConfig    *config,
-                                GInputStream  *input,
-                                gpointer       data,
-                                GError       **error)
-{
-  GScanner *scanner;
-  gboolean  success;
-
-  g_return_val_if_fail (GIMP_IS_CONFIG (config), FALSE);
-  g_return_val_if_fail (G_IS_INPUT_STREAM (input), FALSE);
-  g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-  scanner = gimp_scanner_new_stream (input, error);
-  if (! scanner)
-    return FALSE;
-
-  g_object_freeze_notify (G_OBJECT (config));
-
-  success = GIMP_CONFIG_GET_INTERFACE (config)->deserialize (config,
-                                                             scanner, 0, data);
-
-  g_object_thaw_notify (G_OBJECT (config));
-
-  gimp_scanner_destroy (scanner);
-
-  if (! success)
-    g_assert (error == NULL || *error != NULL);
-
-  return success;
-}
-
-/**
  * gimp_config_deserialize_string:
  * @config:   a #GObject that implements the #GimpConfigInterface.
  * @text:     string to deserialize (in UTF-8 encoding)
@@ -597,7 +421,7 @@ gimp_config_deserialize_stream (GimpConfig    *config,
  *
  * Returns: %TRUE if deserialization succeeded, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_deserialize_string (GimpConfig      *config,
@@ -638,7 +462,7 @@ gimp_config_deserialize_string (GimpConfig      *config,
  *
  * Returns:
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_deserialize_return (GScanner     *scanner,
@@ -687,7 +511,7 @@ gimp_config_deserialize_return (GScanner     *scanner,
  *
  * Returns: %TRUE if serialization succeeded, %FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_config_serialize (GimpConfig       *config,
@@ -712,7 +536,7 @@ gimp_config_serialize (GimpConfig       *config,
  *
  * Returns: %TRUE if deserialization succeeded, %FALSE otherwise.
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 gboolean
 gimp_config_deserialize (GimpConfig *config,
@@ -739,7 +563,7 @@ gimp_config_deserialize (GimpConfig *config,
  *
  * Return value: the duplicated #GimpConfig object
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gpointer
 gimp_config_duplicate (GimpConfig *config)
@@ -761,7 +585,7 @@ gimp_config_duplicate (GimpConfig *config)
  *
  * Return value: %TRUE if the two objects are equal.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_is_equal_to (GimpConfig *a,
@@ -783,7 +607,7 @@ gimp_config_is_equal_to (GimpConfig *a,
  * #GimpConfigInterface only works for objects that are completely defined by
  * their properties.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_reset (GimpConfig *config)
@@ -811,7 +635,7 @@ gimp_config_reset (GimpConfig *config)
  *
  * Return value: %TRUE if @dest was modified, %FALSE otherwise
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  **/
 gboolean
 gimp_config_copy (GimpConfig  *src,

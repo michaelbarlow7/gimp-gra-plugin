@@ -67,9 +67,6 @@ G_BEGIN_DECLS
 #define GIMP_STOCK_HCENTER                  "gimp-hcenter"
 #define GIMP_STOCK_VCENTER                  "gimp-vcenter"
 
-#define GIMP_STOCK_HFILL                    "gimp-hfill"
-#define GIMP_STOCK_VFILL                    "gimp-vfill"
-
 #define GIMP_STOCK_HCHAIN                   "gimp-hchain"
 #define GIMP_STOCK_HCHAIN_BROKEN            "gimp-hchain-broken"
 #define GIMP_STOCK_VCHAIN                   "gimp-vchain"
@@ -125,7 +122,6 @@ G_BEGIN_DECLS
 #define GIMP_STOCK_TOOL_FREE_SELECT         "gimp-tool-free-select"
 #define GIMP_STOCK_TOOL_FOREGROUND_SELECT   "gimp-tool-foreground-select"
 #define GIMP_STOCK_TOOL_FUZZY_SELECT        "gimp-tool-fuzzy-select"
-#define GIMP_STOCK_TOOL_HANDLE_TRANSFORM    "gimp-tool-handle-transform"
 #define GIMP_STOCK_TOOL_HEAL                "gimp-tool-heal"
 #define GIMP_STOCK_TOOL_HUE_SATURATION      "gimp-tool-hue-saturation"
 #define GIMP_STOCK_TOOL_INK                 "gimp-tool-ink"
@@ -133,8 +129,6 @@ G_BEGIN_DECLS
 #define GIMP_STOCK_TOOL_LEVELS              "gimp-tool-levels"
 #define GIMP_STOCK_TOOL_MEASURE             "gimp-tool-measure"
 #define GIMP_STOCK_TOOL_MOVE                "gimp-tool-move"
-#define GIMP_STOCK_TOOL_MYBRUSH             "gimp-tool-mybrush"
-#define GIMP_STOCK_TOOL_N_POINT_DEFORMATION "gimp-tool-n-point-deformation"
 #define GIMP_STOCK_TOOL_PAINTBRUSH          "gimp-tool-paintbrush"
 #define GIMP_STOCK_TOOL_PATH                "gimp-tool-path"
 #define GIMP_STOCK_TOOL_PENCIL              "gimp-tool-pencil"
@@ -144,13 +138,10 @@ G_BEGIN_DECLS
 #define GIMP_STOCK_TOOL_RECT_SELECT         "gimp-tool-rect-select"
 #define GIMP_STOCK_TOOL_ROTATE              "gimp-tool-rotate"
 #define GIMP_STOCK_TOOL_SCALE               "gimp-tool-scale"
-#define GIMP_STOCK_TOOL_SEAMLESS_CLONE      "gimp-tool-seamless-clone"
 #define GIMP_STOCK_TOOL_SHEAR               "gimp-tool-shear"
 #define GIMP_STOCK_TOOL_SMUDGE              "gimp-tool-smudge"
 #define GIMP_STOCK_TOOL_TEXT                "gimp-tool-text"
 #define GIMP_STOCK_TOOL_THRESHOLD           "gimp-tool-threshold"
-#define GIMP_STOCK_TOOL_UNIFIED_TRANSFORM   "gimp-tool-unified-transform"
-#define GIMP_STOCK_TOOL_WARP                "gimp-tool-warp"
 #define GIMP_STOCK_TOOL_ZOOM                "gimp-tool-zoom"
 
 
@@ -192,7 +183,7 @@ G_BEGIN_DECLS
 
 #ifndef GIMP_DISABLE_DEPRECATED
 #define GIMP_STOCK_INDEXED_PALETTE          "gimp-colormap"
-#endif
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 #define GIMP_STOCK_IMAGES                   "gimp-images"
 #define GIMP_STOCK_LAYERS                   "gimp-layers"
@@ -212,7 +203,7 @@ G_BEGIN_DECLS
 #ifndef GIMP_DISABLE_DEPRECATED
 #define GIMP_STOCK_QMASK_OFF                "gimp-quick-mask-off"
 #define GIMP_STOCK_QMASK_ON                 "gimp-quick-mask-on"
-#endif
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 #define GIMP_STOCK_HISTOGRAM                "gimp-histogram"
 #define GIMP_STOCK_HISTOGRAM_LINEAR         "gimp-histogram-linear"
@@ -293,7 +284,6 @@ G_BEGIN_DECLS
 #define GIMP_STOCK_PALETTE                  GTK_STOCK_SELECT_COLOR
 #define GIMP_STOCK_PATTERN                  GIMP_STOCK_TOOL_BUCKET_FILL
 #define GIMP_STOCK_CONTROLLER_MOUSE         GIMP_STOCK_CURSOR
-#define GIMP_STOCK_CONVERT_PRECISION        GIMP_STOCK_CONVERT_RGB
 
 
 void   gimp_stock_init (void);

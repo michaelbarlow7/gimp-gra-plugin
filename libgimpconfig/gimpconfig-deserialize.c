@@ -22,8 +22,7 @@
 #include "config.h"
 
 #include <cairo.h>
-#include <gegl.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 #include "libgimpcolor/gimpcolor.h"
@@ -123,7 +122,7 @@ scanner_string_utf8_valid (GScanner    *scanner,
  *
  * Return value: %TRUE on success, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_deserialize_properties (GimpConfig *config,
@@ -228,7 +227,7 @@ gimp_config_deserialize_properties (GimpConfig *config,
  * expected #GTokenType or %G_TOKEN_NONE if the expected token was
  * found but couldn't be parsed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GTokenType
 gimp_config_deserialize_property (GimpConfig *config,
@@ -354,7 +353,7 @@ gimp_config_deserialize_value (GValue     *value,
     {
       return gimp_config_deserialize_matrix2 (value, prop_spec, scanner);
     }
-  else if (prop_spec->value_type == GIMP_TYPE_VALUE_ARRAY)
+  else if (prop_spec->value_type == G_TYPE_VALUE_ARRAY)
     {
       return gimp_config_deserialize_value_array (value,
                                                   config, prop_spec, scanner);
@@ -712,19 +711,19 @@ gimp_config_deserialize_value_array (GValue     *value,
                                      GParamSpec *prop_spec,
                                      GScanner   *scanner)
 {
-  GimpParamSpecValueArray *array_spec;
-  GimpValueArray          *array;
-  GValue                   array_value = { 0, };
-  gint                     n_values;
-  GTokenType               token;
-  gint                     i;
+  GParamSpecValueArray *array_spec;
+  GValueArray          *array;
+  GValue                array_value = { 0, };
+  gint                  n_values;
+  GTokenType            token;
+  gint                  i;
 
-  array_spec = GIMP_PARAM_SPEC_VALUE_ARRAY (prop_spec);
+  array_spec = G_PARAM_SPEC_VALUE_ARRAY (prop_spec);
 
   if (! gimp_scanner_parse_int (scanner, &n_values))
     return G_TOKEN_INT;
 
-  array = gimp_value_array_new (n_values);
+  array = g_value_array_new (n_values);
 
   for (i = 0; i < n_values; i++)
     {
@@ -736,7 +735,7 @@ gimp_config_deserialize_value_array (GValue     *value,
                                              scanner);
 
       if (token == G_TOKEN_RIGHT_PAREN)
-        gimp_value_array_append (array, &array_value);
+        g_value_array_append (array, &array_value);
 
       g_value_unset (&array_value);
 

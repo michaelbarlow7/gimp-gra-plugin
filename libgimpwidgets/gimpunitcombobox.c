@@ -35,15 +35,13 @@
  * @short_description: A #GtkComboBox to select a #GimpUnit.
  * @see_also: #GimpUnit, #GimpUnitStore
  *
- * #GimpUnitComboBox selects units stored in a #GimpUnitStore.
+ * #GimpUnitComboBox allows to select units stored in a #GimpUnitStore.
  * It replaces the deprecated #GimpUnitMenu.
  **/
 
 
-static void  gimp_unit_combo_box_style_set   (GtkWidget        *widget,
-                                              GtkStyle         *prev_style);
-static void  gimp_unit_combo_box_popup_shown (GtkWidget        *widget,
-                                              const GParamSpec *pspec);
+static void  gimp_unit_combo_box_style_set (GtkWidget *widget,
+                                            GtkStyle  *prev_style);
 
 
 G_DEFINE_TYPE (GimpUnitComboBox, gimp_unit_combo_box, GTK_TYPE_COMBO_BOX)
@@ -78,10 +76,6 @@ gimp_unit_combo_box_init (GimpUnitComboBox *combo)
   gtk_cell_layout_set_attributes (layout, cell,
                                   "text", GIMP_UNIT_STORE_UNIT_LONG_FORMAT,
                                   NULL);
-
-  g_signal_connect (combo, "notify::popup-shown",
-                    G_CALLBACK (gimp_unit_combo_box_popup_shown),
-                    NULL);
 }
 
 static void
@@ -108,28 +102,6 @@ gimp_unit_combo_box_style_set (GtkWidget *widget,
                                   "text",  GIMP_UNIT_STORE_UNIT_SHORT_FORMAT,
                                   NULL);
 }
-
-static void
-gimp_unit_combo_box_popup_shown (GtkWidget        *widget,
-                                 const GParamSpec *pspec)
-{
-  GimpUnitStore *store;
-  gboolean       shown;
-
-  g_object_get (widget,
-                "model",       &store,
-                "popup-shown", &shown,
-                NULL);
-
-  if (store)
-    {
-      if (shown)
-        _gimp_unit_store_sync_units (store);
-
-      g_object_unref (store);
-    }
-}
-
 
 /**
  * gimp_unit_combo_box_new:
@@ -196,8 +168,6 @@ gimp_unit_combo_box_set_active (GimpUnitComboBox *combo,
 
   model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 
-  _gimp_unit_store_sync_units (GIMP_UNIT_STORE (model));
-
   for (iter_valid = gtk_tree_model_get_iter_first (model, &iter);
        iter_valid;
        iter_valid = gtk_tree_model_iter_next (model, &iter))
@@ -214,4 +184,5 @@ gimp_unit_combo_box_set_active (GimpUnitComboBox *combo,
           break;
         }
     }
+
 }

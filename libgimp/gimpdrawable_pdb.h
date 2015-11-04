@@ -32,7 +32,6 @@ G_BEGIN_DECLS
 /* For information look into the C source or the html documentation */
 
 
-G_GNUC_INTERNAL gchar*   _gimp_drawable_get_format        (gint32                      drawable_ID);
 GimpImageType            gimp_drawable_type               (gint32                      drawable_ID);
 GimpImageType            gimp_drawable_type_with_alpha    (gint32                      drawable_ID);
 gboolean                 gimp_drawable_has_alpha          (gint32                      drawable_ID);
@@ -45,9 +44,10 @@ gint                     gimp_drawable_height             (gint32               
 gboolean                 gimp_drawable_offsets            (gint32                      drawable_ID,
                                                            gint                       *offset_x,
                                                            gint                       *offset_y);
-GIMP_DEPRECATED
+#ifndef GIMP_DISABLE_DEPRECATED
 gboolean                 gimp_drawable_set_image          (gint32                      drawable_ID,
                                                            gint32                      image_ID);
+#endif /* GIMP_DISABLE_DEPRECATED */
 gboolean                 gimp_drawable_mask_bounds        (gint32                      drawable_ID,
                                                            gint                       *x1,
                                                            gint                       *y1,

@@ -1,7 +1,7 @@
 /* LIBGIMP - The GIMP Library
  * Copyright (C) 1995-2003 Peter Mattis and Spencer Kimball
  *
- * gimpimageundo_pdb.c
+ * gimpundo_pdb.c
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,11 +26,11 @@
 
 
 /**
- * SECTION: gimpimageundo
- * @title: gimpimageundo
- * @short_description: Control of image undo/redo.
+ * SECTION: gimpundo
+ * @title: gimpundo
+ * @short_description: Control of undo/redo.
  *
- * Control of image undo/redo.
+ * Control of undo/redo.
  **/
 
 

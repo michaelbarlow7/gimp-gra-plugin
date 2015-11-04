@@ -45,13 +45,13 @@
  *
  * Create a new channel.
  *
- * This procedure creates a new channel with the specified width,
- * height, name, opacity and color.
- * The new channel still needs to be added to the image, as this is not
- * automatic. Add the new channel with gimp_image_insert_channel().
- * Other attributes, such as channel visibility, should be set with
- * explicit procedure calls.
- * The channel's contents are undefined initially.
+ * This procedure creates a new channel with the specified width and
+ * height. Name, opacity, and color are also supplied parameters. The
+ * new channel still needs to be added to the image, as this is not
+ * automatic. Add the new channel with the gimp_image_insert_channel()
+ * command. Other attributes such as channel show masked, should be set
+ * with explicit procedure calls. The channel's contents are undefined
+ * initially.
  *
  * Returns: The newly created channel.
  **/
@@ -94,14 +94,10 @@ _gimp_channel_new (gint32         image_ID,
  * Create a new channel from a color component
  *
  * This procedure creates a new channel from a color component.
- * The new channel still needs to be added to the image, as this is not
- * automatic. Add the new channel with gimp_image_insert_channel().
- * Other attributes, such as channel visibility, should be set with
- * explicit procedure calls.
  *
  * Returns: The newly created channel.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint32
 gimp_channel_new_from_component (gint32           image_ID,
@@ -134,8 +130,6 @@ gimp_channel_new_from_component (gint32           image_ID,
  * Copy a channel.
  *
  * This procedure copies the specified channel and returns the copy.
- * The new channel still needs to be added to the image, as this is not
- * automatic. Add the new channel with gimp_image_insert_channel().
  *
  * Returns: The newly copied channel.
  **/

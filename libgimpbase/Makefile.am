@@ -12,11 +12,11 @@ endif
 if OS_WIN32
 ole32_lib = -lole32
 gimpbase_def = gimpbase.def
-libgimpbase_export_symbols = -export-symbols $(srcdir)/gimpbase.def
+libgimpbase_export_symbols = -export-symbols gimpbase.def
 
 install-libtool-import-lib:
 	$(INSTALL) .libs/libgimpbase-$(GIMP_API_VERSION).dll.a $(DESTDIR)$(libdir)
-	$(INSTALL) $(srcdir)/gimpbase.def $(DESTDIR)$(libdir)
+	$(INSTALL) gimpbase.def $(DESTDIR)$(libdir)
 
 uninstall-libtool-import-lib:
 	-rm $(DESTDIR)$(libdir)/libgimpbase-$(GIMP_API_VERSION).dll.a
@@ -58,22 +58,23 @@ AM_CPPFLAGS = \
 	-DGIMP_SYSCONF_VERSION=\"$(GIMP_SYSCONF_VERSION)\"	\
 	-DGIMP_PLUGIN_VERSION=\"$(GIMP_PLUGIN_VERSION)\"	\
 	-DG_LOG_DOMAIN=\"LibGimpBase\"				\
-	-DGIMP_BASE_COMPILATION					\
-	-I$(top_srcdir)						\
-	$(GIO_CFLAGS)						\
-	$(GEXIV2_CFLAGS)					\
-	$(BINRELOC_CFLAGS)					\
-	-I$(includedir)						\
-	$(xobjective_c)
+	-DGIMP_BASE_COMPILATION
 
 AM_CCASFLAGS = \
 	-I$(top_builddir)	\
 	-I$(top_srcdir)
 
+INCLUDES = \
+	-I$(top_srcdir)		\
+	$(GIO_CFLAGS)		\
+	$(BINRELOC_CFLAGS)	\
+	-I$(includedir)		\
+	$(xobjective_c)
+
 EXTRA_DIST = \
 	gimpbase.def
 
-lib_LTLIBRARIES = libgimpbase-@GIMP_API_VERSION@.la
+lib_LTLIBRARIES = libgimpbase-2.0.la
 
 # help `make' along by giving another name for the file, which it knows
 # how to build
@@ -102,8 +103,6 @@ libgimpbase_sources = \
 	gimpenv.h		\
 	gimpmemsize.c		\
 	gimpmemsize.h		\
-	gimpmetadata.c		\
-	gimpmetadata.h		\
 	gimpparasite.c		\
 	gimpparasite.h		\
 	gimpparasiteio.c	\
@@ -120,8 +119,6 @@ libgimpbase_sources = \
 	gimpunit.h		\
 	gimputils.c            	\
 	gimputils.h            	\
-	gimpvaluearray.c	\
-	gimpvaluearray.h	\
 	gimpwin32-io.h		\
 	gimpwire.c		\
 	gimpwire.h
@@ -129,9 +126,7 @@ libgimpbase_sources = \
 libgimpbase_built_sources = \
 	gimpbaseenums.c
 
-libgimpbase_@GIMP_API_VERSION@_la_SOURCES = \
-	$(libgimpbase_sources)	\
-	$(libgimpbase_built_sources)
+libgimpbase_2_0_la_SOURCES = $(libgimpbase_sources) $(libgimpbase_built_sources)
 
 
 libgimpbaseinclude_HEADERS = \
@@ -147,27 +142,24 @@ libgimpbaseinclude_HEADERS = \
 	gimpdatafiles.h		\
 	gimpenv.h		\
 	gimpmemsize.h		\
-	gimpmetadata.h		\
 	gimpparasite.h		\
 	gimpparasiteio.h	\
 	gimprectangle.h		\
 	gimpsignal.h		\
 	gimpunit.h		\
-	gimputils.h		\
-	gimpvaluearray.h
+	gimputils.h
 
-libgimpbase_@GIMP_API_VERSION@_la_LDFLAGS = \
+
+libgimpbase_2_0_la_LDFLAGS = \
 	-version-info $(LT_VERSION_INFO)	\
 	$(no_undefined) 			\
 	$(libgimpbase_export_symbols)		\
 	$(framework_cocoa)
 
-EXTRA_libgimpbase_@GIMP_API_VERSION@_la_DEPENDENCIES = $(gimpbase_def)
+libgimpbase_2_0_la_DEPENDENCIES = $(gimpbase_def)
 
-libgimpbase_@GIMP_API_VERSION@_la_LIBADD = \
-	$(GIO_LIBS)	\
-	$(GEXIV2_LIBS)	\
-	$(ole32_lib)
+libgimpbase_2_0_la_LIBADD = $(GIO_LIBS) $(ole32_lib)
+
 
 install-data-local: install-ms-lib install-libtool-import-lib
 

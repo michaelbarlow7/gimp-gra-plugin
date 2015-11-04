@@ -93,7 +93,7 @@ gimp_file_load (GimpRunMode  run_mode,
  *
  * Returns: The layer created when loading the image file.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint32
 gimp_file_load_layer (GimpRunMode  run_mode,
@@ -135,7 +135,7 @@ gimp_file_load_layer (GimpRunMode  run_mode,
  *
  * Returns: The list of loaded layers.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint *
 gimp_file_load_layers (GimpRunMode  run_mode,
@@ -228,7 +228,7 @@ gimp_file_save (GimpRunMode  run_mode,
  * so that it belongs to the file with the given filename. This means
  * you have to save the image under this name first, otherwise this
  * procedure will fail. This procedure may become useful if you want to
- * explicitly save a thumbnail with a file.
+ * explicitely save a thumbnail with a file.
  *
  * Returns: TRUE on success.
  **/
@@ -408,7 +408,7 @@ gimp_register_save_handler (const gchar *procedure_name,
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_register_file_handler_mime (const gchar *procedure_name,
@@ -422,40 +422,6 @@ gimp_register_file_handler_mime (const gchar *procedure_name,
                                     &nreturn_vals,
                                     GIMP_PDB_STRING, procedure_name,
                                     GIMP_PDB_STRING, mime_type,
-                                    GIMP_PDB_END);
-
-  success = return_vals[0].data.d_status == GIMP_PDB_SUCCESS;
-
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return success;
-}
-
-/**
- * gimp_register_file_handler_uri:
- * @procedure_name: The name of the procedure to enable URIs for.
- *
- * Registers a file handler procedure as capable of handling URIs.
- *
- * Registers a file handler procedure as capable of handling URIs. This
- * allows GIMP to call the procecure directly for all kinds of URIs,
- * and the 'filename' traditionally passed to file procesures turns
- * into an URI.
- *
- * Returns: TRUE on success.
- *
- * Since: 2.10
- **/
-gboolean
-gimp_register_file_handler_uri (const gchar *procedure_name)
-{
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  gboolean success = TRUE;
-
-  return_vals = gimp_run_procedure ("gimp-register-file-handler-uri",
-                                    &nreturn_vals,
-                                    GIMP_PDB_STRING, procedure_name,
                                     GIMP_PDB_END);
 
   success = return_vals[0].data.d_status == GIMP_PDB_SUCCESS;
@@ -481,7 +447,7 @@ gimp_register_file_handler_uri (const gchar *procedure_name)
  *
  * Returns: TRUE on success.
  *
- * Since: 2.2
+ * Since: GIMP 2.2
  **/
 gboolean
 gimp_register_thumbnail_loader (const gchar *load_proc,

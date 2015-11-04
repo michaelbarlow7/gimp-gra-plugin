@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "gimpwidgetstypes.h"
@@ -145,7 +144,7 @@ gimp_page_selector_class_init (GimpPageSelectorClass *klass)
    *
    * This signal is emitted whenever the set of selected pages changes.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    **/
   selector_signals[SELECTION_CHANGED] =
     g_signal_new ("selection-changed",
@@ -163,7 +162,7 @@ gimp_page_selector_class_init (GimpPageSelectorClass *klass)
    * The "activate" signal on GimpPageSelector is an action signal. It
    * is emitted when a user double-clicks an item in the page selection.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    */
   selector_signals[ACTIVATE] =
     g_signal_new ("activate",
@@ -180,7 +179,7 @@ gimp_page_selector_class_init (GimpPageSelectorClass *klass)
    *
    * The number of pages of the document to open.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    **/
   g_object_class_install_property (object_class, PROP_N_PAGES,
                                    g_param_spec_int ("n-pages", NULL, NULL,
@@ -192,7 +191,7 @@ gimp_page_selector_class_init (GimpPageSelectorClass *klass)
    *
    * The target to open the document to.
    *
-   * Since: 2.4
+   * Since: GIMP 2.4
    **/
   g_object_class_install_property (object_class, PROP_TARGET,
                                    g_param_spec_enum ("target", NULL, NULL,
@@ -327,9 +326,10 @@ gimp_page_selector_init (GimpPageSelector *selector)
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (label), combo);
 
-  priv->default_thumbnail =
-    gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                              "text-x-generic", 32, 0, NULL);
+  priv->default_thumbnail = gtk_widget_render_icon (GTK_WIDGET (selector),
+                                                    GTK_STOCK_FILE,
+                                                    GTK_ICON_SIZE_DND,
+                                                    NULL);
 }
 
 static void
@@ -398,7 +398,7 @@ gimp_page_selector_set_property (GObject      *object,
  *
  * Returns: Pointer to the new #GimpPageSelector widget.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GtkWidget *
 gimp_page_selector_new (void)
@@ -413,7 +413,7 @@ gimp_page_selector_new (void)
  *
  * Sets the number of pages in the document to open.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_set_n_pages (GimpPageSelector *selector,
@@ -472,7 +472,7 @@ gimp_page_selector_set_n_pages (GimpPageSelector *selector,
  *
  * Returns: the number of pages in the document to open.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint
 gimp_page_selector_get_n_pages (GimpPageSelector *selector)
@@ -491,7 +491,7 @@ gimp_page_selector_get_n_pages (GimpPageSelector *selector)
  * @selector: Pointer to a #GimpPageSelector.
  * @target:   How to open the selected pages.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_set_target (GimpPageSelector       *selector,
@@ -518,7 +518,7 @@ gimp_page_selector_set_target (GimpPageSelector       *selector,
  *
  * Returns: How the selected pages should be opened.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpPageSelectorTarget
 gimp_page_selector_get_target (GimpPageSelector *selector)
@@ -542,7 +542,7 @@ gimp_page_selector_get_target (GimpPageSelector *selector)
  * Sets the thumbnail for given @page_no. A default "page" icon will
  * be used if no page thumbnail is set.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_set_page_thumbnail (GimpPageSelector *selector,
@@ -587,7 +587,7 @@ gimp_page_selector_set_page_thumbnail (GimpPageSelector *selector,
  *          pixbuf is owned by #GimpPageSelector and must not be
  *          unref'ed when no longer needed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GdkPixbuf *
 gimp_page_selector_get_page_thumbnail (GimpPageSelector *selector,
@@ -626,7 +626,7 @@ gimp_page_selector_get_page_thumbnail (GimpPageSelector *selector,
  *
  * Sets the label of the specified page.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_set_page_label (GimpPageSelector *selector,
@@ -668,7 +668,7 @@ gimp_page_selector_set_page_label (GimpPageSelector *selector,
  *          allocated string that should be g_free()'d when no longer
  *          needed.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_page_selector_get_page_label (GimpPageSelector *selector,
@@ -707,7 +707,7 @@ gimp_page_selector_get_page_label (GimpPageSelector *selector,
  *
  * Selects all pages.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_select_all (GimpPageSelector *selector)
@@ -727,7 +727,7 @@ gimp_page_selector_select_all (GimpPageSelector *selector)
  *
  * Unselects all pages.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_unselect_all (GimpPageSelector *selector)
@@ -748,7 +748,7 @@ gimp_page_selector_unselect_all (GimpPageSelector *selector)
  *
  * Adds a page to the selection.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_select_page (GimpPageSelector *selector,
@@ -780,7 +780,7 @@ gimp_page_selector_select_page (GimpPageSelector *selector,
  *
  * Removes a page from the selection.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_unselect_page (GimpPageSelector *selector,
@@ -812,7 +812,7 @@ gimp_page_selector_unselect_page (GimpPageSelector *selector,
  *
  * Returns: %TRUE if the page is selected, %FALSE otherwise.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_page_selector_page_is_selected (GimpPageSelector *selector,
@@ -849,7 +849,7 @@ gimp_page_selector_page_is_selected (GimpPageSelector *selector,
  * Returns: A sorted array of page numbers of selected pages. Use g_free() if
  *          you don't need the array any longer.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gint *
 gimp_page_selector_get_selected_pages (GimpPageSelector *selector,
@@ -899,7 +899,7 @@ gimp_page_selector_get_selected_pages (GimpPageSelector *selector,
  * Invalid pages and ranges will be silently ignored, duplicate and
  * overlapping pages and ranges will be merged.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_page_selector_select_range (GimpPageSelector *selector,
@@ -997,7 +997,7 @@ gimp_page_selector_select_range (GimpPageSelector *selector,
  *          pages. See gimp_page_selector_select_range() for the
  *          format of the string.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gchar *
 gimp_page_selector_get_selected_range (GimpPageSelector *selector)
@@ -1299,8 +1299,9 @@ gimp_page_selector_add_frame (GtkWidget *widget,
 
   if (! frame)
     {
-      frame = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                        GIMP_STOCK_FRAME, 64, 0, NULL);
+      frame = gtk_widget_render_icon (widget,
+                                      GIMP_STOCK_FRAME,
+                                      GTK_ICON_SIZE_DIALOG, NULL);
       g_object_set_data_full (G_OBJECT (widget), "frame", frame,
                               (GDestroyNotify) g_object_unref);
     }

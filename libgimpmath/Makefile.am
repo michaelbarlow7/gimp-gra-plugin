@@ -13,11 +13,11 @@ endif
 
 if OS_WIN32
 gimpmath_def = gimpmath.def
-libgimpmath_export_symbols = -export-symbols $(srcdir)/gimpmath.def
+libgimpmath_export_symbols = -export-symbols gimpmath.def
 
 install-libtool-import-lib:
 	$(INSTALL) .libs/libgimpmath-$(GIMP_API_VERSION).dll.a $(DESTDIR)$(libdir)
-	$(INSTALL) $(srcdir)/gimpmath.def $(DESTDIR)$(libdir)
+	$(INSTALL) gimpmath.def $(DESTDIR)$(libdir)
 
 uninstall-libtool-import-lib:
 	-rm $(DESTDIR)$(libdir)/libgimpmath-$(GIMP_API_VERSION).dll.a
@@ -48,17 +48,19 @@ libgimpmathincludedir = $(includedir)/gimp-$(GIMP_API_VERSION)/libgimpmath
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"LibGimpMath\"	\
-	-DGIMP_MATH_COMPILATION		\
-	-I$(top_srcdir)			\
-	$(GLIB_CFLAGS)			\
+	-DGIMP_MATH_COMPILATION
+
+INCLUDES = \
+	-I$(top_srcdir)	\
+	$(GLIB_CFLAGS)	\
 	-I$(includedir)
 
 EXTRA_DIST = \
 	gimpmath.def
 
-lib_LTLIBRARIES = libgimpmath-@GIMP_API_VERSION@.la
+lib_LTLIBRARIES = libgimpmath-2.0.la
 
-libgimpmath_@GIMP_API_VERSION@_la_SOURCES = \
+libgimpmath_2_0_la_SOURCES = \
 	gimpmath.h	\
 	gimpmathtypes.h	\
 	gimpmatrix.c	\
@@ -75,17 +77,14 @@ libgimpmathinclude_HEADERS = \
 	gimpmd5.h	\
 	gimpvector.h
 
-libgimpmath_@GIMP_API_VERSION@_la_LDFLAGS = \
+libgimpmath_2_0_la_LDFLAGS = \
 	-version-info $(LT_VERSION_INFO)	\
 	$(no_undefined)				\
 	$(libgimpmath_export_symbols)
 
-EXTRA_libgimpmath_@GIMP_API_VERSION@_la_DEPENDENCIES = $(gimpmath_def)
+libgimpmath_2_0_la_DEPENDENCIES = $(gimpmath_def) $(libgimpbase)
 
-libgimpmath_@GIMP_API_VERSION@_la_LIBADD = \
-	$(libgimpbase)	\
-	$(GLIB_LIBS)	\
-	$(libm)
+libgimpmath_2_0_la_LIBADD = $(GLIB_LIBS) $(libm)
 
 
 install-data-local: install-ms-lib install-libtool-import-lib

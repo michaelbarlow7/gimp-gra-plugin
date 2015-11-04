@@ -23,7 +23,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpbase/gimpbase.h"
@@ -33,6 +32,8 @@
 #include "gimpwidgetstypes.h"
 
 #include "gimpstock.h"
+
+#undef GIMP_DISABLE_DEPRECATED
 #include "gimpcolordisplay.h"
 
 
@@ -136,10 +137,9 @@ gimp_color_display_class_init (GimpColorDisplayClass *klass)
 
   klass->name            = "Unnamed";
   klass->help_id         = NULL;
-  klass->icon_name       = GIMP_STOCK_DISPLAY_FILTER;
+  klass->stock_id        = GIMP_STOCK_DISPLAY_FILTER;
 
   klass->clone           = NULL;
-  klass->convert_buffer  = NULL;
   klass->convert_surface = NULL;
   klass->convert         = NULL;
   klass->load_state      = NULL;
@@ -158,7 +158,8 @@ gimp_color_display_init (GimpColorDisplay *display)
 static void
 gimp_color_display_constructed (GObject *object)
 {
-  G_OBJECT_CLASS (parent_class)->constructed (object);
+  if (G_OBJECT_CLASS (parent_class)->constructed)
+    G_OBJECT_CLASS (parent_class)->constructed (object);
 
   /* emit an initial "changed" signal after all construct properties are set */
   gimp_color_display_changed (GIMP_COLOR_DISPLAY (object));
@@ -335,41 +336,13 @@ gimp_color_display_clone (GimpColorDisplay *display)
 }
 
 /**
- * gimp_color_display_convert_buffer:
- * @display: a #GimpColorDisplay
- * @buffer:  a #GeglBuffer
- * @area:    area in @buffer to convert
- *
- * Converts all pixels in @area of @buffer.
- *
- * Since: 2.10
- **/
-void
-gimp_color_display_convert_buffer (GimpColorDisplay *display,
-                                   GeglBuffer       *buffer,
-                                   GeglRectangle    *area)
-{
-  g_return_if_fail (GIMP_IS_COLOR_DISPLAY (display));
-  g_return_if_fail (GEGL_IS_BUFFER (buffer));
-
-  if (display->enabled &&
-      GIMP_COLOR_DISPLAY_GET_CLASS (display)->convert_buffer)
-    {
-      GIMP_COLOR_DISPLAY_GET_CLASS (display)->convert_buffer (display, buffer,
-                                                              area);
-    }
-}
-
-/**
  * gimp_color_display_convert_surface:
  * @display: a #GimpColorDisplay
  * @surface: a #cairo_image_surface_t of type ARGB32
  *
  * Converts all pixels in @surface.
  *
- * Since: 2.8
- *
- * Deprecated: GIMP 2.8: Use gimp_color_display_convert_buffer() instead.
+ * Since: GIMP 2.8
  **/
 void
 gimp_color_display_convert_surface (GimpColorDisplay *display,
@@ -400,7 +373,7 @@ gimp_color_display_convert_surface (GimpColorDisplay *display,
  *
  * Converts all pixels in @buf.
  *
- * Deprecated: GIMP 2.8: Use gimp_color_display_convert_buffer() instead.
+ * Deprecated: GIMP 2.8: Use gimp_color_display_convert_surface() instead.
  **/
 void
 gimp_color_display_convert (GimpColorDisplay *display,
@@ -531,7 +504,7 @@ gimp_color_display_get_enabled (GimpColorDisplay *display)
  *
  * Return value: a pointer to the #GimpColorConfig object or %NULL.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpColorConfig *
 gimp_color_display_get_config (GimpColorDisplay *display)
@@ -547,7 +520,7 @@ gimp_color_display_get_config (GimpColorDisplay *display)
  *
  * Return value: a pointer to the #GimpColorManaged object or %NULL.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GimpColorManaged *
 gimp_color_display_get_managed (GimpColorDisplay *display)

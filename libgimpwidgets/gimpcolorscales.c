@@ -26,7 +26,6 @@
 
 #include <string.h>
 
-#include <gegl.h>
 #include <gtk/gtk.h>
 
 #include "libgimpbase/gimpbase.h"
@@ -108,7 +107,7 @@ gimp_color_scales_class_init (GimpColorScalesClass *klass)
 
   selector_class->name                  = _("Scales");
   selector_class->help_id               = "gimp-colorselector-scales";
-  selector_class->icon_name             = GIMP_STOCK_TOOL_OPTIONS;
+  selector_class->stock_id              = GIMP_STOCK_TOOL_OPTIONS;
   selector_class->set_toggles_visible   = gimp_color_scales_togg_visible;
   selector_class->set_toggles_sensitive = gimp_color_scales_togg_sensitive;
   selector_class->set_show_alpha        = gimp_color_scales_set_show_alpha;
@@ -137,8 +136,8 @@ gimp_color_scales_init (GimpColorScales *scales)
 
   table = gtk_table_new (7, 4, FALSE);
   gtk_table_set_row_spacings (GTK_TABLE (table), 1);
-  gtk_table_set_row_spacing (GTK_TABLE (table), 2, 5); /* hsv <-> rgb   */
-  gtk_table_set_row_spacing (GTK_TABLE (table), 5, 5); /* rgb <-> alpha */
+  gtk_table_set_row_spacing (GTK_TABLE (table), 2, 3); /* hsv <-> rgb   */
+  gtk_table_set_row_spacing (GTK_TABLE (table), 5, 3); /* rgb <-> alpha */
   gtk_table_set_col_spacings (GTK_TABLE (table), 2);
   gtk_table_set_col_spacing (GTK_TABLE (table), 0, 0);
   gtk_box_pack_start (GTK_BOX (scales), table, FALSE, FALSE, 0);

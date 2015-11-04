@@ -56,11 +56,9 @@ struct _GimpDatafileData
 };
 
 
-GIMP_DEPRECATED
 gboolean   gimp_datafiles_check_extension  (const gchar            *filename,
                                             const gchar            *extension);
 
-GIMP_DEPRECATED_FOR(GFileEnumerator)
 void       gimp_datafiles_read_directories (const gchar            *path_str,
                                             GFileTest               flags,
                                             GimpDatafileLoaderFunc  loader_func,

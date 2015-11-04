@@ -56,7 +56,7 @@ static GimpMatrix2 * matrix2_copy                  (const GimpMatrix2 *matrix);
  *
  * Returns: the #GType for Matrix2 objects
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_matrix2_get_type (void)
@@ -102,7 +102,7 @@ struct _GimpParamSpecMatrix2
  *
  * Returns: the #GType for a GimpMatrix2 object
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GType
 gimp_param_matrix2_get_type (void)
@@ -195,7 +195,7 @@ gimp_param_matrix2_values_cmp (GParamSpec   *pspec,
  *
  * Returns: a newly allocated #GParamSpec instance
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GParamSpec *
 gimp_param_spec_matrix2 (const gchar       *name,
@@ -274,7 +274,7 @@ static GimpMatrix3 * matrix3_copy                  (const GimpMatrix3 *matrix);
  *
  * Returns: the #GType for Matrix3 objects
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GType
 gimp_matrix3_get_type (void)
@@ -320,7 +320,7 @@ struct _GimpParamSpecMatrix3
  *
  * Returns: the #GType for a GimpMatrix3 object
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GType
 gimp_param_matrix3_get_type (void)
@@ -413,7 +413,7 @@ gimp_param_matrix3_values_cmp (GParamSpec   *pspec,
  *
  * Returns: a newly allocated #GParamSpec instance
  *
- * Since: 2.8
+ * Since: GIMP 2.8
  **/
 GParamSpec *
 gimp_param_spec_matrix3 (const gchar       *name,
@@ -826,7 +826,7 @@ gimp_matrix3_is_diagonal (const GimpMatrix3 *matrix)
  * Returns: %TRUE if the matrix defines an affine transformation,
  *          %FALSE otherwise
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  */
 gboolean
 gimp_matrix3_is_affine (const GimpMatrix3 *matrix)
@@ -843,26 +843,32 @@ gimp_matrix3_is_affine (const GimpMatrix3 *matrix)
  * Checks if we'll need to interpolate when applying this matrix as
  * a transformation.
  *
- * Returns: %TRUE if all entries of the upper left 2x2 matrix are
- *          either 0 or 1, %FALSE otherwise
+ * Returns: %TRUE if the matrix is simple, %FALSE otherwise
  */
 gboolean
 gimp_matrix3_is_simple (const GimpMatrix3 *matrix)
 {
-  gdouble absm;
-  gint    i, j;
+  const gdouble (*c)[3] = matrix->coeff;
 
-  for (i = 0; i < 2; i++)
-    {
-      for (j = 0; j < 2; j++)
-        {
-          absm = fabs (matrix->coeff[i][j]);
-          if (absm > EPSILON && fabs (absm - 1.0) > EPSILON)
-            return FALSE;
-        }
-    }
+#define approximately(a, b) (fabs ((a) - (b)) < EPSILON)
+#define integer(a) (approximately (a, RINT (a)))
 
-  return TRUE;
+  /* 3rd row like identity matrix (perspective requires interpolation) */
+  return approximately (0.0,       c[2][0] ) &&
+         approximately (0.0,       c[2][1] ) &&
+         approximately (1.0, fabs (c[2][2])) &&
+         /* 3rd column integer (subpixel translation requires interpolation)*/
+         integer (c[0][2]) &&
+         integer (c[1][2]) &&
+         /* upper left 2x2 matrix [ 0, +-1; +-1, 0] or [+-1, 0; 0, +-1] */
+         ((approximately (0.0,       c[0][0] ) &&
+           approximately (1.0, fabs (c[0][1])) &&
+           approximately (1.0, fabs (c[1][0])) &&
+           approximately (0.0,       c[1][1] )) ||
+          (approximately (1.0, fabs (c[0][0])) &&
+           approximately (0.0,       c[0][1] ) &&
+           approximately (0.0,       c[1][0] ) &&
+           approximately (1.0, fabs (c[1][1]))));
 }
 
 /**

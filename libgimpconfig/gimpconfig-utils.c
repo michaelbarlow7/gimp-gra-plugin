@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include <gio/gio.h>
+#include <glib-object.h>
 
 #include "libgimpbase/gimpbase.h"
 
@@ -160,7 +160,7 @@ gimp_config_diff_other (GObject     *a,
  *
  * Return value: a GList of differing GParamSpecs.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 GList *
 gimp_config_diff (GObject     *a,
@@ -198,7 +198,7 @@ gimp_config_diff (GObject     *a,
  *
  * Return value: %TRUE if @dest was modified, %FALSE otherwise
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 gboolean
 gimp_config_sync (GObject     *src,
@@ -259,7 +259,7 @@ gimp_config_sync (GObject     *src,
  *
  * If you want to reset a #GimpConfig object, please use gimp_config_reset().
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_reset_properties (GObject *object)
@@ -331,7 +331,7 @@ gimp_config_reset_properties (GObject *object)
  * Resets the property named @property_name to its default value.  The
  * property must be writable and must not be marked as "construct-only".
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_reset_property (GObject     *object,
@@ -398,7 +398,7 @@ gimp_config_reset_property (GObject     *object,
  * leaves non-ASCII characters intact and thus preserves UTF-8
  * strings. Only control characters and quotes are being escaped.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  **/
 void
 gimp_config_string_append_escaped (GString     *string,

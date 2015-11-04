@@ -35,9 +35,9 @@
 #include <libgimp/gimpchannel_pdb.h>
 #include <libgimp/gimpcolor_pdb.h>
 #include <libgimp/gimpcontext_pdb.h>
+#include <libgimp/gimpconvert_pdb.h>
 #include <libgimp/gimpdisplay_pdb.h>
 #include <libgimp/gimpdrawable_pdb.h>
-#include <libgimp/gimpdrawablecolor_pdb.h>
 #include <libgimp/gimpdrawabletransform_pdb.h>
 #include <libgimp/gimpdynamics_pdb.h>
 #include <libgimp/gimpedit_pdb.h>
@@ -49,15 +49,11 @@
 #include <libgimp/gimpgradient_pdb.h>
 #include <libgimp/gimpgradients_pdb.h>
 #include <libgimp/gimpgradientselect_pdb.h>
+#include <libgimp/gimpgrid_pdb.h>
+#include <libgimp/gimpguides_pdb.h>
 #include <libgimp/gimphelp_pdb.h>
 #include <libgimp/gimpimage_pdb.h>
-#include <libgimp/gimpimagecolorprofile_pdb.h>
-#include <libgimp/gimpimageconvert_pdb.h>
-#include <libgimp/gimpimagegrid_pdb.h>
-#include <libgimp/gimpimageguides_pdb.h>
 #include <libgimp/gimpimageselect_pdb.h>
-#include <libgimp/gimpimagetransform_pdb.h>
-#include <libgimp/gimpimageundo_pdb.h>
 #include <libgimp/gimpitem_pdb.h>
 #include <libgimp/gimpitemtransform_pdb.h>
 #include <libgimp/gimplayer_pdb.h>
@@ -78,6 +74,7 @@
 #include <libgimp/gimptextlayer_pdb.h>
 #include <libgimp/gimptexttool_pdb.h>
 #include <libgimp/gimptransformtools_pdb.h>
+#include <libgimp/gimpundo_pdb.h>
 #include <libgimp/gimpunit_pdb.h>
 #include <libgimp/gimpvectors_pdb.h>
 

@@ -32,13 +32,12 @@ G_BEGIN_DECLS
 /* For information look into the C source or the html documentation */
 
 
-GIMP_DEPRECATED_FOR(gimp_item_transform_flip_simple)
+#ifndef GIMP_DISABLE_DEPRECATED
 gint32 gimp_drawable_transform_flip_simple         (gint32                 drawable_ID,
                                                     GimpOrientationType    flip_type,
                                                     gboolean               auto_center,
                                                     gdouble                axis,
                                                     gboolean               clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_flip)
 gint32 gimp_drawable_transform_flip                (gint32                 drawable_ID,
                                                     gdouble                x0,
                                                     gdouble                y0,
@@ -49,7 +48,6 @@ gint32 gimp_drawable_transform_flip                (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     gboolean               clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_flip)
 gint32 gimp_drawable_transform_flip_default        (gint32                 drawable_ID,
                                                     gdouble                x0,
                                                     gdouble                y0,
@@ -57,7 +55,6 @@ gint32 gimp_drawable_transform_flip_default        (gint32                 drawa
                                                     gdouble                y1,
                                                     gboolean               interpolate,
                                                     gboolean               clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_perspective)
 gint32 gimp_drawable_transform_perspective         (gint32                 drawable_ID,
                                                     gdouble                x0,
                                                     gdouble                y0,
@@ -72,7 +69,6 @@ gint32 gimp_drawable_transform_perspective         (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_perspective)
 gint32 gimp_drawable_transform_perspective_default (gint32                 drawable_ID,
                                                     gdouble                x0,
                                                     gdouble                y0,
@@ -84,14 +80,12 @@ gint32 gimp_drawable_transform_perspective_default (gint32                 drawa
                                                     gdouble                y3,
                                                     gboolean               interpolate,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_rotate_simple)
 gint32 gimp_drawable_transform_rotate_simple       (gint32                 drawable_ID,
                                                     GimpRotationType       rotate_type,
                                                     gboolean               auto_center,
                                                     gint                   center_x,
                                                     gint                   center_y,
                                                     gboolean               clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_rotate)
 gint32 gimp_drawable_transform_rotate              (gint32                 drawable_ID,
                                                     gdouble                angle,
                                                     gboolean               auto_center,
@@ -102,7 +96,6 @@ gint32 gimp_drawable_transform_rotate              (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_rotate)
 gint32 gimp_drawable_transform_rotate_default      (gint32                 drawable_ID,
                                                     gdouble                angle,
                                                     gboolean               auto_center,
@@ -110,7 +103,6 @@ gint32 gimp_drawable_transform_rotate_default      (gint32                 drawa
                                                     gint                   center_y,
                                                     gboolean               interpolate,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_scale)
 gint32 gimp_drawable_transform_scale               (gint32                 drawable_ID,
                                                     gdouble                x0,
                                                     gdouble                y0,
@@ -121,7 +113,6 @@ gint32 gimp_drawable_transform_scale               (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_scale)
 gint32 gimp_drawable_transform_scale_default       (gint32                 drawable_ID,
                                                     gdouble                x0,
                                                     gdouble                y0,
@@ -129,7 +120,6 @@ gint32 gimp_drawable_transform_scale_default       (gint32                 drawa
                                                     gdouble                y1,
                                                     gboolean               interpolate,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_shear)
 gint32 gimp_drawable_transform_shear               (gint32                 drawable_ID,
                                                     GimpOrientationType    shear_type,
                                                     gdouble                magnitude,
@@ -138,13 +128,11 @@ gint32 gimp_drawable_transform_shear               (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_shear)
 gint32 gimp_drawable_transform_shear_default       (gint32                 drawable_ID,
                                                     GimpOrientationType    shear_type,
                                                     gdouble                magnitude,
                                                     gboolean               interpolate,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_2d)
 gint32 gimp_drawable_transform_2d                  (gint32                 drawable_ID,
                                                     gdouble                source_x,
                                                     gdouble                source_y,
@@ -158,7 +146,6 @@ gint32 gimp_drawable_transform_2d                  (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_2d)
 gint32 gimp_drawable_transform_2d_default          (gint32                 drawable_ID,
                                                     gdouble                source_x,
                                                     gdouble                source_y,
@@ -169,7 +156,6 @@ gint32 gimp_drawable_transform_2d_default          (gint32                 drawa
                                                     gdouble                dest_y,
                                                     gboolean               interpolate,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_matrix)
 gint32 gimp_drawable_transform_matrix              (gint32                 drawable_ID,
                                                     gdouble                coeff_0_0,
                                                     gdouble                coeff_0_1,
@@ -185,7 +171,6 @@ gint32 gimp_drawable_transform_matrix              (gint32                 drawa
                                                     gboolean               supersample,
                                                     gint                   recursion_level,
                                                     GimpTransformResize    clip_result);
-GIMP_DEPRECATED_FOR(gimp_item_transform_matrix)
 gint32 gimp_drawable_transform_matrix_default      (gint32                 drawable_ID,
                                                     gdouble                coeff_0_0,
                                                     gdouble                coeff_0_1,
@@ -198,6 +183,7 @@ gint32 gimp_drawable_transform_matrix_default      (gint32                 drawa
                                                     gdouble                coeff_2_2,
                                                     gboolean               interpolate,
                                                     GimpTransformResize    clip_result);
+#endif /* GIMP_DISABLE_DEPRECATED */
 
 
 G_END_DECLS

@@ -25,6 +25,9 @@
 #include <string.h>
 
 #include "gimp.h"
+#undef GIMP_DISABLE_DEPRECATED
+#undef __GIMP_GRADIENTS_PDB_H__
+#include "gimpgradients_pdb.h"
 
 
 /**
@@ -75,8 +78,7 @@ gimp_gradients_refresh (void)
  * loaded. You can later use the gimp_context_set_gradient() function
  * to set the active gradient.
  *
- * Returns: The list of gradient names. The returned value must be
- * freed with g_strfreev().
+ * Returns: The list of gradient names.
  **/
 gchar **
 gimp_gradients_get_list (const gchar *filter,
@@ -97,12 +99,9 @@ gimp_gradients_get_list (const gchar *filter,
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
     {
       *num_gradients = return_vals[1].data.d_int32;
-      if (*num_gradients > 0)
-        {
-          gradient_list = g_new0 (gchar *, *num_gradients + 1);
-          for (i = 0; i < *num_gradients; i++)
-            gradient_list[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
-        }
+      gradient_list = g_new (gchar *, *num_gradients);
+      for (i = 0; i < *num_gradients; i++)
+        gradient_list[i] = g_strdup (return_vals[2].data.d_stringarray[i]);
     }
 
   gimp_destroy_params (return_vals, nreturn_vals);

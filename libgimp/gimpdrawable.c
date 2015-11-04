@@ -20,11 +20,8 @@
 
 #include "config.h"
 
-#define GIMP_DISABLE_DEPRECATION_WARNINGS
-
+#undef GIMP_DISABLE_DEPRECATED
 #include "gimp.h"
-
-#include "gimptilebackendplugin.h"
 
 
 #define TILE_WIDTH  gimp_tile_width()
@@ -332,7 +329,7 @@ gimp_drawable_get_sub_thumbnail_data (gint32  drawable_ID,
  *
  * Returns: Whether the drawable ID is valid.
  *
- * Since: 2.4
+ * Since: GIMP 2.4
  */
 gboolean
 gimp_drawable_is_valid (gint32 drawable_ID)
@@ -362,7 +359,7 @@ gimp_drawable_is_layer (gint32 drawable_ID)
  *
  * Returns: TRUE if the drawable is a text layer, FALSE otherwise.
  *
- * Since: 2.6
+ * Since: GIMP 2.6
  */
 gboolean
 gimp_drawable_is_text_layer (gint32 drawable_ID)
@@ -647,155 +644,4 @@ gimp_drawable_attach_new_parasite (gint32          drawable_ID,
   gimp_parasite_free (parasite);
 
   return success;
-}
-
-/**
- * gimp_drawable_get_buffer:
- * @drawable_ID: the ID of the #GimpDrawable to get the buffer for.
- *
- * Returns a #GeglBuffer of a specified drawable. The buffer can be used
- * like any other GEGL buffer. Its data will we synced back with the core
- * drawable when the buffer gets destroyed, or when gegl_buffer_flush()
- * is called.
- *
- * Return value: The #GeglBuffer.
- *
- * See Also: gimp_drawable_get_shadow_buffer()
- *
- * Since: 2.10
- */
-GeglBuffer *
-gimp_drawable_get_buffer (gint32 drawable_ID)
-{
-  gimp_plugin_enable_precision ();
-
-  if (gimp_item_is_valid (drawable_ID))
-    {
-      GimpDrawable *drawable;
-
-      drawable = gimp_drawable_get (drawable_ID);
-
-      if (drawable)
-        {
-          GeglTileBackend *backend;
-          GeglBuffer      *buffer;
-
-          backend = _gimp_tile_backend_plugin_new (drawable, FALSE);
-          buffer = gegl_buffer_new_for_backend (NULL, backend);
-          g_object_unref (backend);
-
-          return buffer;
-        }
-    }
-
-  return NULL;
-}
-
-/**
- * gimp_drawable_get_shadow_buffer:
- * @drawable_ID: the ID of the #GimpDrawable to get the buffer for.
- *
- * Returns a #GeglBuffer of a specified drawable's shadow tiles. The
- * buffer can be used like any other GEGL buffer. Its data will we
- * synced back with the core drawable's shadow tiles when the buffer
- * gets destroyed, or when gegl_buffer_flush() is called.
- *
- * Return value: The #GeglBuffer.
- *
- * See Also: gimp_drawable_get_shadow_buffer()
- *
- * Since: 2.10
- */
-GeglBuffer *
-gimp_drawable_get_shadow_buffer (gint32 drawable_ID)
-{
-  GimpDrawable *drawable;
-
-  gimp_plugin_enable_precision ();
-
-  drawable = gimp_drawable_get (drawable_ID);
-
-  if (drawable)
-    {
-      GeglTileBackend *backend;
-      GeglBuffer      *buffer;
-
-      backend = _gimp_tile_backend_plugin_new (drawable, TRUE);
-      buffer = gegl_buffer_new_for_backend (NULL, backend);
-      g_object_unref (backend);
-
-      return buffer;
-    }
-
-  return NULL;
-}
-
-/**
- * gimp_drawable_get_format:
- * @drawable_ID: the ID of the #GimpDrawable to get the format for.
- *
- * Returns the #Babl format of the drawable.
- *
- * Return value: The #Babl format.
- *
- * Since: 2.10
- */
-const Babl *
-gimp_drawable_get_format (gint32 drawable_ID)
-{
-  static GHashTable *palette_formats = NULL;
-  const Babl *format     = NULL;
-  gchar      *format_str = _gimp_drawable_get_format (drawable_ID);
-
-  if (format_str)
-    {
-      if (gimp_drawable_is_indexed (drawable_ID))
-        {
-          gint32      image_ID = gimp_item_get_image (drawable_ID);
-          guchar     *colormap;
-          gint        n_colors;
-
-          colormap = gimp_image_get_colormap (image_ID, &n_colors);
-
-          if (!palette_formats)
-            palette_formats = g_hash_table_new (g_str_hash, g_str_equal);
-
-          format = g_hash_table_lookup (palette_formats, format_str);
-
-          if (!format)
-            {
-              const Babl *palette;
-              const Babl *palette_alpha;
-
-              babl_new_palette (format_str, &palette, &palette_alpha);
-              g_hash_table_insert (palette_formats,
-                                   (gpointer) babl_get_name (palette),
-                                   (gpointer) palette);
-              g_hash_table_insert (palette_formats,
-                                   (gpointer) babl_get_name (palette_alpha),
-                                   (gpointer) palette_alpha);
-
-              if (gimp_drawable_has_alpha (drawable_ID))
-                format = palette_alpha;
-              else
-                format = palette;
-            }
-
-          if (colormap)
-            {
-              babl_palette_set_palette (format,
-                                        babl_format ("R'G'B' u8"),
-                                        colormap, n_colors);
-              g_free (colormap);
-            }
-        }
-      else
-        {
-          format = babl_format (format_str);
-        }
-
-      g_free (format_str);
-    }
-
-  return format;
 }
