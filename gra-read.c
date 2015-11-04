@@ -28,7 +28,6 @@
 #include <libgimp/gimp.h>
 
 #include "gra.h"
-#include <gegl.h>
 
 
 #if !defined(WIN32) || defined(__MINGW32__)

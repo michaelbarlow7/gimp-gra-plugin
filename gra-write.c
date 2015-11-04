@@ -35,7 +35,6 @@
 #include <libgimp/gimpui.h>
 
 #include "gra.h"
-#include <gegl.h>
 
 typedef enum
 {
