@@ -19,7 +19,7 @@ typedef unsigned int DWORD; typedef unsigned char BOOL;
 
 typedef struct _CArcEntry
 { 
-    _CArcEntry *next;
+    struct _CArcEntry *next;
     WORD basecode;
     BYTE ch,pad;
 } CArcEntry;
