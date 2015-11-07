@@ -17,17 +17,15 @@ typedef unsigned int DWORD; typedef unsigned char BOOL;
 #define CT_7_BIT	2
 #define CT_8_BIT	3
 
-class CArcEntry
+typedef struct _CArcEntry
 { 
-    public:
-    CArcEntry *next;
+    _CArcEntry *next;
     WORD basecode;
     BYTE ch,pad;
-};
+} CArcEntry;
 
-class CArcCtrl //control structure
+typedef struct _CArcCtrl //control structure
 { 
-    public:
     DWORD src_pos,src_size,
           dst_pos,dst_size;
     BYTE *src_buf,*dst_buf;
@@ -41,16 +39,15 @@ class CArcCtrl //control structure
           last_ch;
     CArcEntry compress[1<<ARC_MAX_BITS],
               *hash[1<<ARC_MAX_BITS];
-};
+} CArcCtrl;
 
-class CArcCompress
+typedef struct _CArcCompress
 { 
-    public:
     DWORD compressed_size,compressed_size_hi,
           expanded_size,expanded_size_hi;
     BYTE	compression_type;
     BYTE body[1];
-};
+} CArcCompress;
 
 int Bt(int bit_num, BYTE *bit_field)
 {
