@@ -234,7 +234,9 @@ long FSize(FILE *f)
     return result;
 }
 
-BYTE* uncompress(BYTE *compressed, long compressed_size){
+// Sets decompressed to point to the allocated byte array
+// Returns the number of bytes in that array
+long uncompress(BYTE *compressed, long compressed_size, BYTE**decompressed){
     DWORD out_size;
     CArcCompress *arc;
     BYTE *out_buf;
@@ -249,5 +251,6 @@ BYTE* uncompress(BYTE *compressed, long compressed_size){
         }
     }
     free(arc);
-    return out_buf;
+    *decompressed = out_buf;
+    return arc->expanded_size;
 }

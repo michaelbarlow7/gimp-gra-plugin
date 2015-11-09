@@ -1,4 +1,4 @@
 #ifndef __TOSZ_H__
 #define __TOSZ_H__
-unsigned char * uncompress(unsigned char* compressed, long compressed_size);
+long uncompress(unsigned char* compressed, long compressed_size, unsigned char ** decompressed);
 #endif /*__TOSZ_H__*/

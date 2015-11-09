@@ -80,13 +80,14 @@ int main(int argc, char* argv[]){
     }
 
     // Need to uncompress these body bytes
-    decompressed_body = uncompress(compressed_body, body_size);
-    printf("Decompressed_body is %x\n ", decompressed_body);
+    long expanded_size = uncompress(compressed_body, body_size, &decompressed_body);
+    //decompressed_body = uncompress(compressed_body, body_size);
+    printf("expanded_size is %d\n", expanded_size);
     
     int i;
-    // Iterate through things
-    printf ("%x ", decompressed_body[0]);
-    printf("\n");
+    for (i = 0; i < expanded_size; i++){
+        printf ("%x ", decompressed_body[i]);
+    }
     
 
     return 0;
