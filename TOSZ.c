@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include "TOSZ.h"
 
 #pragma pack(1)
 
@@ -233,24 +234,26 @@ long FSize(FILE *f)
     return result;
 }
 
-BOOL Cvt(char *in_name,char *out_name,BOOL cvt_ascii)
-{
-    DWORD out_size,i,j,in_size;
+BYTE* uncompress(BYTE *compressed, long compressed_size){
+    DWORD out_size;//,i,j;,in_size;
     CArcCompress *arc;
     BYTE *out_buf;
-    FILE *io_file;
-    BOOL okay=FALSE;
-    if (io_file=fopen(in_name,"rb")) {
-        in_size=FSize(io_file);
-        arc=(CArcCompress *)malloc(in_size);
-        fread(arc,1,in_size,io_file);
+    //FILE *io_file;
+    //BOOL okay=FALSE;
+    //if (io_file=fopen(in_name,"rb")) {
+        //in_size=FSize(io_file);
+        //arc=(CArcCompress *)malloc(in_size);
+        arc=(CArcCompress *)malloc(compressed_size);
+        //fread(arc,1,in_size,io_file);
+        memcpy(arc, compressed, compressed_size);
         out_size=arc->expanded_size;
-        printf("%-45s %d-->%d\r\n",in_name,(DWORD) in_size,out_size);
-        fclose(io_file);
-        if (arc->compressed_size==in_size &&
+        printf("Decompressing data %d-->%d\r\n",compressed_size,out_size);
+        //printf("%-45s %d-->%d\r\n",in_name,compressed_size,out_size);
+        //fclose(io_file);
+        if (arc->compressed_size==compressed_size &&
                 arc->compression_type && arc->compression_type<=3) {
             if (out_buf=ExpandBuf(arc)) {
-                if (cvt_ascii) {
+                /*if (cvt_ascii) {
                     j=0;
                     for (i=0;i<out_size;i++)
                         if (out_buf[i]==31)
@@ -264,14 +267,50 @@ BOOL Cvt(char *in_name,char *out_name,BOOL cvt_ascii)
                     fclose(io_file);
                     okay=TRUE;
                 }
-                free(out_buf);
+                free(out_buf);*/
+                printf("Decompression was apparently successful\n");
+                
+                /*
+                int i;
+                for (i = 0; i < 500; i++){
+                    printf ("%x ", out_buf[i]);
+                }
+                printf("\n");
+                */
             }
+            /*
+            int i;
+            for (i = 0; i < 1427; i++){
+                int j;
+                for (j = 0; j < 1016; j++){
+                    printf ("%x ", out_buf[1011*i + j]);
+                }
+                printf("\n");
+            }
+            */
         }
         free(arc);
-    }
-    return okay;
+    //}
+    //return okay;
+    return out_buf;
 }
 
+/*
+BYTE * uncompress(BYTE *compressed, long compressed_size){
+    BYTE * body = uncompress1(compressed, compressed_size);
+
+    printf("Printing out bytes\n");
+    int i;
+    for (i = 0; i < 500; i++){
+        printf ("%x ", body[i]);
+    }
+    printf("\n");
+
+    printf("Printed out bytes\n");
+    return body;
+}
+*/
+/*
 int main(int argc, char* argv[])
 {
     char *in_name,*out_name,buf[256];
@@ -307,4 +346,4 @@ int main(int argc, char* argv[])
                 "TOSZ expands a single TempleOS file. The -ascii flag will convert "
                 "nonstandard TempleOS ASCII characters to regular ASCII.\r\n");
     return EXIT_SUCCESS;
-}
+}*/

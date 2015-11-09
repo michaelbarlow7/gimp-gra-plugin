@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <glib/gstdio.h>
 #include <libgimp/gimp.h>
+#include <stdlib.h>
 #include "gra.h"
+#include "TOSZ.h"
 
 /*
 0000000: f303 0000 f803 0000 9305 0000 0100 0000  ................
@@ -30,6 +32,7 @@ int main(int argc, char* argv[]){
     long            lSize;
     long            body_size;
     guchar          *compressed_body;
+    guchar          *decompressed_body;
 
     fd = g_fopen(filename, "rb");
     if (!fd){
@@ -67,7 +70,7 @@ int main(int argc, char* argv[]){
     body_size = ftell(fd) - original;
     fseek(fd,original,SEEK_SET);
 
-    printf("File size is %d, body_size is %d\n", lSize, body_size);
+    printf("body_size is %d\n", body_size);
 
     // Allocate memory for the file
     compressed_body = (guchar*) malloc (sizeof(guchar)*body_size);
@@ -75,11 +78,16 @@ int main(int argc, char* argv[]){
         printf("Error reading bytes\n");
         return 1;
     }
+
+    // Need to uncompress these body bytes
+    decompressed_body = uncompress(compressed_body, body_size);
+    printf("Decompressed_body is %x\n ", decompressed_body);
+    //uncompress(compressed_body, body_size, &decompressed_body);
+    
     int i;
-    for (i = 0; i < body_size; i++){
-        printf("%x ", compressed_body[i]);
-    }
+    printf ("%x ", decompressed_body[0]); //ERROR: Segmentation fault
     printf("\n");
+    
 
     return 0;
 }
