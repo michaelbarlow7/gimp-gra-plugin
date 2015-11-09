@@ -1,4 +1,4 @@
-#ifndef __GRA_H__
-#define __GRA_H__
+#ifndef __TOSZ_H__
+#define __TOSZ_H__
 unsigned char * uncompress(unsigned char* compressed, long compressed_size);
-#endif /*__GRA_H__*/
+#endif /*__TOSZ_H__*/

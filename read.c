@@ -82,10 +82,10 @@ int main(int argc, char* argv[]){
     // Need to uncompress these body bytes
     decompressed_body = uncompress(compressed_body, body_size);
     printf("Decompressed_body is %x\n ", decompressed_body);
-    //uncompress(compressed_body, body_size, &decompressed_body);
     
     int i;
-    printf ("%x ", decompressed_body[0]); //ERROR: Segmentation fault
+    // Iterate through things
+    printf ("%x ", decompressed_body[0]);
     printf("\n");
     
 
