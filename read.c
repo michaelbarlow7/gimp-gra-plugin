@@ -83,6 +83,8 @@ int main(int argc, char* argv[]){
     long expanded_size = uncompress(compressed_body, body_size, &decompressed_body);
     //decompressed_body = uncompress(compressed_body, body_size);
     printf("expanded_size is %d\n", expanded_size);
+
+    free(compressed_body);
     
     int i;
     for (i = 0; i < expanded_size; i++){
