@@ -18,7 +18,7 @@
 0000090: d2ed f0f1 f2ac eff3 f6f7 f8f9 c0e9 dbde  ................
  */
 
-int main(int argc, char* argv[]){
+int notmain(int argc, char* argv[]){
     printf("Starting program\n");
 
     FILE            *fd;
@@ -85,12 +85,13 @@ int main(int argc, char* argv[]){
     printf("expanded_size is %d\n", expanded_size);
 
     free(compressed_body);
-    
-    int i;
-    for (i = 0; i < expanded_size; i++){
-        printf ("%x ", decompressed_body[i]);
-    }
-    
+
+    //printf ("%x ", decompressed_body[0]);
+    //int i;
+    //for (i = 0; i < expanded_size; i++){
+        //printf ("%x ", decompressed_body[i]);
+    //}
+
 
     return 0;
 }

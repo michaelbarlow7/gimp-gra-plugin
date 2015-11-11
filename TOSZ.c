@@ -243,14 +243,14 @@ long uncompress(BYTE *compressed, long compressed_size, BYTE**decompressed){
     arc=(CArcCompress *)malloc(compressed_size);
     memcpy(arc, compressed, compressed_size);
     out_size=arc->expanded_size;
-    printf("Decompressing data %d-->%d\r\n",compressed_size,out_size);
     if (arc->compressed_size==compressed_size &&
             arc->compression_type && arc->compression_type<=3) {
         if (out_buf=ExpandBuf(arc)) {
-            printf("Decompression was apparently successful\n");
+            // Decompression was successful
         }
     }
-    free(arc);
     *decompressed = out_buf;
-    return arc->expanded_size;
+
+    free(arc);
+    return out_size;
 }
