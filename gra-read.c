@@ -215,7 +215,7 @@ ReadGRA (const gchar  *name,
   gimp_pixel_rgn_set_rect (&pixel_rgn, body,
                            0, 0, drawable->width, drawable->height);
 
-  gimp_image_set_colormap (image, color_map, 16); // ncols = 16
+  gimp_image_set_colormap (image, color_map, 16); // no. of cols = 16
 
   gimp_drawable_flush(drawable);
   gimp_drawable_detach(drawable);

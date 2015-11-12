@@ -141,394 +141,138 @@ WriteGRA (const gchar  *filename,
           gint32        drawable_ID,
           GError      **error)
 {
+    /*
+     FILE          *outfile;
+     gint           Red[MAXCOLORS];
+     gint           Green[MAXCOLORS];
+     gint           Blue[MAXCOLORS];
+     guchar        *cmap;
+     gint           rows, cols, Spcols, channels, MapSize, SpZeile;
+     glong          BitsPerPixel;
+     gint           colors;
+     guchar        *pixels;
+     GimpPixelRgn   pixel_rgn;
+     GimpDrawable  *drawable;
+     GimpImageType  drawable_type;
+     guchar         puffer[128];
+     gint           i;
+     gint           mask_info_size;
+     gint           color_space_size;
+     guint32        Mask[4];
+     */
   FILE          *outfile;
-  gint           Red[MAXCOLORS];
-  gint           Green[MAXCOLORS];
-  gint           Blue[MAXCOLORS];
-  guchar        *cmap;
-  gint           rows, cols, Spcols, channels, MapSize, SpZeile;
-  glong          BitsPerPixel;
-  gint           colors;
-  guchar        *pixels;
-  GimpPixelRgn   pixel_rgn;
   GimpDrawable  *drawable;
   GimpImageType  drawable_type;
-  guchar         puffer[128];
-  gint           i;
-  gint           mask_info_size;
-  gint           color_space_size;
-  guint32        Mask[4];
+  GimpPixelRgn   pixel_rgn;
+  guchar        *pixels;
+  gint          channels;
 
   drawable = gimp_drawable_get (drawable_ID);
   drawable_type = gimp_drawable_type (drawable_ID);
 
+  //printf("DrawableID: %d, Width: %d, Height: %d\n", drawable_ID, drawable->width, drawable->height);
+
   gimp_pixel_rgn_init (&pixel_rgn, drawable,
                        0, 0, drawable->width, drawable->height, FALSE, FALSE);
 
-  switch (drawable_type)
-    {
-    case GIMP_RGBA_IMAGE:
-      colors       = 0;
-      BitsPerPixel = 32;
-      MapSize      = 0;
-      channels     = 4;
-      GRASaveData.rgb_format = RGBA_8888;
-      break;
+  if (drawable_type != GIMP_INDEXED_IMAGE
+          && drawable_type != GIMP_INDEXEDA_IMAGE) {
+      // Show error dialog
+      return GIMP_PDB_CANCEL;
+  }
+  // Type is either GIMP_INDEXED_IMAGE or GIMP_INDEXEDA_IMAGE
+  // TODO: Handle transparency with INDEXEDA images
+  channels = drawable_type == GIMP_INDEXED_IMAGE ? 1 : 2;
 
-    case GIMP_RGB_IMAGE:
-      colors       = 0;
-      BitsPerPixel = 24;
-      MapSize      = 0;
-      channels     = 3;
-      GRASaveData.rgb_format = RGB_888;
-      break;
 
-    case GIMP_GRAYA_IMAGE:
-      if (interactive && !warning_dialog ("Cannot save indexed image with "
-    					    "transparency in GRA file format.",
-                                          "Alpha channel will be ignored."))
-          return GIMP_PDB_CANCEL;
+  //TODO: Handle custom color maps. For now we'll assume it's the same as the default
+  // I guess to know if it's the default we'd have to cycle through the colors until we find 
+  // one that doesn't match
+  // cmap = gimp_image_get_colormap (image, &colors);
 
-     /* fallthrough */
-
-    case GIMP_GRAY_IMAGE:
-      colors       = 256;
-      BitsPerPixel = 8;
-      MapSize      = 1024;
-
-      if (drawable_type == GIMP_GRAYA_IMAGE)
-        channels = 2;
-      else
-        channels = 1;
-
-      for (i = 0; i < colors; i++)
-        {
-          Red[i]   = i;
-          Green[i] = i;
-          Blue[i]  = i;
-        }
-      break;
-
-    case GIMP_INDEXEDA_IMAGE:
-      if (interactive && !warning_dialog ("Cannot save indexed image with "
-    			                    "transparency in GRA file format.",
-                                          "Alpha channel will be ignored."))
-          return GIMP_PDB_CANCEL;
-
-     /* fallthrough */
-
-    case GIMP_INDEXED_IMAGE:
-      cmap     = gimp_image_get_colormap (image, &colors);
-      MapSize  = 4 * colors;
-
-      if (drawable_type == GIMP_INDEXEDA_IMAGE)
-        channels = 2;
-      else
-        channels = 1;
-
-      if (colors > 16)
-        BitsPerPixel = 8;
-      else if (colors > 2)
-        BitsPerPixel = 4;
-      else
-        BitsPerPixel = 1;
-
-      for (i = 0; i < colors; i++)
-        {
-          Red[i]   = *cmap++;
-          Green[i] = *cmap++;
-          Blue[i]  = *cmap++;
-        }
-      break;
-
-    default:
-      g_assert_not_reached ();
-    }
-
-  GRASaveData.use_run_length_encoding = 0;
-  GRASaveData.dont_write_color_space_data = 0;
-  mask_info_size = 0;
-
-  if (interactive || lastvals)
-    {
-      gimp_get_data (SAVE_PROC, &GRASaveData);
-    }
-
-  if ((BitsPerPixel == 8 || BitsPerPixel == 4) && interactive)
-    {
-      if (! save_dialog (1))
-        return GIMP_PDB_CANCEL;
-    }
-  else if ((BitsPerPixel == 24 || BitsPerPixel == 32))
-    {
-      if (interactive && !save_dialog (channels))
-        return GIMP_PDB_CANCEL;
-
-      /* mask_info_size is only set to non-zero for 16- and 32-bpp */
-      switch (GRASaveData.rgb_format)
-        {
-        case RGB_888:
-          BitsPerPixel = 24;
-          break;
-        case RGBA_8888:
-          BitsPerPixel = 32;
-          mask_info_size = 16;
-          break;
-        case RGBX_8888:
-          BitsPerPixel = 32;
-          mask_info_size = 16;
-          break;
-        case RGB_565:
-          BitsPerPixel = 16;
-          mask_info_size = 16;
-          break;
-        case RGBA_5551:
-          BitsPerPixel = 16;
-          mask_info_size = 16;
-          break;
-        case RGB_555:
-          BitsPerPixel = 16;
-          mask_info_size = 16;
-          break;
-        default:
-          g_return_val_if_reached (GIMP_PDB_EXECUTION_ERROR);
-        }
-    }
-
-  gimp_set_data (SAVE_PROC, &GRASaveData, sizeof (GRASaveData));
-
-  /* Let's take some file */
-  outfile = g_fopen (filename, "wb");
+  // Get the file
+  outfile = g_fopen(filename, "wb");
   if (!outfile)
-    {
+  {
       g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Could not open '%s' for writing: %s",
-                   gimp_filename_to_utf8 (filename), g_strerror (errno));
+              "Could not open '%s' for writing: %s",
+              gimp_filename_to_utf8 (filename), g_strerror (errno));
       return GIMP_PDB_EXECUTION_ERROR;
-    }
+  }
 
-  /* fetch the image */
-  pixels = g_new (guchar, drawable->width * drawable->height * channels);
+  // Get the image
+  pixels = g_new (guchar, drawable->width * drawable->height * channels );
   gimp_pixel_rgn_get_rect (&pixel_rgn, pixels,
                            0, 0, drawable->width, drawable->height);
 
-  /* And let's begin the progress */
+  // Begin the process
   gimp_progress_init_printf ("Saving '%s'",
                              gimp_filename_to_utf8 (filename));
-
   cur_progress = 0;
   max_progress = drawable->height;
 
-  /* Now, we need some further information ... */
-  cols = drawable->width;
-  rows = drawable->height;
-
-  /* ... that we write to our headers. */
-  if ((BitsPerPixel <= 8) && (cols % (8 / BitsPerPixel)))
-    Spcols = (((cols / (8 / BitsPerPixel)) + 1) * (8 / BitsPerPixel));
-  else
-    Spcols = cols;
-
-  if ((((Spcols * BitsPerPixel) / 8) % 4) == 0)
-    SpZeile = ((Spcols * BitsPerPixel) / 8);
-  else
-    SpZeile = ((gint) (((Spcols * BitsPerPixel) / 8) / 4) + 1) * 4;
-
-  color_space_size = 0;
-  if (! GRASaveData.dont_write_color_space_data)
-    color_space_size = 68;
-
-  Bitmap_File_Head.bfSize    = (0x36 + MapSize + (rows * SpZeile) +
-                                mask_info_size + color_space_size);
-  Bitmap_File_Head.zzHotX    =  0;
-  Bitmap_File_Head.zzHotY    =  0;
-  Bitmap_File_Head.bfOffs    = (0x36 + MapSize +
-                                mask_info_size + color_space_size);
-  Bitmap_File_Head.biSize    =  40 + mask_info_size + color_space_size;
-
-  Bitmap_Head.biWidth  = cols;
-  Bitmap_Head.biHeight = rows;
-  Bitmap_Head.biPlanes = 1;
-  Bitmap_Head.biBitCnt = BitsPerPixel;
-
-  if (GRASaveData.use_run_length_encoding == 0)
-  {
-    if (mask_info_size > 0)
-      Bitmap_Head.biCompr = 3; /* BI_BITFIELDS */
-    else
-      Bitmap_Head.biCompr = 0; /* BI_RGB */
+  // Write the width
+  if (!fwrite(&drawable->width, 1, 4, outfile)){
+      //TODO: Replace with proper errors
+      fprintf(stderr, "Error writing width to file\n");
+      return GIMP_PDB_EXECUTION_ERROR;
   }
-  else if (BitsPerPixel == 8)
-    Bitmap_Head.biCompr = 1;
-  else if (BitsPerPixel == 4)
-    Bitmap_Head.biCompr = 2;
-  else
-    Bitmap_Head.biCompr = 0;
 
-  Bitmap_Head.biSizeIm = SpZeile * rows;
+  gint width_internal = drawable->width;
 
-  {
-    gdouble xresolution;
-    gdouble yresolution;
-    gimp_image_get_resolution (image, &xresolution, &yresolution);
+  // Calculate width_internal (round up to nearest multiple of 8)
+  while (width_internal % 8){
+      width_internal++;
+      // I guess you could also do:
+      // width_internal++ >> 3;
+      // width_internal << 3;
+  };
 
-    if (xresolution > GIMP_MIN_RESOLUTION &&
-        yresolution > GIMP_MIN_RESOLUTION)
-      {
-        /*
-         * xresolution and yresolution are in dots per inch.
-         * the GRA spec says that biXPels and biYPels are in
-         * pixels per meter as long ints (actually, "DWORDS"),
-         * so...
-         *    n dots    inch     100 cm   m dots
-         *    ------ * ------- * ------ = ------
-         *     inch    2.54 cm     m       inch
-         *
-         * We add 0.5 for proper rounding.
-         */
-        Bitmap_Head.biXPels = (long int) (xresolution * 100.0 / 2.54 + 0.5);
-        Bitmap_Head.biYPels = (long int) (yresolution * 100.0 / 2.54 + 0.5);
+  // Write width_internal
+  if (!fwrite(&width_internal, 1, 4, outfile)){
+      fprintf(stderr, "Error writing width_internal to file\n");
+      return GIMP_PDB_EXECUTION_ERROR;
+  }
+
+  // Write height
+  if (!fwrite(&drawable->height, 1, 4, outfile)){
+      //TODO: Replace with proper errors
+      fprintf(stderr, "Error writing height to file\n");
+      return GIMP_PDB_EXECUTION_ERROR;
+  }
+
+  // TODO: Add option for compression/no compression
+  // Write compression flag
+  gint flags = 0x00000001;
+  if (!fwrite(&flags, 1, 4, outfile)){
+      //TODO: Replace with proper errors
+      fprintf(stderr, "Error writing height to file\n");
+      return GIMP_PDB_EXECUTION_ERROR;
+  }
+
+  /* If we didn't have compression, we'd do the following and then we'd be done*/
+  if (!fwrite(pixels, drawable->width*drawable->height, 1, outfile)){
+      fprintf(stderr, "Error writing height to file\n");
+      return GIMP_PDB_EXECUTION_ERROR;
+  }
+
+  /*
+  int i;
+  for (i =0; i < 112; i++){
+      printf("%02x", pixels[i]);
+      if (i % 2){
+          printf(" ");
+      }
+      if ((i + 1) % 16 == 0) {
+          printf("\n");
       }
   }
+  printf("\n");
+  */
 
-  if (BitsPerPixel <= 8)
-    Bitmap_Head.biClrUsed = colors;
-  else
-    Bitmap_Head.biClrUsed = 0;
-
-  Bitmap_Head.biClrImp = Bitmap_Head.biClrUsed;
-
-#ifdef DEBUG
-  printf("\nSize: %u, Colors: %u, Bits: %u, Width: %u, Height: %u, Comp: %u, Zeile: %u\n",
-         (int)Bitmap_File_Head.bfSize,(int)Bitmap_Head.biClrUsed,Bitmap_Head.biBitCnt,(int)Bitmap_Head.biWidth,
-         (int)Bitmap_Head.biHeight, (int)Bitmap_Head.biCompr,SpZeile);
-#endif
-
-  /* And now write the header and the colormap (if any) to disk */
-
-  Write (outfile, "BM", 2);
-
-  FromL (Bitmap_File_Head.bfSize, &puffer[0x00]);
-  FromS (Bitmap_File_Head.zzHotX, &puffer[0x04]);
-  FromS (Bitmap_File_Head.zzHotY, &puffer[0x06]);
-  FromL (Bitmap_File_Head.bfOffs, &puffer[0x08]);
-  FromL (Bitmap_File_Head.biSize, &puffer[0x0C]);
-
-  Write (outfile, puffer, 16);
-
-  FromL (Bitmap_Head.biWidth, &puffer[0x00]);
-  FromL (Bitmap_Head.biHeight, &puffer[0x04]);
-  FromS (Bitmap_Head.biPlanes, &puffer[0x08]);
-  FromS (Bitmap_Head.biBitCnt, &puffer[0x0A]);
-  FromL (Bitmap_Head.biCompr, &puffer[0x0C]);
-  FromL (Bitmap_Head.biSizeIm, &puffer[0x10]);
-  FromL (Bitmap_Head.biXPels, &puffer[0x14]);
-  FromL (Bitmap_Head.biYPels, &puffer[0x18]);
-  FromL (Bitmap_Head.biClrUsed, &puffer[0x1C]);
-  FromL (Bitmap_Head.biClrImp, &puffer[0x20]);
-
-  Write (outfile, puffer, 36);
-
-  if (mask_info_size > 0)
-    {
-      switch (GRASaveData.rgb_format)
-        {
-        default:
-        case RGB_888:
-        case RGBX_8888:
-          Mask[0] = 0xff000000;
-          Mask[1] = 0x00ff0000;
-          Mask[2] = 0x0000ff00;
-          Mask[3] = 0x00000000;
-          break;
-
-        case RGBA_8888:
-          Mask[0] = 0xff000000;
-          Mask[1] = 0x00ff0000;
-          Mask[2] = 0x0000ff00;
-          Mask[3] = 0x000000ff;
-          break;
-
-        case RGB_565:
-          Mask[0] = 0xf800;
-          Mask[1] = 0x7e0;
-          Mask[2] = 0x1f;
-          Mask[3] = 0x0;
-          break;
-
-        case RGBA_5551:
-          Mask[0] = 0x7c00;
-          Mask[1] = 0x3e0;
-          Mask[2] = 0x1f;
-          Mask[3] = 0x8000;
-          break;
-
-        case RGB_555:
-          Mask[0] = 0x7c00;
-          Mask[1] = 0x3e0;
-          Mask[2] = 0x1f;
-          Mask[3] = 0x0;
-          break;
-        }
-
-      FromL (Mask[0], &puffer[0x00]);
-      FromL (Mask[1], &puffer[0x04]);
-      FromL (Mask[2], &puffer[0x08]);
-      FromL (Mask[3], &puffer[0x0C]);
-      Write (outfile, puffer, mask_info_size);
-    }
-
-  if (! GRASaveData.dont_write_color_space_data)
-    {
-      /* Write V5 color space fields */
-
-      /* bV5CSType = LCS_sRGB */
-      FromL (0x73524742, &puffer[0x00]);
-
-      /* bV5Endpoints is set to 0 (ignored) */
-      for (i = 0; i < 0x24; i++)
-        puffer[0x04 + i] = 0x00;
-
-      /* bV5GammaRed is set to 0 (ignored) */
-      FromL (0x0, &puffer[0x28]);
-
-      /* bV5GammaGreen is set to 0 (ignored) */
-      FromL (0x0, &puffer[0x2c]);
-
-      /* bV5GammaBlue is set to 0 (ignored) */
-      FromL (0x0, &puffer[0x30]);
-
-      /* bV5Intent = LCS_GM_GRAPHICS */
-      FromL (0x00000002, &puffer[0x34]);
-
-      /* bV5ProfileData is set to 0 (ignored) */
-      FromL (0x0, &puffer[0x38]);
-
-      /* bV5ProfileSize is set to 0 (ignored) */
-      FromL (0x0, &puffer[0x3c]);
-
-      /* bV5Reserved = 0 */
-      FromL (0x0, &puffer[0x40]);
-
-      Write (outfile, puffer, color_space_size);
-    }
-
-  write_color_map (outfile, Red, Green, Blue, MapSize);
-
-  /* After that is done, we write the image ... */
-
-  write_image (outfile,
-               pixels, cols, rows,
-               GRASaveData.use_run_length_encoding,
-               channels, BitsPerPixel, SpZeile,
-               MapSize, GRASaveData.rgb_format);
-
-  /* ... and exit normally */
-
-  fclose (outfile);
+  fclose(outfile);
   gimp_drawable_detach (drawable);
-  g_free (pixels);
-
+  g_free(pixels);
   return GIMP_PDB_SUCCESS;
 }
 
