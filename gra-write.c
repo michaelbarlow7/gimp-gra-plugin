@@ -251,13 +251,20 @@ WriteGRA (const gchar  *filename,
   }
 
   // Need to compress the image data
-  CompressBuf(pixels, drawable->width*drawable->height);
+  guchar * compressed_pixels;
+  long compressed_size = CompressBuf(&compressed_pixels, pixels, drawable->width*drawable->height);
+  if (!fwrite(compressed_pixels, compressed_size, 1, outfile)){
+      fprintf(stderr, "Error writing image data to file\n");
+      return GIMP_PDB_EXECUTION_ERROR;
+  }
 
   /* If we didn't have compression, we'd do the following and then we'd be done*/
+  /*
   if (!fwrite(pixels, drawable->width*drawable->height, 1, outfile)){
       fprintf(stderr, "Error writing height to file\n");
       return GIMP_PDB_EXECUTION_ERROR;
   }
+  */
 
   /*
   int i;

@@ -22,6 +22,7 @@ int notmain(int argc, char* argv[]){
     printf("Starting program\n");
 
     FILE            *fd;
+    FILE            *outfile;
     const gchar     *filename = argv[1];
 
     gint            width;
@@ -92,6 +93,48 @@ int notmain(int argc, char* argv[]){
         //printf ("%x ", decompressed_body[i]);
     //}
 
+    // Lets recompress this
+    printf("Freed compressed_body\n");
+    outfile = g_fopen("Test2.GRA", "wb");
+    if (!outfile){
+        printf("Error getting outfile\n");
+        return 0;
+    }
+
+    printf("Writing width \n");
+    if (!fwrite(&width, 1, 4, outfile)){
+        printf("Error writing width\n");
+        return 0;
+    }
+
+    printf("Writing width_internal \n");
+    if (!fwrite(&width_internal, 1, 4, outfile)){
+        printf("Error writing width_internal\n");
+        return 0;
+    }
+
+    printf("Writing height \n");
+    if (!fwrite(&height, 1, 4, outfile)){
+        printf("Error writing height\n");
+        return 0;
+    }
+
+    printf("Writing flags \n");
+    if (!fwrite(&flags, 1, 4, outfile)){
+        printf("Error writing flags\n");
+        return 0;
+    }
+
+    printf("Compressing pixels \n");
+    guchar * compressed_pixels;
+    long compressed_size = CompressBuf(&compressed_pixels, decompressed_body, width*height);
+    printf("Writing compressed pixels \n");
+    if (!fwrite(compressed_pixels, compressed_size, 1, outfile)){
+        printf("Error writing pixels\n");
+        return 0;
+    }
+
+    printf("Done, compressed_size: %d\n", compressed_size);
 
     return 0;
 }

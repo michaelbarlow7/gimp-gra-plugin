@@ -292,8 +292,7 @@ long ArcDetermineCompressionType(BYTE *src, long size)
 void BFieldOrU32(BYTE * bit_field, long bit_num, DWORD pattern){
     bit_field += bit_num >> 3; // Increment bit_field pointer by bit_num/8 
     pattern <<= bit_num & 7; // Shift pattern bit_num % 8 to the left
-    *bit_field |= pattern; // OR the pattern on the bit_field.
-    // Is there a chance this could overflow?
+    *(DWORD *)bit_field |= pattern; // OR the pattern on the bit_field.
 }
 
 void ArcCompressBuf(CArcCtrl *c)
@@ -352,8 +351,7 @@ BOOL ArcFinishCompression(CArcCtrl *c)
     return FALSE;
 }
 
-// Public function TODO: Return a BYTE array here
-void CompressBuf(BYTE *src,long size/*,CTask *mem_task=NULL*/)
+long CompressBuf(BYTE ** compressed, BYTE *src,long size)
 {//See $LK,"::/Demo/Dsk/SerializeTree.CPP"$.
   CArcCompress *arc;
   long size_out,compression_type=ArcDetermineCompressionType(src,size);
@@ -396,5 +394,6 @@ void CompressBuf(BYTE *src,long size/*,CTask *mem_task=NULL*/)
 
   free(c->dst_buf);
   ArcCtrlDel(c);
-  //return arc;
+  *compressed = (BYTE*) arc;
+  return arc->compressed_size;
 }
