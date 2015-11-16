@@ -52,6 +52,20 @@ typedef struct _CArcCompress
     BYTE body[1]; 
 } CArcCompress;
 
+// Function prototypes
+int Bt(int bit_num, BYTE *bit_field);
+int Bts(int bit_num, BYTE *bit_field);
+DWORD BFieldExtU32(BYTE *src,DWORD pos,DWORD bits);
+void ArcEntryGet(CArcCtrl *c);
+void ArcExpandBuf(CArcCtrl *c);
+CArcCtrl *ArcCtrlNew(DWORD expand,DWORD compression_type);
+void ArcCtrlDel(CArcCtrl *c);
+BYTE *ExpandBuf(CArcCompress *arc);
+long FSize(FILE *f);
+long ArcDetermineCompressionType(BYTE *src, long size);
+void BFieldOrU32(BYTE * bit_field, long bit_num, DWORD pattern);
+void ArcCompressBuf(CArcCtrl *c);
+
 // Returns the bit within bit_field at bit_num (assuming it's stored as little-endian). Whole bunch of finicky stuff because of bytes
 int Bt(int bit_num, BYTE *bit_field)
 {
@@ -250,7 +264,8 @@ long decompress(BYTE *compressed, long compressed_size, BYTE**decompressed){
     out_size=arc->expanded_size;
     if (arc->compressed_size==compressed_size &&
             arc->compression_type && arc->compression_type<=3) {
-        if (out_buf=ExpandBuf(arc)) {
+        out_buf=ExpandBuf(arc);
+        if (out_buf) {
             // Decompression was successful
         }
     }
@@ -314,13 +329,16 @@ void ArcCompressBuf(CArcCtrl *c)
 ac_start:
     if (src_ptr>=src_limit) goto ac_done;
     ch=*src_ptr++;
-    if (temp=c->hash[basecode])
+    temp=c->hash[basecode];
+    if (temp)
       do {
 	if (temp->ch==ch) {
 	  basecode=temp-&c->compress[0];
 	  goto ac_start;
 	}
-      } while (temp=temp->next);
+    temp=temp->next;
+      } while (temp);
+      //} while (temp=temp->next);
 
 
     BFieldOrU32(c->dst_buf,c->dst_pos,basecode);
