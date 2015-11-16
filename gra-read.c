@@ -122,7 +122,7 @@ ReadGRA (const gchar  *name,
     
     if (flags & DCF_COMPRESSED){
         guchar * decompressed_body;
-        uncompress(body, body_size, &decompressed_body);
+        decompress(body, body_size, &decompressed_body);
         free(body);
         body = decompressed_body;
     }

@@ -80,8 +80,8 @@ int notmain(int argc, char* argv[]){
         return 1;
     }
 
-    // Need to uncompress these body bytes
-    long expanded_size = uncompress(compressed_body, body_size, &decompressed_body);
+    // Need to decompress these body bytes
+    long expanded_size = decompress(compressed_body, body_size, &decompressed_body);
     //decompressed_body = uncompress(compressed_body, body_size);
     printf("expanded_size is %d\n", expanded_size);
 
@@ -127,7 +127,7 @@ int notmain(int argc, char* argv[]){
 
     printf("Compressing pixels \n");
     guchar * compressed_pixels;
-    long compressed_size = CompressBuf(&compressed_pixels, decompressed_body, width*height);
+    long compressed_size = compress(&compressed_pixels, decompressed_body, width*height);
     printf("Writing compressed pixels \n");
     if (!fwrite(compressed_pixels, compressed_size, 1, outfile)){
         printf("Error writing pixels\n");

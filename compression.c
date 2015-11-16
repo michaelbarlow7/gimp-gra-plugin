@@ -241,7 +241,7 @@ long FSize(FILE *f)
 
 // Sets decompressed to point to the allocated byte array
 // Returns the number of bytes in that array
-long uncompress(BYTE *compressed, long compressed_size, BYTE**decompressed){
+long decompress(BYTE *compressed, long compressed_size, BYTE**decompressed){
     DWORD out_size;
     CArcCompress *arc;
     BYTE *out_buf;
@@ -351,7 +351,7 @@ BOOL ArcFinishCompression(CArcCtrl *c)
     return FALSE;
 }
 
-long CompressBuf(BYTE ** compressed, BYTE *src,long size)
+long compress(BYTE ** compressed, BYTE *src,long size)
 {//See $LK,"::/Demo/Dsk/SerializeTree.CPP"$.
   CArcCompress *arc;
   long size_out,compression_type=ArcDetermineCompressionType(src,size);
