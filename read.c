@@ -3,7 +3,7 @@
 #include <libgimp/gimp.h>
 #include <stdlib.h>
 #include "gra.h"
-#include "TOSZ.h"
+#include "compression.h"
 
 /*
 0000000: f303 0000 f803 0000 9305 0000 0100 0000  ................

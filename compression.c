@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-#include "TOSZ.h"
+#include "compression.h"
 
 #pragma pack(1)
 

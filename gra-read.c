@@ -32,7 +32,7 @@
 
 #include "gra.h"
 
-#include "TOSZ.h"
+#include "compression.h"
 
 #define DCF_COMPRESSED  0x01
 #define DCF_PALETTE     0x02 //TODO: Implement this
