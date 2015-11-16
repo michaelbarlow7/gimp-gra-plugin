@@ -49,7 +49,7 @@ typedef struct _CArcCompress
     DWORD compressed_size,compressed_size_hi,
           expanded_size,expanded_size_hi;
     BYTE	compression_type;
-    BYTE body[1]; //TODO: Try replacing with BYTE * body (and remove +-1 adjustments to sizeof(CArcCompress) calls
+    BYTE body[1]; 
 } CArcCompress;
 
 // Returns the bit within bit_field at bit_num (assuming it's stored as little-endian). Whole bunch of finicky stuff because of bytes
