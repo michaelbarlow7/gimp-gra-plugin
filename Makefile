@@ -8,18 +8,22 @@ make:
 	
 install: 
 	gimptool-2.0 --install-bin file-gra
+	# I think we should be getting these directories using gimptool-2.0 and sed with regex
 	cp TempleOS.gpl $(HOME)/.gimp-2.8/palettes/
 	
 uninstall: 
 	gimptool-2.0 --uninstall-bin file-gra
+	# I think we should be getting these directories using gimptool-2.0 and sed with regex
 	rm $(HOME)/.gimp-2.8/palettes/TempleOS.gpl
 
 install-admin:
 	gimptool-2.0 --install-admin-bin file-gra
+	# I think we should be getting these directories using gimptool-2.0 and sed with regex
 	cp TempleOS.gpl /usr/share/gimp/2.0/palettes/
 
 uninstall-admin:
 	gimptool-2.0 --uninstall-admin-bin file-gra
+	# I think we should be getting these directories using gimptool-2.0 and sed with regex
 	rm /usr/share/gimp/2.0/palettes/TempleOS.gpl
 
 clean:

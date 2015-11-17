@@ -179,6 +179,9 @@ WriteGRA (const gchar  *filename,
           && drawable_type != GIMP_INDEXEDA_IMAGE) {
       // Show error dialog
       return GIMP_PDB_CANCEL;
+      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+              "Can only save indexed images as .GRA");
+      return GIMP_PDB_EXECUTION_ERROR;
   }
   // Type is either GIMP_INDEXED_IMAGE or GIMP_INDEXEDA_IMAGE
   channels = drawable_type == GIMP_INDEXED_IMAGE ? 1 : 2;

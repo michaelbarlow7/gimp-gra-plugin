@@ -32,6 +32,8 @@
 #define Write(file,buffer,len)   fwrite(buffer, len, 1, file)
 #define WriteOK(file,buffer,len) (Write(buffer, len, file) != 0)
 
+#define PALETTE_NAME    "TempleOS GRA Colors"
+
 
 gint32             ReadGRA   (const gchar  *filename,
                               GError      **error);
