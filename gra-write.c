@@ -135,31 +135,33 @@ warning_dialog (const gchar *primary,
   return ok;
 }
 
+int
+check_color_mapping(int image){
+    guchar      gra_color_map[3*16];
+    guchar      *image_color_map;
+    gint        colors; 
+    int         i;
+
+    image_color_map = gimp_image_get_colormap (image, &colors);
+    if (colors != 16){
+        return 0;
+    }
+    get_color_map(&gra_color_map); // Get our color map
+    // Compare colors
+    for (i = 0; i < 3*16; i++){
+        if (gra_color_map[i] != image_color_map[i]){
+            return 0;
+        }
+    }
+    return 1;
+}
+
 GimpPDBStatusType
 WriteGRA (const gchar  *filename,
           gint32        image,
           gint32        drawable_ID,
           GError      **error)
 {
-    /*
-     FILE          *outfile;
-     gint           Red[MAXCOLORS];
-     gint           Green[MAXCOLORS];
-     gint           Blue[MAXCOLORS];
-     guchar        *cmap;
-     gint           rows, cols, Spcols, channels, MapSize, SpZeile;
-     glong          BitsPerPixel;
-     gint           colors;
-     guchar        *pixels;
-     GimpPixelRgn   pixel_rgn;
-     GimpDrawable  *drawable;
-     GimpImageType  drawable_type;
-     guchar         puffer[128];
-     gint           i;
-     gint           mask_info_size;
-     gint           color_space_size;
-     guint32        Mask[4];
-     */
   FILE          *outfile;
   GimpDrawable  *drawable;
   GimpImageType  drawable_type;
@@ -170,27 +172,28 @@ WriteGRA (const gchar  *filename,
   drawable = gimp_drawable_get (drawable_ID);
   drawable_type = gimp_drawable_type (drawable_ID);
 
-  //printf("DrawableID: %d, Width: %d, Height: %d\n", drawable_ID, drawable->width, drawable->height);
-
   gimp_pixel_rgn_init (&pixel_rgn, drawable,
                        0, 0, drawable->width, drawable->height, FALSE, FALSE);
 
   if (drawable_type != GIMP_INDEXED_IMAGE
           && drawable_type != GIMP_INDEXEDA_IMAGE) {
       // Show error dialog
-      return GIMP_PDB_CANCEL;
       g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
               "Can only save indexed images as .GRA");
       return GIMP_PDB_EXECUTION_ERROR;
   }
+
+  //TODO: Handle custom color maps. For now we'll assume it's the same as the default
+  // Need to check the color map used is valid
+  if (check_color_mapping(image) == 0){
+      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+              "Color mapping is incorrect. Please ensure you used the TempleOS GRA Color palette");
+      return GIMP_PDB_EXECUTION_ERROR;
+  }
+
   // Type is either GIMP_INDEXED_IMAGE or GIMP_INDEXEDA_IMAGE
   channels = drawable_type == GIMP_INDEXED_IMAGE ? 1 : 2;
 
-
-  //TODO: Handle custom color maps. For now we'll assume it's the same as the default
-  // I guess to know if it's the default we'd have to cycle through the colors until we find 
-  // one that doesn't match
-  // cmap = gimp_image_get_colormap (image, &colors);
 
   // Get the file
   outfile = g_fopen(filename, "wb");
@@ -219,7 +222,7 @@ WriteGRA (const gchar  *filename,
           alpha_pixels[i] |= (alpha_value & 0xF0); 
       }
 
-      free(pixels);
+      g_free(pixels);
       pixels = alpha_pixels;
   }
 

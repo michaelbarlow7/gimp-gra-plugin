@@ -79,4 +79,6 @@ typedef struct _Bitmap_Channel
   gfloat  max_value;
 } Bitmap_Channel;
 
+void get_color_map(guchar * color_map);
+
 #endif /* __GRA_H__ */

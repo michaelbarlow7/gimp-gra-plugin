@@ -49,8 +49,7 @@ ReadGRA (const gchar  *name,
     long            original, body_size;
     GimpPixelRgn    pixel_rgn;
     GimpDrawable    *drawable;
-    guchar          color_map[3*16]; //TODO: Add transparency here?
-    int             col_index = 0;
+    guchar          color_map[3*16];
     gint32          image;
     gint32          layer;
     guchar          *alpha_body;
@@ -130,70 +129,7 @@ ReadGRA (const gchar  *name,
     free(body);
     body = alpha_body;
 
-    // BLACK
-    color_map[col_index++] =  0x00;
-    color_map[col_index++] =  0x00;
-    color_map[col_index++] =  0x00;
-    // BLUE
-    color_map[col_index++] =  0x00;
-    color_map[col_index++] =  0x00;
-    color_map[col_index++] =  0xAA;
-    // GREEN
-    color_map[col_index++] =  0x00;
-    color_map[col_index++] =  0xAA;
-    color_map[col_index++] =  0x00;
-    // CYAN
-    color_map[col_index++] =  0x00;
-    color_map[col_index++] = 0xAA;
-    color_map[col_index++] = 0xAA;
-    // RED
-    color_map[col_index++] = 0xAA;
-    color_map[col_index++] = 0x00;
-    color_map[col_index++] = 0x00;
-    // PURPLE
-    color_map[col_index++] = 0xAA;
-    color_map[col_index++] = 0x00;
-    color_map[col_index++] = 0xAA;
-    // BROWN
-    color_map[col_index++] = 0xAA;
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0x00;
-    // LTGRAY
-    color_map[col_index++] = 0xAA;
-    color_map[col_index++] = 0xAA;
-    color_map[col_index++] = 0xAA;
-    // DKGRAY
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0x55;
-    // LTBLUE
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0xFF;
-    // LTGREEN
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0x55;
-    // LTCYAN
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0xFF;
-    // LTRED
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0x55;
-    // LTPURPLE
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0x55;
-    color_map[col_index++] = 0xFF;
-    // YELLOW
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0x55;
-    // WHITE
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0xFF;
-    color_map[col_index++] = 0xFF;
+    get_color_map(&color_map);
 
   image = gimp_image_new (width, height, GIMP_INDEXED); // Assuming base_type is indexed
 

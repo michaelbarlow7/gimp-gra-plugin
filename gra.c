@@ -262,3 +262,72 @@ run (const gchar      *name,
 
   values[0].data.d_status = status;
 }
+
+void get_color_map(guchar * color_map){
+    int             col_index = 0;
+
+    color_map[col_index++] =  0x00;
+    color_map[col_index++] =  0x00;
+    color_map[col_index++] =  0x00;
+    // BLUE
+    color_map[col_index++] =  0x00;
+    color_map[col_index++] =  0x00;
+    color_map[col_index++] =  0xAA;
+    // GREEN
+    color_map[col_index++] =  0x00;
+    color_map[col_index++] =  0xAA;
+    color_map[col_index++] =  0x00;
+    // CYAN
+    color_map[col_index++] =  0x00;
+    color_map[col_index++] = 0xAA;
+    color_map[col_index++] = 0xAA;
+    // RED
+    color_map[col_index++] = 0xAA;
+    color_map[col_index++] = 0x00;
+    color_map[col_index++] = 0x00;
+    // PURPLE
+    color_map[col_index++] = 0xAA;
+    color_map[col_index++] = 0x00;
+    color_map[col_index++] = 0xAA;
+    // BROWN
+    color_map[col_index++] = 0xAA;
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0x00;
+    // LTGRAY
+    color_map[col_index++] = 0xAA;
+    color_map[col_index++] = 0xAA;
+    color_map[col_index++] = 0xAA;
+    // DKGRAY
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0x55;
+    // LTBLUE
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0xFF;
+    // LTGREEN
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0x55;
+    // LTCYAN
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0xFF;
+    // LTRED
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0x55;
+    // LTPURPLE
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0x55;
+    color_map[col_index++] = 0xFF;
+    // YELLOW
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0x55;
+    // WHITE
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0xFF;
+    color_map[col_index++] = 0xFF;
+}
+
