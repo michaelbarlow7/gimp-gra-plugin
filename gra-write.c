@@ -181,7 +181,6 @@ WriteGRA (const gchar  *filename,
       return GIMP_PDB_CANCEL;
   }
   // Type is either GIMP_INDEXED_IMAGE or GIMP_INDEXEDA_IMAGE
-  // TODO: Handle transparency with INDEXEDA images
   channels = drawable_type == GIMP_INDEXED_IMAGE ? 1 : 2;
 
 
@@ -204,6 +203,22 @@ WriteGRA (const gchar  *filename,
   pixels = g_new (guchar, drawable->width * drawable->height * channels );
   gimp_pixel_rgn_get_rect (&pixel_rgn, pixels,
                            0, 0, drawable->width, drawable->height);
+  // Set transparency here
+  if (drawable_type == GIMP_INDEXEDA_IMAGE){
+      guchar * alpha_pixels = (guchar *)malloc(drawable->width * drawable->height);
+      int i;
+      guchar alpha_value;
+      for (i=0; i < drawable->width * drawable->height; i++){
+          // Set colour value
+          alpha_pixels[i] |= (pixels[i*2] & 0x0F); // Shouldn't need the & but just in case
+          // Set alpha value
+          alpha_value = 0xFF - pixels[i*2 + 1];
+          alpha_pixels[i] |= (alpha_value & 0xF0); 
+      }
+
+      free(pixels);
+      pixels = alpha_pixels;
+  }
 
   // Begin the process
   gimp_progress_init_printf ("Saving '%s'",
@@ -283,6 +298,7 @@ WriteGRA (const gchar  *filename,
   fclose(outfile);
   gimp_drawable_detach (drawable);
   g_free(pixels);
+  g_free(compressed_pixels);
   return GIMP_PDB_SUCCESS;
 }
 
