@@ -212,6 +212,11 @@ ReadGRA (const gchar  *name,
   gimp_pixel_rgn_set_rect (&pixel_rgn, body,
                            0, 0, drawable->width, drawable->height);
 
+  if (!gimp_context_set_palette("TempleOS GRA Colors")){
+      // Not a breaking error but something's wrong with the plugin
+      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                   "Couldn't find palette. Re-install plugin.");
+  }
   gimp_image_set_colormap (image, color_map, 16); // no. of cols = 16
 
   gimp_drawable_flush(drawable);
