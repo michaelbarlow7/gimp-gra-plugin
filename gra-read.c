@@ -53,6 +53,8 @@ ReadGRA (const gchar  *name,
     int             col_index = 0;
     gint32          image;
     gint32          layer;
+    guchar          *alpha_body;
+    int             i;
 
   // My code
   filename = name;
@@ -100,7 +102,7 @@ ReadGRA (const gchar  *name,
     fseek(fd,original,SEEK_SET);
 
     // Allocate memory for the file
-    body = (guchar*) malloc (sizeof(guchar)*body_size);
+    body = (guchar*) malloc (body_size);
     if (!ReadOK(fd, body, body_size)){
       g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
                    "Error reading body bytes");
@@ -114,6 +116,19 @@ ReadGRA (const gchar  *name,
         free(body);
         body = decompressed_body;
     }
+
+    alpha_body = (guchar *) malloc(width * height * 2);
+    guchar alpha_value;
+    for (i = 0; i < width * height; i++){
+        // Set first byte to the colour
+        alpha_body[2*i] = body[i] & 0x0F;
+
+        // Get the alpha value, scale it to a fraction out of 256, set this as the second byte
+        alpha_value = 0xFF - (body[i] & 0xF0); // GIMP's alpha scale is the opposite of TempleOS'
+        alpha_body[2*i + 1] = alpha_value | (alpha_value >> 1);
+    }
+    free(body);
+    body = alpha_body;
 
     // BLACK
     color_map[col_index++] =  0x00;
@@ -184,7 +199,7 @@ ReadGRA (const gchar  *name,
 
   layer = gimp_layer_new (image, "Background",
                           width, height,
-                          GIMP_INDEXED_IMAGE, 100, GIMP_NORMAL_MODE); // Assuming image type is indexed
+                          GIMP_INDEXEDA_IMAGE, 100, GIMP_NORMAL_MODE); // Assuming image type is indexed
 
   gimp_image_set_filename (image, filename);
 
