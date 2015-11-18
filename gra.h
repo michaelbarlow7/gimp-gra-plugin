@@ -36,11 +36,11 @@
 
 
 gint32             ReadGRA   (const gchar  *filename,
-                              GError      **error);
+        GError      **error);
 GimpPDBStatusType  WriteGRA  (const gchar  *filename,
-                              gint32        image,
-                              gint32        drawable_ID,
-                              GError      **error);
+        gint32        image,
+        gint32        drawable_ID,
+        GError      **error);
 
 extern       gboolean  interactive;
 extern       gboolean  lastvals;

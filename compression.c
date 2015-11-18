@@ -300,32 +300,32 @@ long decompress(BYTE *compressed, long compressed_size, BYTE**decompressed){
 // DECOMPRESS STUFF copied from Compress.cpp
 long ArcDetermineCompressionType(BYTE *src, long size)
 {
-  while (size--)
-    if (*src++&0x80)
-      return CT_8_BIT;
-  return CT_7_BIT;
+    while (size--)
+        if (*src++&0x80)
+            return CT_8_BIT;
+    return CT_7_BIT;
 }
 
-    /*
-      From KernelB.html and KUtils.html in TempleOS source
-    
-      public _extern _BIT_FIELD_EXTRACT_U32 U32 BFieldExtU32(U8 *bit_field,I64 bit,I64 size); 
-      //Extract U32 from bit field.
+/*
+   From KernelB.html and KUtils.html in TempleOS source
 
-      _BIT_FIELD_OR_U32::
-        PUSH    RBP
-        MOV     RBP,RSP                 ; Some stack pointer setup stuff
-        MOV     RBX,U64 SF_ARG2[RBP]    ; POS in RBX
-        SHR     RBX,3                   ; SHIFT POS to the right 3 times (to get byte in array)
-        ADD     RBX,U64 SF_ARG1[RBP]    ; ADD the byte pointer(arg1) to RBX (to get the correct byte in the array)
-        MOV     RAX,U64 SF_ARG3[RBP]    ; Move the basecode(arg3) to RAX
-        MOV     RCX,U64 SF_ARG2[RBP]    ; Move the POS to RCX
-        AND     CL,7                    ; AND CL with 7 (the last 8 bits of RCX)
-        SHL     RAX,CL                  ; Shift RAX CL bits to the left (so the basecode is ORed from the correct rit)
-        OR      U64 [RBX],RAX           ; OR RAX with RBX, and I think the result is stored in RBX
-        POP     RBP
-        RET1    24
-    */
+   public _extern _BIT_FIELD_EXTRACT_U32 U32 BFieldExtU32(U8 *bit_field,I64 bit,I64 size); 
+//Extract U32 from bit field.
+
+_BIT_FIELD_OR_U32::
+PUSH    RBP
+MOV     RBP,RSP                 ; Some stack pointer setup stuff
+MOV     RBX,U64 SF_ARG2[RBP]    ; POS in RBX
+SHR     RBX,3                   ; SHIFT POS to the right 3 times (to get byte in array)
+ADD     RBX,U64 SF_ARG1[RBP]    ; ADD the byte pointer(arg1) to RBX (to get the correct byte in the array)
+MOV     RAX,U64 SF_ARG3[RBP]    ; Move the basecode(arg3) to RAX
+MOV     RCX,U64 SF_ARG2[RBP]    ; Move the POS to RCX
+AND     CL,7                    ; AND CL with 7 (the last 8 bits of RCX)
+SHL     RAX,CL                  ; Shift RAX CL bits to the left (so the basecode is ORed from the correct rit)
+OR      U64 [RBX],RAX           ; OR RAX with RBX, and I think the result is stored in RBX
+POP     RBP
+RET1    24
+*/
 void BFieldOrU32(BYTE * bit_field, long bit_num, DWORD pattern){
     bit_field += bit_num >> 3; // Increment bit_field pointer by bit_num/8 
     pattern <<= bit_num & 7; // Shift pattern bit_num % 8 to the left
@@ -334,106 +334,106 @@ void BFieldOrU32(BYTE * bit_field, long bit_num, DWORD pattern){
 
 void ArcCompressBuf(CArcCtrl *c)
 {//Use $LK,"CompressBuf",A="MN:CompressBuf"$() unless doing more than one buf.
-  CArcEntry *temp,*temp1;
-  long ch,basecode;
-  BYTE *src_ptr,*src_limit;
+    CArcEntry *temp,*temp1;
+    long ch,basecode;
+    BYTE *src_ptr,*src_limit;
 
-  src_ptr=c->src_buf+c->src_pos;
-  src_limit=c->src_buf+c->src_size;
+    src_ptr=c->src_buf+c->src_pos;
+    src_limit=c->src_buf+c->src_size;
 
-  if (c->saved_basecode==MAX_INT)
-    basecode=*src_ptr++;
-  else
-    basecode=c->saved_basecode;
+    if (c->saved_basecode==MAX_INT)
+        basecode=*src_ptr++;
+    else
+        basecode=c->saved_basecode;
 
-  while (src_ptr<src_limit && c->dst_pos+c->cur_bits_in_use<=c->dst_size) {
-    ArcEntryGet(c);
+    while (src_ptr<src_limit && c->dst_pos+c->cur_bits_in_use<=c->dst_size) {
+        ArcEntryGet(c);
 ac_start:
-    if (src_ptr>=src_limit) goto ac_done;
-    ch=*src_ptr++;
-    temp=c->hash[basecode];
-    if (temp)
-      do {
-	if (temp->ch==ch) {
-	  basecode=temp-&c->compress[0];
-	  goto ac_start;
-	}
-    temp=temp->next;
-      } while (temp);
-      //} while (temp=temp->next);
+        if (src_ptr>=src_limit) goto ac_done;
+        ch=*src_ptr++;
+        temp=c->hash[basecode];
+        if (temp)
+            do {
+                if (temp->ch==ch) {
+                    basecode=temp-&c->compress[0];
+                    goto ac_start;
+                }
+                temp=temp->next;
+            } while (temp);
+        //} while (temp=temp->next);
 
 
-    BFieldOrU32(c->dst_buf,c->dst_pos,basecode);
-    c->dst_pos+=c->cur_bits_in_use;
+        BFieldOrU32(c->dst_buf,c->dst_pos,basecode);
+        c->dst_pos+=c->cur_bits_in_use;
 
-    c->entry_used=TRUE;
-    temp=c->cur_entry;
-    temp->basecode=basecode;
-    temp->ch=ch;
-    temp1=&c->hash[basecode];
-    temp->next=temp1->next;
-    temp1->next=temp;
+        c->entry_used=TRUE;
+        temp=c->cur_entry;
+        temp->basecode=basecode;
+        temp->ch=ch;
+        temp1=&c->hash[basecode];
+        temp->next=temp1->next;
+        temp1->next=temp;
 
-    basecode=ch;
-  }
+        basecode=ch;
+    }
 ac_done:
-  c->saved_basecode=basecode;
-  c->src_pos=src_ptr-c->src_buf;
+c->saved_basecode=basecode;
+c->src_pos=src_ptr-c->src_buf;
 }
 
 BOOL ArcFinishCompression(CArcCtrl *c)
 {//Do closing touch on archivew ctrl struct.
-  if (c->dst_pos+c->cur_bits_in_use<=c->dst_size) {
-    BFieldOrU32(c->dst_buf,c->dst_pos,c->saved_basecode);
-    c->dst_pos+=c->next_bits_in_use;
-    return TRUE;
-  } else
-    return FALSE;
+    if (c->dst_pos+c->cur_bits_in_use<=c->dst_size) {
+        BFieldOrU32(c->dst_buf,c->dst_pos,c->saved_basecode);
+        c->dst_pos+=c->next_bits_in_use;
+        return TRUE;
+    } else
+        return FALSE;
 }
 
 long compress(BYTE ** compressed, BYTE *src,long size)
 {//See $LK,"::/Demo/Dsk/SerializeTree.CPP"$.
-  CArcCompress *arc;
-  long size_out,compression_type=ArcDetermineCompressionType(src,size);
-  CArcCtrl *c=ArcCtrlNew(FALSE,compression_type);
-  c->src_size=size;
-  c->src_buf=src;
-  c->dst_size=(size+sizeof(CArcCompress))<<3;
-  c->dst_buf=calloc(c->dst_size>>3, 1);
-  c->dst_pos=(sizeof(CArcCompress) - 1)<<3;
-  ArcCompressBuf(c);
-  if (ArcFinishCompression(c) && c->src_pos==c->src_size) {
-    size_out=(c->dst_pos+7)>>3;
-    arc=malloc(size_out);
-    memcpy(arc,c->dst_buf,size_out);
-    arc->compression_type=compression_type;
-    arc->compressed_size=size_out;
-  } else {
-    arc=malloc(size+sizeof(CArcCompress));
-    memcpy(&arc->body,src,size);
-    arc->compression_type=CT_NONE;
-    arc->compressed_size=size+sizeof(CArcCompress);
-  }
+    CArcCompress *arc;
+    long size_out,compression_type=ArcDetermineCompressionType(src,size);
+    CArcCtrl *c=ArcCtrlNew(FALSE,compression_type);
+    c->src_size=size;
+    c->src_buf=src;
+    c->dst_size=(size+sizeof(CArcCompress))<<3;
+    c->dst_buf=calloc(c->dst_size>>3, 1);
+    c->dst_pos=(sizeof(CArcCompress) - 1)<<3;
+    ArcCompressBuf(c);
+    if (ArcFinishCompression(c) && c->src_pos==c->src_size) {
+        size_out=(c->dst_pos+7)>>3;
+        arc=malloc(size_out);
+        memcpy(arc,c->dst_buf,size_out);
+        arc->compression_type=compression_type;
+        arc->compressed_size=size_out;
+    } else {
+        arc=malloc(size+sizeof(CArcCompress));
+        memcpy(&arc->body,src,size);
+        arc->compression_type=CT_NONE;
+        arc->compressed_size=size+sizeof(CArcCompress);
+    }
 
-  arc->expanded_size=size;
+    arc->expanded_size=size;
 
-  /*
-  BYTE * pointer = (BYTE *) arc;
-  int i;
-  for (i =size_out - 196; i <= size_out; i++){
-      printf("%02x", pointer[i]);
-      if (i % 2){
-          printf(" ");
-      }
-      if ((i + 1) % 16 == 0) {
-          printf("\n");
-      }
-  }
-  printf("\n");
-  */
+    /*
+       BYTE * pointer = (BYTE *) arc;
+       int i;
+       for (i =size_out - 196; i <= size_out; i++){
+       printf("%02x", pointer[i]);
+       if (i % 2){
+       printf(" ");
+       }
+       if ((i + 1) % 16 == 0) {
+       printf("\n");
+       }
+       }
+       printf("\n");
+       */
 
-  free(c->dst_buf);
-  ArcCtrlDel(c);
-  *compressed = (BYTE*) arc;
-  return arc->compressed_size;
+    free(c->dst_buf);
+    ArcCtrlDel(c);
+    *compressed = (BYTE*) arc;
+    return arc->compressed_size;
 }
