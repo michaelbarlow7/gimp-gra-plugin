@@ -36,6 +36,8 @@
 static gint    cur_progress = 0;
 static gint    max_progress = 0;
 
+static gboolean save_dialog ();
+
 gboolean
 check_color_mapping(int image){
     guchar      gra_color_map[3*16];
@@ -70,28 +72,58 @@ WriteGRA (const gchar  *filename,
     guchar        *pixels;
     gint          channels;
 
-    drawable = gimp_drawable_get (drawable_ID);
-    drawable_type = gimp_drawable_type (drawable_ID);
-
-    gimp_pixel_rgn_init (&pixel_rgn, drawable,
-            0, 0, drawable->width, drawable->height, FALSE, FALSE);
-
-    if (drawable_type != GIMP_INDEXED_IMAGE
-            && drawable_type != GIMP_INDEXEDA_IMAGE) {
-
-        // Show error dialog
-        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+    if (!gimp_drawable_is_indexed(drawable_ID)) {
+        if (!save_dialog()){
+            g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
                 "Can only save indexed images as .GRA");
-        return GIMP_PDB_EXECUTION_ERROR;
+            return GIMP_PDB_EXECUTION_ERROR;
+        }
+
+        // Convert to indexed
+        if (!gimp_image_convert_indexed(image,
+                    GIMP_NO_DITHER,
+                    GIMP_CUSTOM_PALETTE,
+                    16,         // Ignored
+                    FALSE,      // No dither
+                    FALSE,      // Do NOT remove unused colours
+                    PALETTE_NAME)){
+            g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error converting image to correct format (couldn't convert to indexed).");
+            return GIMP_PDB_EXECUTION_ERROR;
+        }
     }
 
     //TODO: Handle custom color maps. For now we'll assume it's the same as the default
     // Need to check the color map used is valid
     if (!check_color_mapping(image)){
-        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                "Color mapping is incorrect. Please ensure you used the TempleOS GRA Color palette");
-        return GIMP_PDB_EXECUTION_ERROR;
+        if (!save_dialog()){
+            g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                    "Color mapping is incorrect. Please ensure you used the TempleOS GRA Color palette");
+            return GIMP_PDB_EXECUTION_ERROR;
+        }
+
+        // Set the palette and colormap
+        if (!gimp_context_set_palette(PALETTE_NAME)){
+            g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error converting image to correct format (couldn't set palette).");
+            return GIMP_PDB_EXECUTION_ERROR;
+        }
+
+        guchar color_map[3*16];
+        get_color_map(&color_map);
+        if (!gimp_image_set_colormap(image, color_map, 16)){
+            g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error converting image to correct format (couldn't set colormap).");
+            return GIMP_PDB_EXECUTION_ERROR;
+        }
     }
+
+    drawable = gimp_drawable_get (drawable_ID);
+
+    drawable_type = gimp_drawable_type (drawable_ID);
+
+    gimp_pixel_rgn_init (&pixel_rgn, drawable,
+            0, 0, drawable->width, drawable->height, FALSE, FALSE);
 
     // Type is either GIMP_INDEXED_IMAGE or GIMP_INDEXEDA_IMAGE
     channels = drawable_type == GIMP_INDEXED_IMAGE ? 1 : 2;
@@ -208,5 +240,43 @@ WriteGRA (const gchar  *filename,
     g_free(pixels);
     g_free(compressed_pixels);
     return GIMP_PDB_SUCCESS;
+}
+
+// Prompts the user to convert the image to indexed mode
+// with the proper palette.
+// Mostly taken from bmp-write.c
+static gboolean save_dialog(gint channels){
+    GtkWidget   *dialog;
+    GtkWidget   *vbox;
+    GtkWidget   *frame;
+    GtkWidget   *label;
+    gboolean    run;
+
+    dialog = gimp_export_dialog_new ("GRA", PLUG_IN_BINARY, SAVE_PROC);
+    
+    gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
+    gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
+    gtk_box_pack_start (GTK_BOX (gimp_export_dialog_get_content_area (dialog)),
+            vbox, TRUE, TRUE, 0);
+    gtk_widget_show (vbox);
+
+    //frame = gtk_frame_new("Normal Label");
+    label = gtk_label_new("This image is not currently in the correct format to export as a .GRA file.\nClicking export will automatically convert the image to a 16-color indexed version.");
+    gtk_container_add(GTK_CONTAINER(vbox), label);
+    //gtk_box_pack_start (GTK_BOX(vbox), frame, FALSE, FALSE, 0);
+
+    //gtk_widget_show(frame);
+
+    gtk_widget_show(label);
+
+    gtk_widget_show(dialog);
+
+    run = (gimp_dialog_run (GIMP_DIALOG (dialog)) == GTK_RESPONSE_OK);
+
+    gtk_widget_destroy(dialog);
+
+    return run;
 }
 
