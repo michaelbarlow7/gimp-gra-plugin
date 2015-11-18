@@ -1,36 +1,12 @@
 /* gra.c                                          */
 /* Version 0.52                                   */
 /* This is a File input and output filter for the */
-/* Gimp. It loads and saves images in windows(TM) */
-/* bitmap format.                                 */
-/* Some Parts that deal with the interaction with */
-/* GIMP are taken from the GIF plugin by          */
-/* Peter Mattis & Spencer Kimball and from the    */
-/* PCX plugin by Francisco Bustamante.            */
-/*                                                */
-/* Alexander.Schulz@stud.uni-karlsruhe.de         */
-
-/* Changes:   28.11.1997 Noninteractive operation */
-/*            16.03.1998 Endian-independent!!     */
-/*            21.03.1998 Little Bug-fix           */
-/*            06.04.1998 Bugfix in Padding        */
-/*            11.04.1998 Arch. cleanup (-Wall)    */
-/*                       Parses gtkrc             */
-/*            14.04.1998 Another Bug in Padding   */
-/*            28.04.1998 RLE-Encoding rewritten   */
-/*            29.10.1998 Changes by Tor Lillqvist */
-/*                       <tml@iki.fi> to support  */
-/*                       16 and 32 bit images     */
-/*            28.11.1998 Bug in RLE-read-padding  */
-/*                       fixed.                   */
-/*            19.12.1999 Resolution support added */
-/*            06.05.2000 Overhaul for 16&24-bit   */
-/*                       plus better OS/2 code    */
-/*                       by njl195@zepler.org.uk  */
-/*            29.06.2006 Full support for 16/32   */
-/*                       bits bitmaps and support */
-/*                       for alpha channel        */
-/*                       by p.filiciak@zax.pl     */
+/* Gimp. It loads and saves images in TempleOS    */
+/* GRA format.                                    */
+/* This was based off Alexander Schulz's BMP      */
+/* filter plugin, and also uses code from Terry   */
+/* Davis' TempleOS                                */
+/* michaelbarlow7@gmail.com                       */
 
 /*
  * GIMP - The GNU Image Manipulation Program
@@ -62,9 +38,6 @@
 const gchar *filename    = NULL;
 gboolean     interactive = FALSE;
 gboolean     lastvals    = FALSE;
-
-struct Bitmap_File_Head_Struct Bitmap_File_Head;
-struct Bitmap_Head_Struct      Bitmap_Head;
 
 
 /* Declare some local functions.

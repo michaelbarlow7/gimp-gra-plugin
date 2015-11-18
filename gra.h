@@ -42,43 +42,9 @@ GimpPDBStatusType  WriteGRA  (const gchar  *filename,
                               gint32        drawable_ID,
                               GError      **error);
 
-
 extern       gboolean  interactive;
 extern       gboolean  lastvals;
 extern const gchar    *filename;
-
-extern struct Bitmap_File_Head_Struct
-{
-  gchar    zzMagic[2];  /* 00 "BM" */
-  gulong   bfSize;      /* 02 */
-  gushort  zzHotX;      /* 06 */
-  gushort  zzHotY;      /* 08 */
-  gulong   bfOffs;      /* 0A */
-  gulong   biSize;      /* 0E */
-} Bitmap_File_Head;
-
-extern struct Bitmap_Head_Struct
-{
-  glong    biWidth;     /* 12 */
-  glong    biHeight;    /* 16 */
-  gushort  biPlanes;    /* 1A */
-  gushort  biBitCnt;    /* 1C */
-  gulong   biCompr;     /* 1E */
-  gulong   biSizeIm;    /* 22 */
-  gulong   biXPels;     /* 26 */
-  gulong   biYPels;     /* 2A */
-  gulong   biClrUsed;   /* 2E */
-  gulong   biClrImp;    /* 32 */
-  guint32  masks[4];    /* 36 */
-} Bitmap_Head;
-
-typedef struct _Bitmap_Channel
-{
-  guint32 mask;
-  guint32 shiftin;
-  gfloat  max_value;
-} Bitmap_Channel;
-
 void get_color_map(guchar * color_map);
 
 #endif /* __GRA_H__ */

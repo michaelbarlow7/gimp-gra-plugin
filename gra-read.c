@@ -1,8 +1,8 @@
-/* gra-read.c    reads .GRA files */
-/* Uses bmp-read.c for inspiration, originally made by:  */
-/* Alexander.Schulz@stud.uni-karlsruhe.de                */
-
 /*
+ * gra-read.c    reads .GRA files 
+ * Uses bmp-read.c for inspiration, originally made by:  
+ * Alexander.Schulz@stud.uni-karlsruhe.de               
+ *
  * GIMP - The GNU Image Manipulation Program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
  *
@@ -38,9 +38,7 @@
 #define DCF_COMPRESSED  0x01
 #define DCF_PALETTE     0x02 //TODO: Implement this
 
-gint32
-ReadGRA (const gchar  *name,
-         GError      **error)
+gint32 ReadGRA (const gchar *name, GError **error)
 {
     // My files
     FILE            *fd;
@@ -55,46 +53,46 @@ ReadGRA (const gchar  *name,
     guchar          *alpha_body;
     int             i;
 
-  // My code
-  filename = name;
-  fd = g_fopen (filename, "rb");
+    // My code
+    filename = name;
+    fd = g_fopen (filename, "rb");
 
-  if (!fd)
+    if (!fd)
     {
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Could not open '%s' for reading: %s",
-                   gimp_filename_to_utf8 (filename), g_strerror (errno));
-      goto out;
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Could not open '%s' for reading: %s",
+                gimp_filename_to_utf8 (filename), g_strerror (errno));
+        goto out;
     }
 
-  gimp_progress_init_printf ("Opening '%s'",
-                             gimp_filename_to_utf8 (name));
+    gimp_progress_init_printf ("Opening '%s'",
+            gimp_filename_to_utf8 (name));
 
-  if (!ReadOK(fd, &width, 4)){
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Error reading width");
-      goto out;
-  }
+    if (!ReadOK(fd, &width, 4)){
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error reading width");
+        goto out;
+    }
 
-  if (!ReadOK(fd, &width_internal, 4)){
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Error reading width_internal");
-      goto out;
-  }
+    if (!ReadOK(fd, &width_internal, 4)){
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error reading width_internal");
+        goto out;
+    }
 
-  if (!ReadOK(fd, &height, 4)){
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Error reading height");
-      goto out;
-  }
+    if (!ReadOK(fd, &height, 4)){
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error reading height");
+        goto out;
+    }
 
-  if (!ReadOK(fd, &flags, 4)){
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Error reading flags");
-      goto out;
-  }
+    if (!ReadOK(fd, &flags, 4)){
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error reading flags");
+        goto out;
+    }
 
-  // Get size of body
+    // Get size of body
     original=ftell(fd);
     fseek(fd,0,SEEK_END);
     body_size = ftell(fd) - original;
@@ -103,9 +101,9 @@ ReadGRA (const gchar  *name,
     // Allocate memory for the file
     body = (guchar*) malloc (body_size);
     if (!ReadOK(fd, body, body_size)){
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Error reading body bytes");
-      goto out;
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Error reading body bytes");
+        goto out;
     }
 
     // Uncompress body data
@@ -131,38 +129,38 @@ ReadGRA (const gchar  *name,
 
     get_color_map(&color_map);
 
-  image = gimp_image_new (width, height, GIMP_INDEXED); // Assuming base_type is indexed
+    image = gimp_image_new (width, height, GIMP_INDEXED); // Assuming base_type is indexed
 
-  layer = gimp_layer_new (image, "Background",
-                          width, height,
-                          GIMP_INDEXEDA_IMAGE, 100, GIMP_NORMAL_MODE); // Assuming image type is indexed
+    layer = gimp_layer_new (image, "Background",
+            width, height,
+            GIMP_INDEXEDA_IMAGE, 100, GIMP_NORMAL_MODE); // Assuming image type is indexed
 
-  gimp_image_set_filename (image, filename);
+    gimp_image_set_filename (image, filename);
 
-  gimp_image_insert_layer (image, layer, -1, 0);
-  drawable = gimp_drawable_get (layer);
+    gimp_image_insert_layer (image, layer, -1, 0);
+    drawable = gimp_drawable_get (layer);
 
-  gimp_pixel_rgn_init (&pixel_rgn, drawable,
-                       0, 0, drawable->width, drawable->height, TRUE, FALSE);
-  
-  gimp_pixel_rgn_set_rect (&pixel_rgn, body,
-                           0, 0, drawable->width, drawable->height);
+    gimp_pixel_rgn_init (&pixel_rgn, drawable,
+            0, 0, drawable->width, drawable->height, TRUE, FALSE);
 
-  if (!gimp_context_set_palette(PALETTE_NAME)){
-      // Not a breaking error but something's wrong with the plugin
-      g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                   "Couldn't find palette. Re-install plugin.");
-  }
-  gimp_image_set_colormap (image, color_map, 16); // no. of cols = 16
+    gimp_pixel_rgn_set_rect (&pixel_rgn, body,
+            0, 0, drawable->width, drawable->height);
 
-  gimp_drawable_flush(drawable);
-  gimp_drawable_detach(drawable);
-  g_free(body);
+    if (!gimp_context_set_palette(PALETTE_NAME)){
+        // Not a breaking error but something's wrong with the plugin
+        g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
+                "Couldn't find palette. Re-install plugin.");
+    }
+    gimp_image_set_colormap (image, color_map, 16); // no. of cols = 16
+
+    gimp_drawable_flush(drawable);
+    gimp_drawable_detach(drawable);
+    g_free(body);
 
 out:
-  if (fd)
-      fclose (fd);
+    if (fd)
+        fclose (fd);
 
-  // Set the resolution
-  return image;
+    // Set the resolution
+    return image;
 }
