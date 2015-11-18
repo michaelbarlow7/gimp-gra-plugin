@@ -36,7 +36,7 @@
 static gint    cur_progress = 0;
 static gint    max_progress = 0;
 
-int
+gboolean
 check_color_mapping(int image){
     guchar      gra_color_map[3*16];
     guchar      *image_color_map;
@@ -45,19 +45,19 @@ check_color_mapping(int image){
 
     image_color_map = gimp_image_get_colormap (image, &colors);
     if (colors != 16){
-        return 0;
+        return FALSE;
     }
     get_color_map(&gra_color_map); // Get our color map
     // Compare colors
     for (i = 0; i < 3*16; i++){
         if (gra_color_map[i] != image_color_map[i]){
-            return 0;
+            return FALSE;
         }
     }
-    return 1;
+    return TRUE;
 }
 
-    GimpPDBStatusType
+GimpPDBStatusType
 WriteGRA (const gchar  *filename,
         gint32        image,
         gint32        drawable_ID,
@@ -78,6 +78,7 @@ WriteGRA (const gchar  *filename,
 
     if (drawable_type != GIMP_INDEXED_IMAGE
             && drawable_type != GIMP_INDEXEDA_IMAGE) {
+
         // Show error dialog
         g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
                 "Can only save indexed images as .GRA");
@@ -86,7 +87,7 @@ WriteGRA (const gchar  *filename,
 
     //TODO: Handle custom color maps. For now we'll assume it's the same as the default
     // Need to check the color map used is valid
-    if (check_color_mapping(image) == 0){
+    if (!check_color_mapping(image)){
         g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
                 "Color mapping is incorrect. Please ensure you used the TempleOS GRA Color palette");
         return GIMP_PDB_EXECUTION_ERROR;
