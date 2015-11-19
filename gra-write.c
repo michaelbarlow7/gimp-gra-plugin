@@ -102,18 +102,23 @@ WriteGRA (const gchar  *filename,
             return GIMP_PDB_EXECUTION_ERROR;
         }
 
-        // Set the palette and colormap
-        if (!gimp_context_set_palette(PALETTE_NAME)){
+        // Convert to RGB and then back to indexed with proper colourmap.
+        // A little bit hacky, but it ensures the colours are the most accurate
+        if (!gimp_image_convert_rgb(image)){
             g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                "Error converting image to correct format (couldn't set palette).");
+                "Error converting image to correct format (couldn't convert to RGB).");
             return GIMP_PDB_EXECUTION_ERROR;
         }
 
-        guchar color_map[3*16];
-        get_color_map(&color_map);
-        if (!gimp_image_set_colormap(image, color_map, 16)){
+        if (!gimp_image_convert_indexed(image,
+                    GIMP_NO_DITHER,
+                    GIMP_CUSTOM_PALETTE,
+                    16,         // Ignored
+                    FALSE,      // No dither
+                    FALSE,      // Do NOT remove unused colours
+                    PALETTE_NAME)){
             g_set_error (error, G_FILE_ERROR, g_file_error_from_errno (errno),
-                "Error converting image to correct format (couldn't set colormap).");
+                "Error converting image to correct format (couldn't convert to indexed).");
             return GIMP_PDB_EXECUTION_ERROR;
         }
     }
