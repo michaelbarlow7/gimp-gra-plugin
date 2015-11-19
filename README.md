@@ -1,6 +1,6 @@
 # GIMP plugin to read/write GRA files
 
-This is a simple plugin to allow GIMP to read and write .GRA image files as created by Terry Davis in his operating system [TempleOS](www.templeos.org).
+This is a simple plugin to allow GIMP to read and write .GRA image files as created by Terry Davis in his operating system [TempleOS](http://www.templeos.org).
 
 ## Installation
 - Install libgimp2.0 to be able to build it. On ubuntu you can type `sudo apt-get install libgimp2.0-dev` to get this.
